@@ -1,0 +1,16 @@
+{
+    "contents" : "Package: FELLA\nType: Package\nTitle: FELLA: an interpretation and enrichment tool for metabolite data\nVersion: 0.99.1\nDate: 28-04-2015\nAuthor: Sergi Picart, Alexandre Perera\nMaintainer: Sergi Picart <sergi.picart@upc.edu>\nDescription: This package performs the enrichment of metabolites data using KEGG entries. \n    Given a set of affected compounds, it suggests affected reactions, enzymes, modules and pathways. \n    It also performs the classical over-representation analysis.\nLicense: GPL-2\nLazyLoad: yes\nImports: igraph, methods, Matrix, xtable, knitr\nEnhances: stringr, org.Hs.eg.db, GOSemSim\nDepends: R (>= 3.0)\n",
+    "created" : 1441621265736.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1029995721",
+    "id" : "C919C3E9",
+    "lastKnownWriteTime" : 1441621273,
+    "path" : "~/Rstuffbro/FELLA/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "dcf"
+}

@@ -1,0 +1,16 @@
+{
+    "contents" : "getCom <- function(data, type, ans = \"name\") {\n  if (ans == \"name\")\n    return(names(data@keggdata@id[[type]]))\n  \n  if (ans == \"id\")\n    return(data@keggdata@id[[type]]) \n  \n  stop(\"'ans' must be 'name' or 'id'.\")\n}",
+    "created" : 1437004289388.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "768407355",
+    "id" : "164B4A19",
+    "lastKnownWriteTime" : 1435928154,
+    "path" : "~/Rstuffbro/FELLA/R/getCom.R",
+    "project_path" : "R/getCom.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

@@ -1,0 +1,44 @@
+import("methods")
+import("igraph")
+import("Matrix")
+import("knitr")
+import("xtable")
+
+exportClasses("FELLA.USER", "FELLA.DATA")
+
+exportMethods("summary", 
+              "show", 
+              "plot")
+
+export("buildGraphFromKEGG", 
+       "buildDataFromGraph", 
+       "loadKEGGdata", 
+       "defineCompounds",
+       "runHypergeom", 
+       "runDiffusion", 
+       "runPagerank", 
+       "enrich", 
+       "generateResultsTable",
+       "generateResultsGraph",
+       "exportResults", 
+       "plotBipartite", 
+       "plotGraph", 
+       
+       "is.FELLA.USER", 
+       "is.FELLA.DATA", 
+       
+       "getGraph", 
+       "getCom", 
+       "getInput", 
+       "getBackground", 
+       "getExcluded", 
+       "getPvalues", 
+       "getName", 
+       
+       # Dev functions
+       "checkArguments", 
+       "getValid",        
+       "getMatrix"
+       
+       )
+

@@ -1,0 +1,1009 @@
+buildGraphFromKEGG <- function(KEGGdirectory = NULL, 
+                               saveLists = NULL, 
+                               loadLists = NULL, 
+                               GOterms = NULL) {
+  
+  # Checking the input
+  ##############################################################################
+  if (is.null(KEGGdirectory) | !is.character(KEGGdirectory)) {
+    stop("'KEGGdirectory' must be a character with the route 
+         to the kegg folder, including it and its slash.")
+  }
+  
+  if (!is.null(saveLists) & !is.character(saveLists)) {
+    stop("'saveLists' must be a character with a directory name.")
+  }
+  
+  if (!is.null(loadLists) & !is.character(loadLists)) {
+    stop("'loadLists' must be a character with a directory name.")
+  }
+  
+  if (!is.null(GOterms) & !is.logical(GOterms)) {
+    stop("'GOterms' must be a logical value.")
+  }
+  ##############################################################################
+  
+  if (!dir.exists(KEGGdirectory)) {
+    stop("The specified KEGG directory does not exist.")
+  }
+  
+  if (is.character(loadLists)) {
+    message("Retrieving lists...")
+    load(paste0(loadLists, "keggLists.RData"))
+  } else {
+    message("This whole process can take some time.")
+    library(stringr)
+    
+    #   path.kegg <- "/data/kegg/ftp.bioinformatics.jp/kegg/"
+    path.kegg <- KEGGdirectory  
+    
+    # Folder "ligand"
+    path.kegg.compound <- paste0(path.kegg, "ligand/compound.tar.gz")
+    path.kegg.glycan <- paste0(path.kegg, "ligand/glycan.tar.gz")
+    path.kegg.reaction <- paste0(path.kegg, "ligand/reaction.tar.gz")
+    path.kegg.enzyme <- paste0(path.kegg, "ligand/enzyme.tar.gz")
+    
+    # Other folders
+    path.kegg.module <- paste0(path.kegg, "module/module.gz")
+    path.kegg.pathway <- paste0(path.kegg, "pathway/pathway.gz")
+    path.kegg.gene <- paste0(path.kegg, "genes/organisms/hsa/hsa_link.tar.gz")
+    
+    # Temporary directory to untar ligand
+    path.temp <- "temporaryUnpacking/"
+    path.kegg.compound.unzip <- paste0(path.temp, "compound/compound")
+    path.kegg.glycan.unzip <- paste0(path.temp, "glycan/glycan")
+    path.kegg.reaction.unzip <- paste0(path.temp, "reaction/reaction")
+    path.kegg.enzyme.unzip <- paste0(path.temp, "enzyme/enzyme")
+    
+    message("Creating temporary folder...")
+    dir.create(path = path.temp, showWarnings = T)
+    
+    message("Mining KEGG... (1 out of 4)")
+    
+    ################################################################################
+    # PATHWAYS
+    ################################################################################
+    
+    message("Extracting pathways...")
+    raw.pathway <- readLines(con = path.kegg.pathway)
+    
+    list.pathway <- list()
+    
+    row.index <- 0
+    while ((row.index <- row.index + 1) <= length(raw.pathway)) {
+      aux <- strsplit(raw.pathway[row.index], " +")[[1]]
+      
+      # Detect entries from homo sapiens
+      if (aux[1] == "ENTRY" && substr(aux[2], 1, 3) == "hsa") {
+        out.name <- aux[2]
+        done <- F
+        list.pathway[[out.name]] <- list("NAME" = character(), 
+                                         "GENE" = character(),
+                                         "COMPOUND" = character(), 
+                                         "MODULE" = character())
+        
+        while (!done) {
+          row.index <- row.index + 1
+          row <- strsplit(raw.pathway[row.index], " +")[[1]]
+          
+          if (is.na(row[1]) || row[1] == "ENTRY") {
+            done <- T
+            row.index <- row.index - 1
+            break
+          }
+          
+          if (row[1] == "NAME") {
+            entry <- row[1]
+            
+            list.pathway[[out.name]][[entry]] <- paste(row[-1], collapse = " ")
+            row.index <- row.index + 1
+            row <- strsplit(raw.pathway[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.pathway[[out.name]][[entry]] <- c(list.pathway[[out.name]][[entry]], 
+                                                     paste(row[-1], collapse = " "))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.pathway[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] %in% c("GENE", "COMPOUND")) {
+            entry <- row[1]
+            
+            list.pathway[[out.name]][[entry]] <- row[2]
+            row.index <- row.index + 1
+            row <- strsplit(raw.pathway[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.pathway[[out.name]][[entry]] <- c(list.pathway[[out.name]][[entry]], 
+                                                     row[2])
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.pathway[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] == "MODULE") {
+            entry <- row[1]
+            
+            # Substring because it is preceded by 'hsa_'
+            list.pathway[[out.name]][[entry]] <- substr(row[2], 5, 10)
+            row.index <- row.index + 1
+            row <- strsplit(raw.pathway[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.pathway[[out.name]][[entry]] <- c(list.pathway[[out.name]][[entry]], 
+                                                     substr(row[2], 5, 10))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.pathway[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+        }
+      }
+    }
+    
+    rm(raw.pathway)
+    message("Done")
+    
+    ################################################################################
+    # MODULES
+    ################################################################################
+    
+    message("Extracting modules...")
+    raw.module <- readLines(con = path.kegg.module)
+    
+    list.module <- list()
+    
+    row.index <- 0
+    while ((row.index <- row.index + 1) <= length(raw.module)) {
+      aux <- strsplit(raw.module[row.index], " +")[[1]]
+      
+      if (aux[1] == "ENTRY" && (substr(aux[2], 1, 4) == "hsa_")) {
+        out.name <- substr(aux[2], 5, 10)
+        done <- F
+        list.module[[out.name]] <- list("NAME" = character(), 
+                                        "GENE" = character(),
+                                        "COMPOUND" = character(), 
+                                        "REACTION" = character(), 
+                                        "PATHWAY" = character())
+        
+        while (!done) {
+          row.index <- row.index + 1
+          row <- strsplit(raw.module[row.index], " +")[[1]]
+          
+          if (is.na(row[1]) || row[1] == "ENTRY") {
+            done <- T
+            row.index <- row.index - 1
+            break
+          }
+          
+          if (row[1] == "NAME") {
+            entry <- row[1]
+            
+            list.module[[out.name]][[entry]] <- paste(row[-1], collapse = " ")
+            row.index <- row.index + 1
+            row <- strsplit(raw.module[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.module[[out.name]][[entry]] <- c(list.module[[out.name]][[entry]], 
+                                                    paste(row[-1], collapse = " "))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.module[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] %in% c("GENE", "COMPOUND")) {
+            entry <- row[1]
+            
+            list.module[[out.name]][[entry]] <- row[2]
+            row.index <- row.index + 1
+            row <- strsplit(raw.module[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.module[[out.name]][[entry]] <- c(list.module[[out.name]][[entry]], 
+                                                    row[2])
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.module[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] == "REACTION") {
+            entry <- row[1]
+            
+            list.module[[out.name]][[entry]] <- strsplit(row[2], "[+]|,")[[1]]
+            row.index <- row.index + 1
+            row <- strsplit(raw.module[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.module[[out.name]][[entry]] <- c(list.module[[out.name]][[entry]], 
+                                                    strsplit(row[2], "[+]|,")[[1]])
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.module[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] == "PATHWAY") {
+            entry <- row[1]
+            
+            list.module[[out.name]][[entry]] <- paste0("hsa", substr(row[2], 4, 8))
+            row.index <- row.index + 1
+            row <- strsplit(raw.module[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.module[[out.name]][[entry]] <- c(list.module[[out.name]][[entry]], 
+                                                    paste0("hsa", substr(row[2], 4, 8)))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.module[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+        }
+      }
+    }
+    
+    # We could have included some non-hsa pathways. So, we check their names
+    for (i in 1:length(list.module)) {
+      list.module[[i]]$PATHWAY <- intersect(list.module[[i]]$PATHWAY, names(list.pathway))
+    }
+    
+    rm(raw.module)
+    message("Done")
+    
+    ################################################################################
+    # GENES
+    ################################################################################
+    
+    message("Extracting genes...")
+    untar(tarfile = path.kegg.gene, 
+          files = c("hsa_enzyme.list", 
+                    "hsa_pathway.list", 
+                    "hsa_module.list"), 
+          exdir = path.temp, 
+          compressed = "gzip")
+    
+    list.gene <- list()
+    
+    gene.raw <- readLines(paste0(path.temp, "hsa_enzyme.list"))
+    
+    for (row in gene.raw) {
+      rowsplit <- strsplit(row, "\t")[[1]]
+      xx <- substr(rowsplit[1], 5, 20)
+      yy <- substr(rowsplit[2], 4, 20)
+      if (is.null(list.gene[[xx]][["ENZYME"]])) {
+        list.gene[[xx]][["ENZYME"]] <- character()
+      }
+      list.gene[[xx]][["ENZYME"]] <- c(list.gene[[xx]][["ENZYME"]], 
+                                       yy)
+    }
+    
+    gene.raw <- readLines(paste0(path.temp, "hsa_module.list"))
+    
+    for (row in gene.raw) {
+      rowsplit <- strsplit(row, "\t")[[1]]
+      xx <- substr(rowsplit[1], 5, 20)
+      yy <- substr(rowsplit[2], 8, 13)
+      if (is.null(list.gene[[xx]][["MODULE"]])) {
+        list.gene[[xx]][["MODULE"]] <- character()
+      }
+      list.gene[[xx]][["MODULE"]] <- c(list.gene[[xx]][["MODULE"]], 
+                                       yy)
+    }
+    
+    gene.raw <- readLines(paste0(path.temp, "hsa_pathway.list"))
+    
+    for (row in gene.raw) {
+      rowsplit <- strsplit(row, "\t")[[1]]
+      xx <- substr(rowsplit[1], 5, 20)
+      yy <- substr(rowsplit[2], 6, 13)
+      if (is.null(list.gene[[xx]][["PATHWAY"]])) {
+        list.gene[[xx]][["PATHWAY"]] <- character()
+      }
+      list.gene[[xx]][["PATHWAY"]] <- c(list.gene[[xx]][["PATHWAY"]], 
+                                        yy)
+    }
+    
+    file.remove(paste0(path.temp, c("hsa_enzyme.list", 
+                                    "hsa_pathway.list", 
+                                    "hsa_module.list")))
+    
+    rm(gene.raw)
+    
+    message("Done")
+    
+    ################################################################################
+    # ENZYMES
+    ################################################################################
+    
+    message("Extracting enzymes...")
+    
+    untar(tarfile = path.kegg.enzyme,  
+          files = "enzyme/enzyme", 
+          exdir = path.temp, 
+          compressed = "gzip")
+    
+    raw.enzyme <- readLines(con = path.kegg.enzyme.unzip)
+    
+    list.enzyme <- list()
+    
+    row.index <- 0
+    while ((row.index <- row.index + 1) <= length(raw.enzyme)) {
+      aux <- strsplit(raw.enzyme[row.index], " +")[[1]]
+      
+      if (aux[1] == "ENTRY") {
+        out.name <- as.character(aux[3])
+        done <- F
+        list.enzyme[[out.name]] <- list("NAME" = character(), 
+                                        "REACTION" = character(), 
+                                        "PATHWAY" = character(), 
+                                        "GENE" = character())
+        
+        while (!done) {
+          row.index <- row.index + 1
+          row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+          
+          if (is.na(row[1]) || row[1] == "ENTRY") {
+            done <- T
+            row.index <- row.index - 1
+            break
+          }
+          
+          if (row[1] == "NAME") {
+            entry <- row[1]
+            
+            list.enzyme[[out.name]][[entry]] <- paste(row[-1], collapse = " ")
+            row.index <- row.index + 1
+            row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.enzyme[[out.name]][[entry]] <- c(list.enzyme[[out.name]][[entry]], 
+                                                    paste(row[-1], collapse = " "))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          }
+          
+          if (row[1] == "ALL_REAC") {
+            entry <- "REACTION"
+            # Select all the compounds
+            compound_inv <- row[nchar(row) == 6]
+            
+            list.enzyme[[out.name]][[entry]] <- compound_inv
+            row.index <- row.index + 1
+            row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.enzyme[[out.name]][[entry]] <- c(list.enzyme[[out.name]][[entry]], 
+                                                    row[nchar(row) == 6])
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] == "PATHWAY") {
+            entry <- row[1]
+            
+            list.enzyme[[out.name]][[entry]] <- paste0("hsa", substr(row[2], 3, 7))
+            row.index <- row.index + 1
+            row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.enzyme[[out.name]][[entry]] <- c(list.enzyme[[out.name]][[entry]], 
+                                                    paste0("hsa", substr(row[2], 3, 7)))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] == "GENES") {
+            entry <- "GENE"
+            
+            if (row[2] == "HSA:") {
+              list.enzyme[[out.name]][[entry]] <- as.character(str_match_all(row[c(-1, -2)], 
+                                                                             "^[0-9]+"))
+            } 
+            row.index <- row.index + 1
+            row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              if (row[2] == "HSA:") {
+                list.enzyme[[out.name]][[entry]] <- as.character(str_match_all(row[c(-1, -2)], 
+                                                                               "^[0-9]+"))
+              } 
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.enzyme[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+        }
+      }
+    }
+    
+    # Check pathways, because ec pathways are not the same as hsa pathways
+    for (i in 1:length(list.enzyme)) {
+      list.enzyme[[i]]$PATHWAY <- intersect(list.enzyme[[i]]$PATHWAY, names(list.pathway))
+    }
+    
+    unlink(paste0(path.temp, "enzyme"), recursive = T)
+    rm(raw.enzyme)
+    message("Done")
+    
+    
+    ################################################################################
+    # REACTIONS
+    ################################################################################
+    
+    message("Extracting reactions...")
+    
+    untar(tarfile = path.kegg.reaction,  
+          files = "reaction/reaction", 
+          exdir = path.temp, 
+          compressed = "gzip")
+    
+    raw.reaction <- readLines(con = path.kegg.reaction.unzip)
+    
+    list.reaction <- list()
+    
+    row.index <- 0
+    while ((row.index <- row.index + 1) <= length(raw.reaction)) {
+      aux <- strsplit(raw.reaction[row.index], " +")[[1]]
+      
+      if (aux[1] == "ENTRY") {
+        out.name <- aux[2]
+        done <- F
+        list.reaction[[out.name]] <- list("PATHWAY" = character(), 
+                                          "NAME" = character(), 
+                                          "COMPOUND" = character(), 
+                                          "ENZYME" = character())
+        
+        while (!done) {
+          row.index <- row.index + 1
+          row <- strsplit(raw.reaction[row.index], " +")[[1]]
+          
+          if (is.na(row[1]) || row[1] == "ENTRY") {
+            done <- T
+            row.index <- row.index - 1
+            break
+          }
+          
+          if (row[1] == "NAME") {
+            entry <- row[1]
+            
+            list.reaction[[out.name]][[entry]] <- paste(row[-1], collapse = " ")
+            row.index <- row.index + 1
+            row <- strsplit(raw.reaction[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.reaction[[out.name]][[entry]] <- c(list.reaction[[out.name]][[entry]], 
+                                                      paste(row[-1], collapse = " "))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.reaction[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          }
+          
+          if (row[1] == "EQUATION") {
+            # Select all the compounds
+            compound_inv <- row[nchar(row) == 6]
+            
+            list.reaction[[out.name]][["COMPOUND"]] <- compound_inv
+          } 
+          
+          
+          if (row[1] == "PATHWAY") {
+            entry <- row[1]
+            
+            list.reaction[[out.name]][[entry]] <- paste0("hsa", substr(row[2], 3, 7))
+            row.index <- row.index + 1
+            row <- strsplit(raw.reaction[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.reaction[[out.name]][[entry]] <- c(list.reaction[[out.name]][[entry]], 
+                                                      paste0("hsa", substr(row[2], 3, 7)))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.reaction[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] == "ENZYME") {
+            entry <- row[1]
+            
+            list.reaction[[out.name]][[entry]] <- row[-1]
+            row.index <- row.index + 1
+            row <- strsplit(raw.reaction[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.reaction[[out.name]][[entry]] <- c(list.reaction[[out.name]][[entry]], 
+                                                      row[-1])
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.reaction[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+        }
+      }
+    }
+    
+    # Check pathways, because rn pathways are not the same as hsa pathways
+    for (i in 1:length(list.reaction)) {
+      list.reaction[[i]]$PATHWAY <- intersect(list.reaction[[i]]$PATHWAY, names(list.pathway))
+    }
+    
+    unlink(paste0(path.temp, "reaction"), recursive = T)
+    rm(raw.reaction)
+    message("Done")
+    
+    ################################################################################
+    # COMPOUNDS
+    ################################################################################
+    
+    message("Extracting compounds...")
+    
+    untar(tarfile = path.kegg.compound,  
+          files = "compound/compound", 
+          exdir = path.temp, 
+          compressed = "gzip")
+    
+    raw.compound <- readLines(con = path.kegg.compound.unzip)
+    
+    list.compound <- list()
+    
+    row.index <- 0
+    while ((row.index <- row.index + 1) <= length(raw.compound)) {
+      aux <- strsplit(raw.compound[row.index], " +")[[1]]
+      
+      if (aux[1] == "ENTRY") {
+        out.name <- aux[2]
+        done <- F
+        list.compound[[out.name]] <- list("NAME" = character(), 
+                                          "REACTION" = character(), 
+                                          "ENZYME" = character(), 
+                                          "MODULE" = character(), 
+                                          "PATHWAY" = character())
+        
+        while (!done) {
+          row.index <- row.index + 1
+          row <- strsplit(raw.compound[row.index], " +")[[1]]
+          
+          if (is.na(row[1]) || row[1] == "ENTRY") {
+            done <- T
+            row.index <- row.index - 1
+            break
+          }
+          
+          if (row[1] == "NAME") {
+            entry <- row[1]
+            
+            list.compound[[out.name]][[entry]] <- paste(row[-1], collapse = " ")
+            row.index <- row.index + 1
+            row <- strsplit(raw.compound[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.compound[[out.name]][[entry]] <- c(list.compound[[out.name]][[entry]], 
+                                                      paste(row[-1], collapse = " "))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.compound[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          }
+          
+          if (row[1] == "MODULE") {
+            entry <- row[1]
+            
+            list.compound[[out.name]][[entry]] <- row[2]
+            row.index <- row.index + 1
+            row <- strsplit(raw.compound[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.compound[[out.name]][[entry]] <- c(list.compound[[out.name]][[entry]], 
+                                                      row[2])
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.compound[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          
+          if (row[1] == "PATHWAY") {
+            entry <- row[1]
+            
+            list.compound[[out.name]][[entry]] <- paste0("hsa", substr(row[2], 4, 8))
+            row.index <- row.index + 1
+            row <- strsplit(raw.compound[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.compound[[out.name]][[entry]] <- c(list.compound[[out.name]][[entry]], 
+                                                      paste0("hsa", substr(row[2], 4, 8)))
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.compound[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+          
+          if (row[1] == "ENZYME" || row[1] == "REACTION") {
+            entry <- row[1]
+            
+            list.compound[[out.name]][[entry]] <- row[-1]
+            row.index <- row.index + 1
+            row <- strsplit(raw.compound[row.index], " +")[[1]]
+            
+            while(row[1] == "") {
+              list.compound[[out.name]][[entry]] <- c(list.compound[[out.name]][[entry]], 
+                                                      row[-1])
+              
+              row.index <- row.index + 1
+              row <- strsplit(raw.compound[row.index], " +")[[1]]
+            }
+            row.index <- row.index - 1
+          } 
+        }
+      }
+    }
+    
+    # Check pathways, because map pathways are not the same as hsa pathways
+    for (i in 1:length(list.compound)) {
+      list.compound[[i]]$PATHWAY <- intersect(list.compound[[i]]$PATHWAY, names(list.pathway))
+    }
+    
+    unlink(paste0(path.temp, "compound"), recursive = T)
+    rm(raw.compound)
+    message("Done")
+    
+    
+    message("Removing temporary directory...")
+    unlink(paste0(path.temp), recursive = T)
+    message("Done.")
+    
+    
+    # Save the lists if the user wants to (more like a developer option)
+    if (!is.null(saveLists)) {
+      message(paste0("Saving lists in folder ", saveLists))
+      
+      if (!dir.exists(saveLists)) {
+        message("Directory does not exist. Creating it...")
+        dir.create(path = saveLists, showWarnings = T)
+      }
+      
+      save(list.pathway, 
+           list.module, 
+           list.gene, 
+           list.enzyme, 
+           list.reaction, 
+           list.compound, 
+           file = paste0(saveLists, "keggLists.RData"))
+      
+      message(paste0("File written in ", saveLists, "keggLists.RData"))
+      message("Done.")
+    }
+    
+  }
+  
+  
+  ####################
+  # BUILD THE GRAPHS #
+  ####################
+
+  makeEdges <- function(DATA, FILTER = list()){
+    # Basic function to add edges
+    # FILTER allows to control which nodes are added! (at the end of the edge)
+    
+    total <- length(DATA)
+    EDGE <- matrix(nrow = 2e5, ncol = 2, data = character())
+    count <- 1
+    
+    sumcheck <- 0
+    for (i in 1:total) {
+      label <- names(DATA)[i]
+      
+      lnames <- names(DATA[[label]])
+      
+      for (j in lnames) {
+        # Check if there is a filter on this kind of entry
+        if (j %in% names(FILTER)) {
+          lcat <- length(DATA[[i]][[j]])
+          if (lcat > 0){
+            for (k in 1:lcat) { 
+              # Check if the second vertex of this edge is in the whitelist
+              if (DATA[[i]][[j]][k] %in% FILTER[[j]]) {
+                EDGE[count, 1] <- label
+                EDGE[count, 2] <- DATA[[i]][[j]][k]
+                count <- count + 1
+              }
+              
+            }
+          }
+        } else {
+          # If not filtered, allow all of them
+          lcat <- length(DATA[[i]][[j]])
+          if (lcat > 0){
+            for (k in 1:lcat) {    
+              EDGE[count, 1] <- label
+              EDGE[count, 2] <- DATA[[i]][[j]][k]
+              count <- count + 1
+            }
+          }
+        }
+      }
+    }
+    count <- count - 1
+    return(EDGE[1:count, ])
+  }
+
+  #########
+  # GRAPH #
+  #########
+  message("Creating graph edges... (2 out of 4)")
+
+  # To recover our object we have to modify module and pathway lists
+  # That way, enzymes are added if there is a connection through a human gene!
+  list.pathway.mod <- lapply(list.pathway[!(names(list.pathway) == "hsa01100")], 
+                             function(item) {
+    genes <- item$GENE
+    item$GENE <- NULL
+    item$ENZYME <- character()
+    
+    for (gene.id in genes) {
+      item$ENZYME <- c(item$ENZYME, list.gene[[gene.id]]$ENZYME)
+    }
+    item
+  })
+  
+  list.module.mod <- lapply(list.module, function(item) {
+    genes <- item$GENE
+    item$GENE <- NULL
+    item$ENZYME <- character()
+    
+    for (gene.id in genes) {
+      item$ENZYME <- c(item$ENZYME, list.gene[[gene.id]]$ENZYME)
+    }
+    item
+  })
+  
+  # Only the names in the FILTER are allowed to enter the graph. 
+  # Note that we filter the gigantic hsa01100 pathway
+  filter <- list("GENE" = "", # No genes allowed
+                 "NAME" = "", # Do not include the names as nodes!
+                 "COMPOUND" = names(list.compound),
+                 "REACTION" = names(list.reaction), 
+                 "ENZYME" = names(list.enzyme), 
+                 "MODULE" = names(list.module), 
+                 "PATHWAY" = names(list.pathway.mod))
+  
+  edges.pathway <- makeEdges(list.pathway.mod, 
+                             FILTER = filter)
+  
+  edges.module <- makeEdges(list.module.mod, 
+                            FILTER = filter)
+  
+  # Filter enzymes, reactions and compounds by homo sapiens species
+  edges.temp.hsa <- rbind(edges.pathway, edges.module)
+  defined.compounds <- unique((edges.temp.hsa[, 2])[grepl("C", edges.temp.hsa[, 2])])
+  
+  # Only those enzymes with a human gene are allowed
+  allowed.enzymes <- sapply(list.enzyme, function(x) {
+    length(x$GENE) > 0
+  })
+  allowed.enzymes <- names(allowed.enzymes)[allowed.enzymes]
+  
+  # Only those reactions in a human pathway are allowed
+  allowed.reactions <- sapply(list.reaction, function(x) {
+    any(x$PATHWAY %in% names(list.pathway.mod))
+  })
+  allowed.reactions <- names(allowed.reactions)[allowed.reactions]
+  
+  # Only the already added compounds are allowed
+  allowed.compounds <- defined.compounds
+  
+  # New filter for the lower categories
+  filter.low <- list("GENE" = "", 
+                     "NAME" = "", 
+                     "COMPOUND" = names(list.compound),
+                     "REACTION" = allowed.reactions, 
+                     "ENZYME" = allowed.enzymes, 
+                     "MODULE" = names(list.module), 
+                     "PATHWAY" = names(list.pathway.mod))
+  
+  edges.enzyme <- makeEdges(list.enzyme[allowed.enzymes], 
+                            FILTER = filter.low)
+  
+  edges.reaction <- makeEdges(list.reaction[allowed.reactions], 
+                              FILTER = filter.low)
+  
+  edges.compound <- makeEdges(list.compound[allowed.compounds], 
+                              FILTER = filter.low)
+  
+  rm(edges.temp.hsa)
+  message("Done.")
+
+  # First graph
+  graph.raw <- graph.edgelist(rbind(edges.pathway, 
+                                    edges.module, 
+                                    edges.enzyme, 
+                                    edges.reaction, 
+                                    edges.compound))
+  
+  message("Building graph... (3 out of 4)")
+
+  g <- simplify(as.undirected(graph.raw))
+  rm(graph.raw)
+  
+  # Adding the community attribute
+  V(g)$com <- sapply(V(g)$name, function(id) {
+    if (substr(id, 1, 1) == "C") return(5)
+    if (substr(id, 1, 1) == "R") return(4)
+    if (substr(id, 1, 1) == "M") return(2)
+    if (substr(id, 1, 3) == "hsa") return(1)
+    return(3)
+  })
+  
+  # Order the nodes within communities, alphabetically
+  # Careful! order(order)
+  g <- permute.vertices(g, order(order(V(g)$name)))
+  g <- permute.vertices(g, order(order(V(g)$com)))
+  
+  # Directed version of the graph (pointing upwards)
+  g.directed <- as.directed(g, mode = "mutual")
+  rm(g)
+
+  g.keep <- sapply(E(g.directed), function(edge) {
+    v <- get.edges(g.directed, edge)
+    return(v[1] > v[2])  
+  })
+  g.directed <- subgraph.edges(g.directed, which(g.keep))
+  rm(g.keep)
+  
+  g.edges <- get.edges(g.directed, E(g.directed))
+  
+  # Weighting the edges
+  E(g.directed)$weight <- apply(g.edges, 1, function(row) {
+    return(V(g.directed)[row[1]]$com - V(g.directed)[row[2]]$com)
+  })
+  message("Done.")
+  message("Curating graph... (4 out of 4)")
+  
+  # We start with the graph curation
+  edges.order <- order(E(g.directed)$weight)
+  edges.1 <- edges.order[E(g.directed)[edges.order]$weight == 1]
+  edges.more <- edges.order[E(g.directed)[edges.order]$weight > 1]
+  
+  # Start only with the unitary weight edges
+  graph.curated <- subgraph.edges(graph = g.directed, 
+                                  eids = edges.1, 
+                                  delete.vertices = F)
+  
+  # Add the others only if they apport extra info
+  count <- 0
+  for (index in edges.more) {
+    count <- count + 1
+    if (count %% round(length(edges.more)*.01) == 0) {
+      message(round(100*count/length(edges.more)), "%") 
+    }
+    v1 <- g.edges[index, 1]
+    v2 <- g.edges[index, 2]
+    e.weight <- E(g.directed)[index]$weight
+    
+    if (e.weight == 1 || shortest.paths(graph = graph.curated, 
+                                        v = v1, 
+                                        to = v2, 
+                                        mode = "out") > e.weight) {
+      graph.curated <- add.edges(graph.curated, c(v1, v2))
+      E(graph.curated)[ecount(graph.curated)]$weight <- e.weight
+    }
+  }
+  
+  # Keep only the largest connected component, roughly all the graph
+  clust <- clusters(graph.curated)
+  graph.curated <- induced.subgraph(graph.curated, 
+                                    clust$membership == (which.max(clust$csize)))
+
+  # Final edge weights have to be inverted
+  E(graph.curated)$weight <- 1/E(graph.curated)$weight
+
+  # Also, add KEGG names for each identifier
+  # We will keep the GENE field for the enzymes
+  list.vertex.genes <- list()
+  list.vertex.names <- list()
+  for (v in 1:vcount(graph.curated)) {
+    v.id <- V(graph.curated)[v]$name
+    v.com <- V(graph.curated)[v]$com
+    v.gene <- NA
+    
+    if (v.com == 5) v.name <- list.compound[[v.id]]$NAME
+    else if (v.com == 4) v.name <- list.reaction[[v.id]]$NAME
+    # Enzymes
+    else if (v.com == 3) {
+      v.name <- list.enzyme[[v.id]]$NAME
+      v.gene <- list.enzyme[[v.id]]$GENE
+    } 
+    else if (v.com == 2) v.name <- list.module[[v.id]]$NAME
+    else if (v.com == 1) v.name <- list.pathway[[v.id]]$NAME
+    
+    if (length(v.com) == 0) v.name <- v.id
+    
+    list.vertex.names[[v.id]] <- v.name
+    list.vertex.genes[[v.id]] <- v.gene
+  }
+
+  graph.curated <- set.vertex.attribute(graph = graph.curated, 
+                                        name = "NAME", 
+                                        value = list.vertex.names)
+  graph.curated <- set.vertex.attribute(graph = graph.curated, 
+                                        name = "GENE", 
+                                        value = list.vertex.genes)
+
+  message("Done.")
+
+
+  if (GOterms) {
+    message("Adding GO terms to enzymes...")
+    
+    library(org.Hs.eg.db)
+#     browser()
+    gene.all <- V(graph.curated)$GENE
+    gene2GO <- AnnotationDbi::as.list(org.Hs.egGO)
+    
+    gene.ontology <- list()
+    for (i in 1:length(gene.all)) {
+      genesInEntry <- gene.all[[i]]
+      
+      if (!any(is.na(genesInEntry))) {
+        
+        res <- character()
+        for (j in genesInEntry) {
+          tempgene <- gene2GO[[j]]
+          if (!is.null(tempgene) && length(tempgene)) {
+            tempgene.names <- names(tempgene)
+            for (k in tempgene.names) {
+              #           browser()
+              if (tempgene[[k]]$Ontology == "CC") {
+                res <- c(res, k)
+              }
+            }
+          }
+        }
+        
+        if (length(res)) {
+          gene.ontology[[i]] <- Term(unique(res))
+        } else {
+          gene.ontology[[i]] <- NA
+        } 
+      } else {
+        gene.ontology[[i]] <- NA
+      }
+    }
+    detach("package:org.Hs.eg.db", unload = T)
+    
+    graph.curated <- set.vertex.attribute(graph = graph.curated, 
+                                          name = "GO", 
+                                          value = gene.ontology)
+    
+    message("Done.")
+  }
+
+  return(graph.curated)
+}

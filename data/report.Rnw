@@ -1,0 +1,263 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage{caption}
+\usepackage[sc]{mathpazo}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[textwidth=17cm,textheight=24cm]{geometry}
+
+\setlength\parindent{0pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[R]{\small FEllA 0.99 automated report}
+
+\makeatletter
+\def\strippt{\strip@pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{rotating}
+\makeatother
+
+\begin{document}
+
+% \captionsetup{labelformat=empty}
+<<setup, include=FALSE, cache=FALSE>>=
+options(replace.assign = TRUE, width = 90)
+@
+
+
+\title{FELLA v0.99 automated report}
+\author{Sergio Picart-Armada \qquad Alexandre Perera-Lluna \\ B2SLab at UPC}
+\maketitle
+% 
+% <<tableTest, results='asis', echo=FALSE>>=
+% test <- data.frame(x = 1:3, y = 1:3)
+% print(xtable(test, caption = '\\textbf{Test Table}', label = ''), 
+%   caption.placement = getOption("xtable.caption.placement", "top"), size = 'tiny')
+% @
+
+\section{Input}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Metabolites}
+
+The user of this tool has completed a case-control experiment providing him with data about the \textbf{affected compounds} between control and case populations. The specified metabolites are in table \ref{tab:metaboliteInput}. Some of the metabolites may be excluded of the analysis because they are not within the metabolite background or the graph objects.
+
+<<tableInput, results='asis', echo=FALSE, resize.width="\\textwidth", resize.height="\\textheight">>=
+input <- c(object@userinput@metabolites, object@userinput@excluded)
+inputNames <- sapply(input, function(id) {
+  data@keggdata@id2name[[id]][1]
+})
+inputUsage <- c(rep("Yes", length(object@userinput@metabolites)), 
+                rep("No", length(object@userinput@excluded)))
+
+metabolite.table <- cbind(input, inputNames, inputUsage)
+colnames(metabolite.table) <- c("KEGG id", "Description", "Used in analysis")
+rownames(metabolite.table) <- 1:dim(metabolite.table)[1]
+
+out <- xtable(metabolite.table, 
+              caption = "Affected metabolites, input for the enrichment", 
+              label = "tab:metaboliteInput")
+print(out, 
+      tabular.environment = "longtable", 
+      floating = F)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Metabolite background}
+
+In order to measure statistical significance, a reference background for the metabolites must be defined. Table \ref{tab:metaboliteBackground} contains the essential data about it. This background can be ignored, thus using the default one, or can be user-defined.
+
+<<tableBackground, results='asis', echo=FALSE, message=F, resize.width="\\textwidth", resize.height="\\textheight">>=
+
+n.input <- length(object@userinput@metabolites)
+n.background <- length(object@userinput@metabolitesbackground)
+n.all <- length(data@keggdata@id$compound)
+if (n.background == 0) n.background <- n.all
+
+background.table <- matrix(c(n.input, n.background, n.all), ncol = 1)
+colnames(background.table) <- "Metabolites amount"
+rownames(background.table) <- c("Input", "Background", "Whole graph")
+
+print(xtable(background.table, 
+             caption = "Metabolite background summary", 
+             label = "tab:metaboliteBackground"), 
+      )
+@
+
+\section{Results}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Hypergeometric test}
+
+For this test, the background can be smaller due to the fact that some compounds do not directly belong to any pathway. In particular, out of the original 
+\Sexpr{
+n.background <- length(object@userinput@metabolitesbackground)
+n.all <- length(data@keggdata@id$compound)
+if (n.background == 0) n.background <- n.all
+n.background
+} 
+metabolites, only 
+\Sexpr{object@hypergeom@nbackground} 
+metabolites have been included. Table \ref{tab:HT} contains the top 15 pathways. Keep in mind that the connections used in this test are not the usual KEGG compound-pathway links, but they are inferred from the graph object.
+\\
+
+\begin{table}[hl]
+\resizebox{\textwidth}{!}{
+<<tableHypergeom, results='asis', echo=FALSE, message=FALSE, resize.width="\\textwidth", resize.height="\\textheight">>=
+
+hypergeom.table <- generateResultsTable(method = "hypergeom", 
+                                        threshold = 0.99, 
+                                        plimit = 15, 
+                                        object = object, 
+                                        data = data)
+
+print(xtable(x = hypergeom.table, 
+             digits = c(0, 0, 0, 0, 0, 2), 
+             display = c("d", "s", "s", "d", "d", "e")
+             ), 
+      floating = F)
+@
+}
+\caption{Hypergeometric test p-values} 
+\label{tab:HT}
+
+\end{table}
+
+These results can be depicted using a bipartite graph containing the significant pathways and all the affected compounds belonging to them.
+
+\begin{figure}[H]
+\noindent\makebox[\textwidth]{
+
+<<graphHypergeom, fig.align="left", results='hide', echo=FALSE, fig.width=12, fig.height=12, out.width="\\textwidth">>=
+plot(x = object, 
+     method = "hypergeom", 
+     layout = F, 
+     data = data)
+@
+}
+\caption{Hypergeometric test results plotted as a bipartite graph.}
+\label{fig:HT}
+
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Heat diffusion model}
+
+The heat diffusion model has been applied using the affected metabolites as sources. The resulting temperatures have been compared to a null distribution, which makes use of the background compounds. The relevant substructure is depicted in figure \ref{fig:HD}. Table \ref{tab:HD} contains the description and p-values for the drawn nodes. 
+
+\begin{figure}[H]
+\noindent\makebox[\textwidth]{
+
+<<graphDiffusion, fig.align="left", results='hide', echo=FALSE, fig.width=12, fig.height=12, out.width="\\textwidth">>=
+plot(x = object, 
+     method = "diffusion", 
+     layout = F, 
+     data = data)
+@
+}
+\caption{Heat diffusion model results plotted as a graph. 
+\\
+\protect\rule{\textwidth}{.7pt}
+Legend: \qquad {\color{Maroon}Pathway} \qquad {\color{Orchid}Module} \qquad {\color{Dandelion}Enzyme} \qquad {\color{CornflowerBlue}Reaction} \qquad {\color{OliveGreen}Compound} 
+\\
+Shapes: \qquad $\square$ Metabolite in the input \qquad $\bigcirc$ Rest of the nodes
+\\
+\protect\rule{\textwidth}{.7pt}
+The nodes represented have statistical relevance in the experiment. Larger connected components suggest a stronger signal.}
+\label{fig:HD}
+
+\end{figure}
+
+\newpage
+
+<<tableHD, results='asis', echo=FALSE, message=FALSE, resize.width="\\textwidth", resize.height="\\textheight">>=
+diffusion.table <- generateResultsTable(method = "diffusion", 
+                                        threshold = 0.001, 
+                                        nlimit = 250, 
+                                        object = object, 
+                                        data = data)
+
+print(xtable(x = diffusion.table, 
+             digits = c(0, 0, 0, 0, 2), 
+             display = c("d", "s", "s", "s", "e"), 
+             caption = "Heat diffusion model entries and p-values. NULL names refer to entries without a name.", 
+             label = "tab:HD"
+             ), 
+      tabular.environment = "longtable",
+      floating = F)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{PageRank model}
+
+PageRank from igraph R package has been used to give each entry a score while taking into account the relevance of affected metabolites. The resulting scores have been compared to a null distribution, which makes use of the background compounds. The relevant substructure is depicted in figure \ref{fig:PR}. Table \ref{tab:PR} contains the description and p-values for the drawn nodes. 
+
+\begin{figure}[H]
+\noindent\makebox[\textwidth]{
+
+<<graphPagerank, fig.align="left", results='hide', echo=FALSE, fig.width=12, fig.height=12, out.width="\\textwidth">>=
+plot(x = object, 
+     method = "pagerank", 
+     layout = F, 
+     data = data)
+@
+}
+\caption{PageRank model results plotted as a graph. 
+\newline
+\protect\rule{\textwidth}{.7pt}
+Legend: \qquad {\color{Maroon}Pathway} \qquad {\color{Orchid}Module} \qquad {\color{Dandelion}Enzyme} \qquad {\color{CornflowerBlue}Reaction} \qquad {\color{OliveGreen}Compound} 
+\newline
+Shapes: \qquad $\square$ Metabolite in the input \qquad $\bigcirc$ Rest of the nodes
+\newline
+\protect\rule{\textwidth}{.7pt}
+The nodes represented have statistical relevance in the experiment. Larger connected components suggest a stronger signal.}
+\label{fig:PR}
+
+\end{figure}
+
+\newpage
+
+<<tablePR, results='asis', echo=FALSE, message=FALSE, resize.width="\\textwidth", resize.height="\\textheight">>=
+pagerank.table <- generateResultsTable(method = "pagerank", 
+                                        threshold = 0.001, 
+                                        nlimit = 250, 
+                                        object = object, 
+                                        data = data)
+
+print(xtable(x = pagerank.table, 
+             digits = c(0, 0, 0, 0, 2), 
+             display = c("d", "s", "s", "s", "e"), 
+             caption = "KEGG entries and p-values using PageRank model. NULL names refer to entries without a name.", 
+             label = "tab:PR"
+             ), 
+      tabular.environment = "longtable",
+      floating = F)
+@
+
+
+
+
+
+\end{document}

@@ -1,0 +1,17 @@
+{
+    "contents" : "generateResultsGraph <- function(method = \"diffusion\", \n                              threshold = 0.005, \n                              plimit = 15, \n                              nlimit = 250, \n                              object = NULL, \n                              data = FELLA.DATA) {\n  \n  if (class(object) != \"FELLA.USER\" | class(data) != \"FELLA.DATA\") {\n    message(\"Wrong input classes for graph generation.\")\n    return(NULL)\n  }\n  \n  if (method == \"hypergeom\") {\n    # HYPERGEOMETRIC TEST\n    if (is.na(object@hypergeom@valid) || !object@hypergeom@valid) {\n      return(NULL)\n    } \n    pvalues <- object@hypergeom@pvalues\n    \n    # Select pathways and compounds\n    n.paths <- sum(pvalues < threshold)\n    if (n.paths < 1) {\n      message(\"Graph is empty.\")\n      return(NULL)\n    } else if (n.paths > plimit) {\n      nodes <- sort(order(pvalues)[1:plimit])\n      path.hypergeom <- names(pvalues)[nodes]\n    } else {\n      path.hypergeom <- names(pvalues)[pvalues < threshold]\n    }\n    \n    comp.hypergeom <- intersect(object@userinput@metabolites, rownames(data@hypergeom@matrix))\n    \n    # Build the bipartite graph\n    graph.bipartite <- graph.incidence(incidence = data@hypergeom@matrix[comp.hypergeom, \n                                                                         path.hypergeom])\n    graph.bipartite <- induced.subgraph(graph.bipartite, \n                                        vids = (degree(graph.bipartite) > 0))\n    \n    # The com attribute for each node\n    V(graph.bipartite)$com <- sapply(V(graph.bipartite)$name, function(name) {\n      if (nchar(name) == 6) return(5)\n      return(1)\n    })\n\n    return(graph.bipartite)\n  } else { \n    # DIFFUSION AND PAGERANK\n    pvalues <- slot(object, method)@pvalues\n    \n    n.nodes <- sum(pvalues < threshold)\n    if (n.nodes < 1) {\n      message(\"Graph is empty.\")\n      return(NULL)\n    } else if (n.nodes > nlimit) {\n      nodes <- names(pvalues)[sort(head(order(pvalues), nlimit))]\n    } else {\n      nodes <- names(pvalues)[pvalues < threshold]\n    }\n    \n    graph <- induced.subgraph(graph = data@keggdata@graph, vids = nodes)\n    \n    if (method == \"diffusion\") graph <- as.undirected(graph)\n    \n    return(graph)\n  }\n  \n}",
+    "created" : 1431004266186.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2257183326",
+    "id" : "46C07C1",
+    "lastKnownWriteTime" : 1431092271,
+    "path" : "~/Rstuffbro/FEllA/R/generateResultsGraph.R",
+    "project_path" : "R/generateResultsGraph.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
