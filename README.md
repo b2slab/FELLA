@@ -6,5 +6,6 @@ This repository contains the FELLA package. FELLA is a Metabolomics data enrichm
 To use this package type in your terminal: 
 
 R CMD build FELLA
+
 R CMD INSTALL FELLA
 
