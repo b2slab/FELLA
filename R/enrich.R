@@ -3,6 +3,7 @@ enrich <- function(compounds = NULL,
                    method = "all", 
                    loadMatrix = "none", 
                    approx = "normality", 
+                   t.df = 10, 
                    niter = 1000, 
                    path = "", 
                    data = NULL, 
@@ -34,6 +35,7 @@ enrich <- function(compounds = NULL,
     object <- runDiffusion(object = object, 
                            data = data, 
                            approx = approx, 
+                           t.df = t.df, 
                            niter = niter, 
                            ...)
   }
@@ -42,7 +44,9 @@ enrich <- function(compounds = NULL,
     object <- runPagerank(object = object, 
                           data = data, 
                           approx = approx, 
-                          niter = niter)
+                          t.df = t.df, 
+                          niter = niter, 
+                          ...)
   }
 
   

@@ -1,6 +1,7 @@
 runPagerank <- function(object = NULL, 
                         data = "FELLA.DATA", 
                         approx = "simulation", 
+                        t.df = 10, 
                         niter = 1000, 
                         p.adjust = "fdr") {
   
@@ -21,12 +22,22 @@ runPagerank <- function(object = NULL,
   }
   
   if (!is.character(approx)) {
-    message("'approx' must be a character: 'simulation' or 'normality'. Returning original 'object'...")
+    message("'approx' must be a character: 'simulation', 'normality', 'gamma' or 't'. Returning original 'object'...")
     return(object)
   }
   
-  if (!(approx %in% c("simulation", "normality"))) {
-    message("'approx' must be a character: 'simulation' or 'normality'. Returning original 'object'...")
+  if (!(approx %in% c("simulation", "normality", "gamma", "t"))) {
+    message("'approx' must be a character: 'simulation', 'normality', 'gamma' or 't'. Returning original 'object'...")
+    return(object)
+  }
+  
+  if (!is.numeric(t.df)) {
+    message("'t.df' must be a real value greater than 0. Returning original 'object'...")
+    return(object)
+  }
+  
+  if (t.df <= 0) {
+    message("'t.df' must be a real value greater than 0. Returning original 'object'...")
     return(object)
   }
   
@@ -124,8 +135,8 @@ runPagerank <- function(object = NULL,
       names(pvalues) <- rownames(pagerank.matrix)
     }
     
-  } else if (approx == "normality") {
-    message("Estimating p-values by normal tails.")
+  } else if (approx %in% c("normality", "gamma", "t")) {
+    message("Estimating p-values through the specified distribution.")
     
     # The background
     if (length(getBackground(object)) > 0) {
@@ -183,8 +194,24 @@ runPagerank <- function(object = NULL,
     score.vars <- (n.comp - n.input)/(n.input*n.comp*(n.comp - 1))*(squaredRowSums 
                                                                    - (RowSums^2)/n.comp)
     
-    pvalues <- pnorm(current.score, mean = score.means, 
-                     sd = sqrt(score.vars), lower.tail = F)
+    if (approx == "normality") {
+      pvalues <- pnorm(q = current.score, 
+                       mean = score.means, 
+                       sd = sqrt(score.vars), 
+                       lower.tail = F)
+    }
+    if (approx == "gamma") {
+      pvalues <- pgamma(q = current.score, 
+                        shape = score.means^2/score.vars, 
+                        scale = score.vars/score.means, 
+                        lower.tail = F)
+    }
+    if (approx == "t") {
+      pvalues <- pt(q = (current.score - score.means)/sqrt(score.vars), 
+                    df = t.df, 
+                    lower.tail = F)
+    }
+    
     names(pvalues) <- names(RowSums)
     
   } 

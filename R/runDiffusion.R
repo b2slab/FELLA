@@ -1,6 +1,7 @@
 runDiffusion <- function(object = NULL, 
                          data = FELLA.DATA, 
                          approx = "simulation", 
+                         t.df = 10, 
                          niter = 1000, 
                          p.adjust = "fdr", 
                          BIMODAL = F) {
@@ -22,12 +23,22 @@ runDiffusion <- function(object = NULL,
   }
   
   if (!is.character(approx)) {
-    message("'approx' must be a character: 'simulation' or 'normality'. Returning original 'object'...")
+    message("'approx' must be a character: 'simulation', 'normality', 'gamma' or 't'. Returning original 'object'...")
     return(object)
   }
   
-  if (!(approx %in% c("simulation", "normality"))) {
-    message("'approx' must be a character: 'simulation' or 'normality'. Returning original 'object'...")
+  if (!(approx %in% c("simulation", "normality", "gamma", "t"))) {
+    message("'approx' must be a character: 'simulation', 'normality', 'gamma' or 't'. Returning original 'object'...")
+    return(object)
+  }
+  
+  if (!is.numeric(t.df)) {
+    message("'t.df' must be a real value greater than 0. Returning original 'object'...")
+    return(object)
+  }
+  
+  if (t.df <= 0) {
+    message("'t.df' must be a real value greater than 0. Returning original 'object'...")
     return(object)
   }
   
@@ -124,8 +135,8 @@ runDiffusion <- function(object = NULL,
     
     
     
-  } else if (approx == "normality") {
-    message("Estimating p-values by normal tails.")
+  } else if (approx %in% c("normality", "gamma", "t")) {
+    message("Estimating p-values through the specified distribution.")
     
     if (length(getBackground(object)) > 0 | BIMODAL) {
       if (prod(dim(getMatrix(data, "diffusion"))) == 1) {
@@ -216,11 +227,24 @@ runDiffusion <- function(object = NULL,
       
     }
     
+    if (approx == "normality") {
+      pvalues <- pnorm(q = current.temp, 
+                       mean = temp.means, 
+                       sd = sqrt(temp.vars), 
+                       lower.tail = F)
+    }
+    if (approx == "gamma") {
+      pvalues <- pgamma(q = current.temp, 
+                        shape = temp.means^2/temp.vars, 
+                        scale = temp.vars/temp.means, 
+                        lower.tail = F)
+    }
+    if (approx == "t") {
+      pvalues <- pt(q = (current.temp - temp.means)/sqrt(temp.vars), 
+                    df = t.df, 
+                    lower.tail = F)
+    }
     
-    pvalues <- pnorm(current.temp, 
-                     mean = temp.means, 
-                     sd = sqrt(temp.vars), 
-                     lower.tail = F)
     names(pvalues) <- names(RowSums)
 #     browser()
   } else {

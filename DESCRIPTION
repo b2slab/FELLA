@@ -1,6 +1,6 @@
 Package: FELLA
 Type: Package
-Title: FELLA: an interpretation and enrichment tool for metabolite data
+Title: FELLA: an interpretation and enrichment tool for Metabolomics data
 Version: 0.99.1
 Date: 28-04-2015
 Author: Sergi Picart, Alexandre Perera

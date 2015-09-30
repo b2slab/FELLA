@@ -35,7 +35,7 @@ checkArguments <- function(method = "diffusion",
   ##############################################################################
   
   if (!is.character(approx)) {
-    message("'approx' must be a character: 'simulation' or 'normality'. Returning NULL...")
+    message("'approx' must be a character: 'simulation',  'normality', 'gamma' or 't'. Returning NULL...")
     return(list(ans = NULL, valid = F))
   }
   
@@ -45,7 +45,7 @@ checkArguments <- function(method = "diffusion",
   }
   
   if (!(approx %in% c("simulation", "normality"))) {
-    message("'approx' must be a character: 'simulation' or 'normality'. Returning NULL...")
+    message("'approx' must be a character: 'simulation',  'normality', 'gamma' or 't'. Returning NULL...")
     return(list(ans = NULL, valid = F))
   }
   
