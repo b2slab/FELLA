@@ -1,4 +1,4 @@
-#' @importFrom igraph graph.empty
+#' @import igraph
 
 setClass("igraph")
 

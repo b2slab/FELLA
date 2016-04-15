@@ -73,7 +73,7 @@ loadKEGGdata <- function(path = "",
   # Load matrix for diffusion 
   message("Loading diffusion data...")
   message("Loading matrix...")
-  if ((loadMatrix == "diffusion") || (loadMatrix == "all")) {
+  if (identical(loadMatrix, "diffusion") || identical(loadMatrix, "all")) {
     if (!file.exists(paste0(path, "diffusion.matrix.RData"))) {
       message(paste0("'diffusion.matrix.RData' not present in:", 
                      paste0(path, "diffusion.matrix.RData"), 
@@ -106,7 +106,7 @@ loadKEGGdata <- function(path = "",
   # Load matrix for pagerank
   message("Loading pagerank data...")
   message("Loading matrix...")
-  if ((loadMatrix == "pagerank") || (loadMatrix == "all")) {
+  if (identical(loadMatrix, "pagerank") || identical(loadMatrix, "all")) {
     if (!file.exists(paste0(path, "pagerank.matrix.RData"))) {
       message(paste0("'pagerank.matrix.RData' not present in:", 
                      paste0(path, "pagerank.matrix.RData"), 
