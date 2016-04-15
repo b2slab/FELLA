@@ -1,3 +1,20 @@
+#' Define the list of input compounds
+#' 
+#' This function maps the specficied list of compounds, usually from an 
+#' experimental metabolomics study, in the graph contained in the
+#' \code{\link{FELLA.DATA}} object. Once the compounds are mapped, the enrichment 
+#' can be performed. There is also the option to define a personalised background.
+#'
+#' @param compounds Character vector containing the KEGG IDs of the compounds
+#' considered as affected
+#' @param compoundsBackground Character vector containing the KEGG IDs of 
+#' the compounds that belong to the background. Can be \code{NULL} for the 
+#' default background (all compounds)
+#' @inheritParams .data
+#'
+#' @return The \code{\link{FELLA.USER}} object to perform the user analysis
+#' 
+#' @export
 defineCompounds <- function(compounds = NULL, 
                             compoundsBackground = NULL, 
                             data = FELLA.DATA) {

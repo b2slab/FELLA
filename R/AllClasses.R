@@ -1,3 +1,5 @@
+#' @importFrom igraph graph.empty
+
 setClass("igraph")
 
 setClass("D.keggdata",
@@ -9,7 +11,7 @@ setClass("D.keggdata",
            status = "character"
          ),
          prototype(
-           graph = graph.empty(), 
+           graph = igraph::graph.empty(), 
            id2name = list(), 
            pvalues.size = matrix(), 
            id = list(), 
@@ -22,7 +24,7 @@ setClass("D.hypergeom",
            matrix = "Matrix"
          ),
          prototype(
-           matrix = Matrix()
+           matrix = Matrix::Matrix()
          )
 )
 

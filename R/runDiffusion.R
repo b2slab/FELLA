@@ -1,3 +1,24 @@
+#' Pathway enrichment through heat diffusion
+#' 
+#' Function \code{runDiffusion} performs the diffusion-based enrichment on a 
+#' \code{\link{FELLA.USER}} object. If a custom background was specified, 
+#' it will be used. 
+#' This procedure gives statistical significance measures for each node and allows 
+#' the extraction of a subgraph according to a fixed threshold.
+#'
+#' @inheritParams .object
+#' @inheritParams .data
+#' @inheritParams .approx
+#' @inheritParams .t.df
+#' @inheritParams .niter
+#' @inheritParams .p.adjust
+#' @inheritParams .BIMODAL
+#'
+#' @return The \code{\link{FELLA.USER}} object with the diffusion enrichment results
+#' 
+#' @import Matrix
+#' @import igraph
+#' @export
 runDiffusion <- function(object = NULL, 
                          data = FELLA.DATA, 
                          approx = "simulation", 
@@ -83,7 +104,7 @@ runDiffusion <- function(object = NULL,
                             normalized = F, 
                             sparse = T)
       # Connect pathways to boundary
-      diag(KI)[getCom(data, "pathway", "id")] <- diag(KI)[getCom(data, "pathway", "id")] + 1
+      Matrix::diag(KI)[getCom(data, "pathway", "id")] <- Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
       
       # Heat generation vector
       generation <- numeric(dim(KI)[1])
@@ -197,7 +218,7 @@ runDiffusion <- function(object = NULL,
                           normalized = F, 
                           sparse = T)
     # Connect pathways to boundary
-    diag(KI)[getCom(data, "pathway", "id")] <- diag(KI)[getCom(data, "pathway", "id")] + 1
+    Matrix::diag(KI)[getCom(data, "pathway", "id")] <- Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
     
     # Heat generation vector
     generation <- numeric(dim(KI)[1])

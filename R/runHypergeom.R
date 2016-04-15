@@ -1,3 +1,19 @@
+#' Pathway enrichment through hypergeometric test 
+#' 
+#' Function \code{runHypergeom} performs the over representation analysis through
+#' the hypergeometric test on a \code{\link{FELLA.USER}} object. 
+#' If a custom background was specified, it will be used. 
+#' By default, this test has smaller background than \code{\link{runDiffusion}}
+#' and \code{\link{runPagerank}}.
+#'
+#' @inheritParams .object
+#' @inheritParams .data
+#' @inheritParams .p.adjust
+#'
+#' @return The \code{\link{FELLA.USER}} object with the hypergeometric test results
+#' 
+#' @import Matrix
+#' @export
 runHypergeom <- function(object = NULL, 
                          data = FELLA.DATA, 
                          p.adjust = "fdr") {

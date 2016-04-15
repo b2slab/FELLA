@@ -1,3 +1,16 @@
+#' Load KEGG data 
+#' 
+#' This function loads all necessary contextual data from KEGG as a 
+#' \code{\link{FELLA.DATA}} object. This object is necessary to perform any 
+#' kind of enrichment using \code{\link{FELLA}}.
+#'
+#' @param path Path for the KEGG RData files
+#' @inheritParams .loadMatrix
+#'
+#' @return The \code{\link{FELLA.DATA}} object that contains the KEGG representation
+#' 
+#' @import igraph
+#' @export
 loadKEGGdata <- function(path = "", 
                          loadMatrix = NULL) { 
   
