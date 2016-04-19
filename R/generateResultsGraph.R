@@ -1,3 +1,28 @@
+#' Generate graph objects from the enrichment results
+#' 
+#' Function \code{generateResultsGraph} returns a graph object with class 
+#' \code{\link[igraph]{igraph}} or a list of graphs of the same class. 
+#' according to the specified threshold. A \code{\link{FELLA.USER}} object 
+#' with a successful enrichment analysis must be supplied.
+#' 
+#'
+#' @inheritParams .methodSingle
+#' @inheritParams .threshold
+#' @inheritParams .plimit
+#' @inheritParams .nlimit
+#' @inheritParams .splitByConnectedComponent
+#' @inheritParams .thresholdConnectedComponent
+#' @inheritParams .GO.CellularComponent
+#' @inheritParams .GONamesAsLabels
+#' @inheritParams .LabelLengthAtPlot
+#' @inheritParams .object
+#' @inheritParams .data
+#'
+#' @return An \code{\link{igraph}} object if \code{splitByConnectedComponent = F}; 
+#' a list of \code{\link{igraph}} objects otherwise.
+#' 
+#' @import igraph
+#' @export
 generateResultsGraph <- function(method = "diffusion", 
                                  threshold = 0.05, 
                                  plimit = 15, 

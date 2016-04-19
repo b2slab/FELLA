@@ -13,7 +13,10 @@
 #' @param method Character, one of: "hypergeom", "diffusion", "pagerank" or "all"
 .method <- function() NULL
 
-#' @param approx Character: "simuLabelLengthAtPlotlation" for Monte Carlo, "normality", 
+#' @param method Character, one of: "hypergeom", "diffusion" or "pagerank"
+.methodSingle <- function() NULL
+
+#' @param approx Character: "simulation" for Monte Carlo, "normality", 
 #' "gamma" or "t" for parametric approaches
 .approx <- function() NULL
 
@@ -21,13 +24,14 @@
 #' One of: "diffusion", "pagerank", "all" or NULL
 .loadMatrix <- function() NULL
 
-#' @param threshold Numeric value between 0 and 1
+#' @param threshold Numeric value between 0 and 1. Applied when filtering KEGG nodes
 .threshold <- function() NULL
 
 #' @param plimit Pathway limit, must be a numeric value between 1 and 50
 .plimit <- function() NULL
 
-#' @param nlimit Node limit, must be a numeric value between 1 and 1000
+#' @param nlimit Node limit, must be a numeric value between 1 and 1000. This limits
+#' the order of the solution graph
 .nlimit <- function() NULL
 
 #' @param niter Number of iterations (permutations) for Monte Carlo ("simulation"), 
@@ -67,6 +71,22 @@
 #' @param t.df Numeric value; number of degrees of freedom of the t distribution 
 #' if the approximation \code{approx = "t"} is used
 .t.df <- function() NULL
+
+#' @param format Character passed to the \code{\link[stats]{p.adjust}} method
+.format <- function() NULL
+
+#' @param compounds Character vector containing the KEGG IDs of the compounds
+#' considered as affected
+.compounds <- function() NULL
+
+#' @param compoundsBackground Character vector containing the KEGG IDs of 
+#' the compounds that belong to the background. Can be \code{NULL} for the 
+#' default background (all compounds)
+.compoundsBackground <- function() NULL
+
+#' @param NamesAsLabels Logical, should KEGG names be displayed as labels instead 
+#' of KEGG identifiers?
+.NamesAsLabels <- function() NULL
 
 # Dev options
 #' @param BIMODAL Logical value, should the bimodal test for compounds be used?

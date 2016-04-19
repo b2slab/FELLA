@@ -1,11 +1,33 @@
+#' Generate readable tables from the enrichment results
+#' 
+#' Function \code{generateResultsTable} returns a table that contains the results 
+#' of a \code{\link{FELLA.USER}} object 
+#' with a successful enrichment analysis.
+#' 
+#'
+#' @inheritParams .methodSingle
+#' @inheritParams .threshold
+#' @inheritParams .plimit
+#' @inheritParams .nlimit
+#' @inheritParams .LabelLengthAtPlot
+#' @param capPvalues Numeric value, minimum p-value admitted for the readable 
+#' formatting. Smaller p-values will be displayed as \code{< capPvalues} in the 
+#' table.
+#' @inheritParams .object
+#' @inheritParams .data
+#'
+#' @return A table that contains the KEGG graph nodes with their p-value
+#' 
+#' @import igraph
+#' @export
 generateResultsTable <- function(method = "diffusion", 
-                          threshold = 0.005, 
-                          plimit = 15, 
-                          nlimit = 250, 
-                          LabelLengthAtPlot = 45, 
-                          capPvalues = 1e-10, 
-                          object = NULL, 
-                          data = FELLA.DATA) {
+                                 threshold = 0.005, 
+                                 plimit = 15, 
+                                 nlimit = 250, 
+                                 LabelLengthAtPlot = 45, 
+                                 capPvalues = 1e-10, 
+                                 object = NULL, 
+                                 data = FELLA.DATA) {
   
   checkArgs <- checkArguments(method = method, 
                               threshold = threshold, 

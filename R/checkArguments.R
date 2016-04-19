@@ -1,3 +1,31 @@
+#' Internal function to check arguments and give personalised errors
+#' 
+#' This function checks if the arguments are of the desired type, length 
+#' and range. If it fails, it gives an error explaining why the argument 
+#' is invalid. 
+#'
+#' @inheritParams .method
+#' @inheritParams .approx
+#' @inheritParams .loadMatrix
+#' @inheritParams .threshold
+#' @inheritParams .plimit
+#' @inheritParams .nlimit
+#' @inheritParams .niter
+#' @inheritParams .layout
+#' @inheritParams .splitByConnectedComponent
+#' @inheritParams .askPlots
+#' @inheritParams .thresholdConnectedComponent
+#' @inheritParams .GO.CellularComponent
+#' @inheritParams .GONamesAsLabels
+#' @inheritParams .LabelLengthAtPlot
+#' @inheritParams .object
+#' @inheritParams .data
+#' 
+#' @return A list with values. Currently only a logical value named \code{valid} 
+#' if the process runs smoothly. If the checking fails, it also returns an 
+#' object called \code{ans}, which depends on the situation (can be the original object, 
+#' \code{NULL}, et cetera). 
+#' 
 checkArguments <- function(method = "diffusion", 
                            approx = "normality", 
                            loadMatrix = NULL, 

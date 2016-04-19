@@ -1,3 +1,25 @@
+#' Wrapper function for enrichment analysis
+#' 
+#' The function \code{\link{enrich}} is a big wrapper to perform the enrichment 
+#' analysis. It loads affected compounds, KEGG data and return a list containing 
+#' the \code{\link{FELLA.DATA}} context data and the \code{\link{FELLA.USER}} 
+#' object with the enrichment results available.
+#'
+#' @inheritParams .compounds
+#' @inheritParams .compoundsBackground
+#' @inheritParams .method
+#' @inheritParams .loadMatrix
+#' @inheritParams .approx
+#' @inheritParams .t.df
+#' @inheritParams .niter
+#' @param path Character, path to load the \code{\link{FELLA.DATA}} object if 
+#' it is not already passed through the argument \code{data}
+#' @inheritParams .data
+#'
+#' @return The \code{\link{FELLA.USER}} and the \code{\link{FELLA.DATA}} objects 
+#' in a list.
+#' 
+#' @export
 enrich <- function(compounds = NULL, 
                    compoundsBackground = NULL, 
                    method = "all", 

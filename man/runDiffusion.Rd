@@ -12,7 +12,7 @@ runDiffusion(object = NULL, data = FELLA.DATA, approx = "simulation",
 
 \item{data}{FELLA.DATA object}
 
-\item{approx}{Character: "simuLabelLengthAtPlotlation" for Monte Carlo, "normality",
+\item{approx}{Character: "simulation" for Monte Carlo, "normality",
 "gamma" or "t" for parametric approaches}
 
 \item{t.df}{Numeric value; number of degrees of freedom of the t distribution

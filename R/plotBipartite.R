@@ -1,3 +1,17 @@
+#' Internal function to plot a bipartite graph
+#' 
+#' This function plots a bipartite graph, tailored for the hypergeometric 
+#' over representation analysis. As the nodes can only be compounds and 
+#' pathways, the layout is simple and bipartite.
+#'
+#' @param graph Graph result that must come from the hypergeometric test analysis
+#' @inheritParams .layout
+#' @param ... Additional parameters passed to \code{\link[igraph]{plot.igraph}}
+#' 
+#' @return If \code{layout = F} then the value returned is \code{invisible()}. 
+#' Otherwise, the layout is returned, also in an invisible fashion.
+#' 
+#' @import igraph
 plotBipartite <- function(graph = NULL, 
                           layout = F, 
                           ...) {

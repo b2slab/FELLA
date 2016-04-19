@@ -11,5 +11,5 @@ Description: This package performs the enrichment of metabolites data using KEGG
 License: GPL-2
 LazyLoad: yes
 Imports: igraph, methods, Matrix, xtable, knitr
-Enhances: stringr, org.Hs.eg.db, GOSemSim
+Suggests: stringr, org.Hs.eg.db, GOSemSim
 Depends: R (>= 3.0)

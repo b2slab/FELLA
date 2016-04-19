@@ -1,3 +1,14 @@
+#' Internal function to add a legend to a graph plot
+#' 
+#' This function adds a legend to a solution plot. It can include the CC 
+#' similarity.
+#'
+#' @inheritParams .GO.CellularComponent
+#' @param cex Numeric value, \code{cex} parameter for the function 
+#' \code{\link[graphics]{legend}}
+#' 
+#' @return This function is only used for its effect, so it returns \code{invisible()}
+#' 
 showLegend <- function(GO.CellularComponent = F, 
                        cex = 0.75) {
   # In the left side, legend for node categories
@@ -83,4 +94,6 @@ showLegend <- function(GO.CellularComponent = F,
       ncol = 2
     )
   }
+  
+  return(invisible())
 }

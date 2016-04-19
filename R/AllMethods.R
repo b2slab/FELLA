@@ -1,3 +1,11 @@
+#' \code{"summary"} is an S4 method to show a summary of the FELLA.USER object
+#'
+#' @param object A \code{\link{FELLA.USER}} object
+#' 
+#' @return \code{summary} returns a list with the summary data
+#' 
+#' @rdname FELLA.USER
+#' @exportMethod summary
 setMethod("summary", signature = "FELLA.USER", function(object) {
   breakline <- "\n---------------------------------------------------\n"
   dic <- object@dictionary
@@ -59,6 +67,15 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
   return(output)
 })
 
+
+#' \code{"show"} is an S4 method to show a FELLA.DATA object
+#'
+#' @param object A \code{\link{FELLA.DATA}} object
+#' 
+#' @return \code{show} returns \code{invisible()}
+#' 
+#' @rdname FELLA.DATA
+#' @exportMethod show
 setMethod("show", signature = "FELLA.DATA", function(object) {
   breakline <- "\n---------------------------------------------------\n"
   
@@ -113,9 +130,17 @@ setMethod("show", signature = "FELLA.DATA", function(object) {
     cat("·RowSums are ready.\n")
   }
   
+  invisible()
 })
 
-
+#' \code{"show"} is an S4 method to show a FELLA.USER object
+#'
+#' @param object A \code{\link{FELLA.USER}} object
+#' 
+#' @return \code{show} returns \code{invisible()}
+#' 
+#' @rdname FELLA.USER
+#' @exportMethod show
 setMethod("show", signature = "FELLA.USER", function(object) {
   breakline <- function() {
     cat(fill = T)
@@ -166,8 +191,33 @@ setMethod("show", signature = "FELLA.USER", function(object) {
     cat("Significant nodes (0.05): ", sum(getPvalues(object, "pagerank") < 0.05))
   }
   
+  invisible()
 })
 
+#' \code{"plot"} is an S4 method to plot the results from a FELLA.USER object
+#'
+#' @param x A \code{\link{FELLA.USER}} object
+#' @inheritParams .methodSingle
+#' @param main Character; plot title
+#' @inheritParams .threshold
+#' @inheritParams .plimit
+#' @inheritParams .nlimit
+#' @inheritParams .layout 
+#' @param filename Character; optional file name to save the plot
+#' @inheritParams .splitByConnectedComponent
+#' @inheritParams .askPlots
+#' @inheritParams .GO.CellularComponent
+#' @inheritParams .GONamesAsLabels
+#' @inheritParams .LabelLengthAtPlot
+#' @inheritParams .data
+#' @param ... Additional arguments passed to plotting functions
+#' 
+#' 
+#' @return \code{plot} returns a layout if \code{layout = T}, 
+#' otherwise \code{invisible()}
+#' 
+#' @rdname FELLA.USER
+#' @exportMethod plot
 setMethod("plot", 
           signature(x = "FELLA.USER"), 
           function(x = 1, 

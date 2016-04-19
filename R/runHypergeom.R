@@ -86,6 +86,7 @@ runHypergeom <- function(object = NULL,
     sample_success <- sum(hypergeom.matrix[row_comp, path])
     pathhits[path] <- sample_success
     
+    # sum over row or column (current)?
     total_success <- sum(hypergeom.matrix[, path])
     pathbackground[path] <- total_success
     

@@ -1,3 +1,24 @@
+#' Export the enrichment results in several file formats
+#' 
+#' Function \code{exportResults} writes the enrichment results in a 
+#' proper layout and filetype. It can be a plot image (png), a table (csv), 
+#' an \code{\link[igraph]{igraph}} object or a pdf report [under construction]
+#' 
+#' @param format Character, one of: \code{"csv"}, \code{"igraph"}, 
+#' \code{"png"}, [\code{"pdf"} soon] 
+#' @param file Character specifying the output directory for the exported files
+#' @inheritParams .method
+#' @inheritParams .threshold
+#' @inheritParams .plimit
+#' @inheritParams .nlimit
+#' @inheritParams .object
+#' @inheritParams .data
+#'
+#' @return Return value is \code{invisible()}, but as a permanent action the 
+#' specified \code{file} is created.
+#' 
+#' @import igraph
+#' @export
 exportResults <- function(format = "csv", 
                           file = "myOutput", 
 #                           filename = "myOutput",
@@ -120,7 +141,7 @@ exportResults <- function(format = "csv",
   }
   
   # Other formats that can be exported with igraph
-  message(paste0("Exporting to custom format ", format, "using igraph...")) 
+  message(paste0("Exporting to custom format ", format, " using igraph...")) 
   if (method %in% c("hypergeom", "all")) {
 #     filename <- paste0(file, "_hypergeom.", format)
     graph <- generateResultsGraph(method = "hypergeom", 

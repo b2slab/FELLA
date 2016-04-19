@@ -1,3 +1,18 @@
+#' Internal function to plot a solution graph
+#' 
+#' This function plots a solution graph, tailored for the diffusion and pagerank
+#' analysis. 
+#'
+#' @param graph Graph result that must come from diffusion or pagerank analysis
+#' @param input Character vector, compounds in the input to be highlighted
+#' @inheritParams .layout
+#' @inheritParams .NamesAsLabels
+#' @param ... Additional parameters passed to \code{\link[igraph]{plot.igraph}}
+#' 
+#' @return If \code{layout = F} then the value returned is \code{invisible()}. 
+#' Otherwise, the layout is returned, also in an invisible fashion.
+#' 
+#' @import igraph
 plotGraph <- function(graph = NULL, 
                       input = NULL, 
                       layout = F,

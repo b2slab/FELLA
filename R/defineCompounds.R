@@ -5,11 +5,8 @@
 #' \code{\link{FELLA.DATA}} object. Once the compounds are mapped, the enrichment 
 #' can be performed. There is also the option to define a personalised background.
 #'
-#' @param compounds Character vector containing the KEGG IDs of the compounds
-#' considered as affected
-#' @param compoundsBackground Character vector containing the KEGG IDs of 
-#' the compounds that belong to the background. Can be \code{NULL} for the 
-#' default background (all compounds)
+#' @inheritParams .compounds
+#' @inheritParams .compoundsBackground
 #' @inheritParams .data
 #'
 #' @return The \code{\link{FELLA.USER}} object to perform the user analysis
