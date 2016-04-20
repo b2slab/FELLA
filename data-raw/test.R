@@ -1,18 +1,23 @@
-# library(FELLA)
+library(FELLA)
 library(devtools)
-document()
+# document()
 
-FELLA.DATA <- loadKEGGdata(path = "~/Datasets/FELLAdata/", 
-                           loadMatrix = "none")
+data("FELLA.sample")
+data("input.sample")
 
-load("~/Rstuffbro/DiffusionArticle/data/compounds.metabolon.RData")
+# FELLA.DATA <- loadKEGGdata(path = "~/Datasets/FELLAdata/", 
+#                            loadMatrix = "none")
+
+# load("~/Rstuffbro/DiffusionArticle/data/compounds.metabolon.RData")
 
 method <- "diffusion"
 approx <- "normality"
-FELLA.USER <- enrich(compounds = compounds.metabolon, 
-                       method = method, 
-                       approx = approx, 
-                       data = FELLA.DATA)
+FELLA.object <- FELLA::enrich(compounds = input.sample,
+                              method = method, 
+                              approx = approx, 
+                              data = FELLA.sample)
 
-getCom(data = FELLA.DATA, level = "compound")
-summary(getPvalues(object = FELLA.USER, type = "diffusion"))
+
+
+getCom(data = FELLA.sample, level = "compound")
+summary(getPvalues(object = FELLA.object, type = "diffusion"))

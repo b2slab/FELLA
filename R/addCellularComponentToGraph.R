@@ -13,7 +13,7 @@
 #' @return An \code{\link{igraph}} object that contains an extra attribute: \code{GO.CC}
 #' 
 #' @import igraph
-#' @import GOSemSim
+#' @importFrom GOSemSim goSim
 addCellularComponentToGraph <- function(graph = NULL, 
                                         GO.CellularComponent = NULL, 
                                         GONamesAsLabels = T) {
@@ -28,10 +28,10 @@ addCellularComponentToGraph <- function(graph = NULL,
       ids <- names(x)
       #     browser()
       
-      sim <- goSim(GOID1 = GO.CellularComponent, 
-                   GOID2 = ids, 
-                   ont = "CC", 
-                   organism = "human")
+      sim <- GOSemSim::goSim(GOID1 = GO.CellularComponent, 
+                             GOID2 = ids, 
+                             ont = "CC", 
+                             organism = "human")
       
       # Pick best similarity
       val <- max(sim, na.rm = T)

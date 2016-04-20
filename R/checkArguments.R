@@ -102,7 +102,7 @@ checkArguments <- function(method = "diffusion",
     return(list(ans = NULL, valid = F))
   }
   
-  if (threshold <= 0 | threshold >= 1) {
+  if (threshold <= 0 | threshold > 1) {
     message("'threshold' must be numeric between 0 and 1. Returning NULL...")
     return(list(ans = NULL, valid = F))
   }

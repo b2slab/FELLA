@@ -11,7 +11,8 @@ getCom(data, level, format = "name")
 
 \item{level}{Desired level, can be coded as a number or a character: 1 or "pathway"; 2 or "module"; 3 or "enzyme"; 4 or "reaction"; 5 or "compound".}
 
-\item{format}{Format of the output, "name" returns names whereas "id" returns vertices id}
+\item{format}{Format of the output, "name" returns KEGG IDs whereas
+ "id" returns vertices IDs}
 }
 \value{
 Vector of the names/ids of the desired KEGG graph community

@@ -8,5 +8,5 @@
 #' 
 #' @export
 is.FELLA.USER <- function(x = NULL) {
-  return(class(x) == "FELLA.USER")
+  return(is(x, "FELLA.USER"))
 }

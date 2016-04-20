@@ -4,7 +4,8 @@
 #'
 #' @inheritParams .data
 #' @inheritParams .level
-#' @param format Format of the output, "name" returns names whereas "id" returns vertices id
+#' @param format Format of the output, "name" returns KEGG IDs whereas 
+#'  "id" returns vertices IDs
 #'
 #' @return Vector of the names/ids of the desired KEGG graph community
 getCom <- function(data, level, format = "name") {

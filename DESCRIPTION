@@ -1,6 +1,6 @@
 Package: FELLA
 Type: Package
-Title: FELLA: an interpretation and enrichment tool for Metabolomics data
+Title: FELLA: an interpretation and enrichment tool for metabolomics data
 Version: 0.99.1
 Date: 28-04-2015
 Author: Sergi Picart, Alexandre Perera
@@ -10,6 +10,9 @@ Description: This package performs the enrichment of metabolites data using KEGG
     It also performs the classical over-representation analysis.
 License: GPL-2
 LazyLoad: yes
-Imports: igraph, methods, Matrix, xtable, knitr
-Suggests: stringr, org.Hs.eg.db, GOSemSim
+Imports: igraph, methods, Matrix, xtable
+Enhances: stringr, org.Hs.eg.db, GOSemSim
 Depends: R (>= 3.0)
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

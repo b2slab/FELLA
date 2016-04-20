@@ -8,15 +8,17 @@
 #' @exportMethod summary
 setMethod("summary", signature = "FELLA.USER", function(object) {
   breakline <- "\n---------------------------------------------------\n"
-  dic <- object@dictionary
+  #dic <- object@dictionary
   output <- list()
   
   if (is.na(object@hypergeom@valid)) output$hypergeom <- "Not performed"
   else if (!object@hypergeom@valid) output$hypergeom <- "Failed"
   else {
-    p.values <- sort(object@hypergeom@pvalues)[1:30]
+    n.show <- min(30, length(object@hypergeom@pvalues))
+    p.values <- sort(object@hypergeom@pvalues)[1:n.show]
     
-    output$hypergeom <- data.frame(dic[names(p.values)], signif(p.values, digits = 4))
+    # output$hypergeom <- data.frame(dic[names(p.values)], signif(p.values, digits = 4))
+    output$hypergeom <- data.frame(names(p.values), signif(p.values, digits = 4))
     names(output$hypergeom) <- c("Description", "p.value")
   }
   
@@ -32,15 +34,17 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
     out.pvalues[smallest] <- "<2e-16"
     
     out.names <- names(out.pvalues)
-    out.description <- dic[out.names]
-    out.highlight <- out.names %in% object@diffusion@highlight
+    #out.description <- dic[out.names]
+    #out.highlight <- out.names %in% object@diffusion@highlight
     
     out.order <- order(out.names)
     
-    output$diffusion <- data.frame(out.names, out.pvalues, out.description, out.highlight, 
+    # output$diffusion <- data.frame(out.names, out.pvalues, out.description, out.highlight, 
+    output$diffusion <- data.frame(out.names, out.pvalues, 
                                    row.names = NULL)[out.order, ]
     row.names(output$diffusion) <- NULL
-    names(output$diffusion) <- c("KEGG id", "p.value", "Description", "Guess?")
+    # names(output$diffusion) <- c("KEGG id", "p.value", "Description", "Guess?")
+    names(output$diffusion) <- c("KEGG id", "p.value")
   }
   
   if (is.na(object@pagerank@valid)) output$pagerank <- "Not performed"
@@ -54,13 +58,15 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
     out.pvalues[smallest] <- "<2e-16"
     
     out.names <- names(out.pvalues)
-    out.description <- dic[out.names]
-    out.highlight <- out.names %in% object@diffusion@highlight
+    #out.description <- dic[out.names]
+    #out.highlight <- out.names %in% object@diffusion@highlight
     
-    output$pagerank <- data.frame(out.names, out.pvalues, out.description, out.highlight, 
+    # output$pagerank <- data.frame(out.names, out.pvalues, out.description, out.highlight, 
+    output$pagerank <- data.frame(out.names, out.pvalues, 
                                    row.names = NULL)
     row.names(output$pagerank) <- NULL
-    names(output$pagerank) <- c("KEGG id", "p.value", "Description", "Guess?")
+    # names(output$pagerank) <- c("KEGG id", "p.value", "Description", "Guess?")
+    names(output$pagerank) <- c("KEGG id", "p.value")
 
   }
   
@@ -167,8 +173,9 @@ setMethod("show", signature = "FELLA.USER", function(object) {
   else if (!getValid(object, "hypergeom")) cat("error during execution")
   else {
     cat("ready.", fill = T)
-    cat("Top 15 p-values:", fill = T)
-    print(sort(getPvalues(object, "hypergeom"))[1:15])
+    n.show <- min(15, length(getPvalues(object = object, type = "hypergeom")))
+    cat("Top", n.show, "p-values:", fill = T)
+    print(sort(getPvalues(object, "hypergeom"))[1:n.show])
   }
   
   breakline()

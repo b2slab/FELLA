@@ -1,0 +1,260 @@
+---
+title: "An overview of FELLA: data enrichment for metabolomics"
+author: "Sergio Picart-Armada"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An overview of FELLA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+`FELLA` is an R package that brings a new concept for metabolomics data interpretation. In an experimental study, once the metabolite abundances are determined it is _usually_ feasible to elaborate a list of affected metabolites. This list, that may vary in size, encompasses key role players from different __biological pathways__ that generate a biological perturbation. 
+
+The classical way to analyse this list is the __over representation analysis__. Each metabolic pathway has a statistic, the number of affected metabolites in it, that yields a p-value. After correcting for multiple testing, a list of prioritised pathways helps identify putative biological mechanisms. Subsequent generations of __pathway analysis__ methods attempt to include quantitative and/or topological data in the statistics in order to improve power for subtle signals, but the interpretation of a prioritised pathway list remains a challenge. 
+
+Package `FELLA`, on the other hand, introduces a comprehensive output that encompasses other biological entities that coherently relate the top ranked pathways. The priorisation of the pathways and other entiteis stems from a holistic diffusion process on a __graph representation__ of the __KEGG database__. `FELLA` needs:
+
+1. The KEGG graph and other complementary data files. This is stored in a unique `FELLA.DATA` S4 object.
+2. A list of affected metabolites (KEGG compounds). This is stored in a unique `FELLA.USER` S4 object, along with user analyses.
+
+## Loading the KEGG data
+
+This vignette makes use of sample data that contains small subgraph of `FELLA`'s KEGG graph. All the necessary contextual data is stored in an S4 data structure with class `FELLA.DATA`. Several functions need access to the contextual data, passed as an argument called `data`, being the enrichment itself among them.
+
+```{r, echo=F, warning=F, message=F}
+library(FELLA)
+```
+
+```{r, warning=F, message=F}
+data("FELLA.sample")
+
+class(FELLA.sample)
+
+show(FELLA.sample)
+```
+
+## Loading the metabolomics summary data
+
+The second block of necessary data is a list of affected metabolites, which shoud be specified as KEGG compound IDs. Provided is a list of hypothetical affected metabolites belonging to the graph, to which some decoys that do not map to the graph are added. 
+
+```{r, warning=F, message=F}
+data("input.sample")
+
+input.full <- c(input.sample, paste0("intruder", 1:10))
+
+show(input.full)
+```
+
+Compounds are introduced through the `defineCompounds` function and provide the first `FELLA.USER` user data object containing the mapped compounds and empty analyses slots. 
+
+```{r, warning=T, message=T}
+myAnalysis <- defineCompounds(compounds = input.full, 
+                              data = FELLA.sample)
+
+```
+
+Note that a warning message informs the user that some compounds did not map to the KEGG compound collection. Compounds that successfully mapped can be obtained through `getInput`,
+
+```{r, warning=T, message=T}
+getInput(myAnalysis)
+```
+
+while compounds that were excluded because of mismatch can be accessed through `getExcluded`:
+
+```{r, warning=T, message=T}
+getExcluded(myAnalysis)
+```
+
+Keep in mind that exact matching is sought, so be extremely careful with __whitespaces__, tabs or similar characters that might create mismatches. For example:
+
+```{r, warning=F, message=F, error=T}
+input.fail <- paste0(" ", input.full)
+defineCompounds(compounds = input.fail, 
+                data = FELLA.sample)
+```
+
+## Enriching the data
+
+Once the `FELLA.DATA` and the `FELLA.USER` with the affected metabolites are ready, the data can be easily enriched. 
+
+### Enrichment methods
+
+There are three methods to enrich:
+
+1. __Hypergeometric test__ (`method = "hypergeom"`): it performs the metabolite-sampling hypergeometric test using the connections in `FELLA`'s KEGG graph. This is included for completeness and does not include the contextual novelty of the diffusive methods.
+2. __Diffusion__ (`method = "diffusion"`): it performs sub-network analysis on the KEGG graph to extract a meaningful subgraph. This subgraph can be plotted an interpreted
+3. __PageRank__ (`method = "pagerank"`): analogous to `"diffusion"` but using the directed diffusion, which matches the PageRank algorithm for web ranking.
+
+### Statistical approximations
+
+For methods `"diffusion"` and `"pagerank"`, two statistical approximations are proposed:
+
+1. __Normal approximation__ (`approx = "normality"`): p-values are computed through z-scores based on analytical expected value and covariance matrix of the null model for diffusion. This approximation is deterministic and fast.
+1. __Monte Carlo trials__ (`approx = "simulation"`): p-values are computed through Monte Carlo trials of the random variables. This approximation requires computing the random trials, governed by the `ntrials` argument. 
+
+Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+
+### Enrichment: methods, approximations and wrapper function
+
+The function `enrich` wraps the functions `defineCompounds`, `runHypergeom`, `runDiffusion` and `runPagerank` 
+in an easily usable manner, returning a `FELLA.USER` object with complete analyses. 
+
+```{r, warning=T, message=T}
+myAnalysis <- enrich(compounds = input.full, 
+                     method = "diffusion", 
+                     approx = "normality", 
+                     data = FELLA.sample)
+```
+
+The output is quite informative and aggregates all the warnings. Let's compare an empty `FELLA.USER` object
+
+```{r, warning=T, message=T}
+show(new("FELLA.USER"))
+summary(new("FELLA.USER"))
+```
+
+to the output of a processed one:
+
+```{r, warning=T, message=T}
+show(myAnalysis)
+summary(myAnalysis)
+```
+
+The wrapper function `enrich` can run the three analysis at once with the option `method = "all"`:
+
+```{r, warning=F, message=F}
+myAnalysis <- enrich(compounds = input.full, 
+                     method = "all", 
+                     approx = "normality", 
+                     data = FELLA.sample)
+
+show(myAnalysis)
+```
+
+The wrapped functions work in a similar way, here is an example with `runDiffusion`:
+
+```{r, warning=F, message=T}
+myAnalysis_bis <- runDiffusion(object = myAnalysis, 
+                               approx = "normality", 
+                               p.adjust = "fdr", 
+                               data = FELLA.sample)
+show(myAnalysis_bis)
+```
+
+## Visualising the results
+
+The method `plot` for data from the package `FELLA` allows a friendly visualisation of the relevant part of the KEGG graph. The option `splitByConnectedComponent` plots the graph connected component-wise, which can be displayed by pressing the enter key if the argument `askPlots` is set to `TRUE`. For the small example in this vignette, the subgraph will be plotted as a whole.
+
+### Hypergeom
+
+In the case `method = "hypergeom"` the plot encompasses a bipartite graph that contains top pathways and affected compounds. In that case, `threshold = 1` allows the visualisation of both pathways; otherwise a plot with only one pathway would be quite uninformative. 
+
+```{r, warning=F, message=T, fig.width=8, fig.height=8}
+FELLA::plot(x = myAnalysis, 
+            method = "hypergeom", 
+            main = "My first enrichment using the hypergeometric test in FELLA", 
+            threshold = 1, 
+            data = FELLA.sample)
+```
+
+### Diffusion
+
+For `method = "diffusion"` the graph contains a richer representations involving __modules, enzymes and reactions__ that link affected pathways and compounds.
+
+```{r, warning=F, message=T, fig.width=8, fig.height=8}
+FELLA::plot(x = myAnalysis, 
+            method = "diffusion", 
+            main = "My first enrichment using the diffusion analysis in FELLA", 
+            threshold = 0.1, 
+            data = FELLA.sample)
+```
+
+### PageRank
+
+For `method = "pagerank"` the concept is analogous to diffusion:
+
+```{r, warning=F, message=T, fig.width=8, fig.height=8}
+FELLA::plot(x = myAnalysis, 
+            method = "pagerank", 
+            main = "My first enrichment using the PageRank analysis in FELLA", 
+            threshold = 0.1, 
+            data = FELLA.sample)
+```
+
+## Exporting the results
+
+`FELLA` offers several exporting alternatives, both for the R environment and for external software.
+
+### Exporting inside R
+
+The appropriate functions to export the results inside R are `generateResultsTable` for a __data.frame__ object:
+
+```{r, warning=F, message=T, results='asis'}
+myTable <- generateResultsTable(object = myAnalysis, 
+                                method = "diffusion", 
+                                threshold = 0.1, 
+                                data = FELLA.sample)
+
+knitr::kable(head(myTable, 20))
+```
+
+...and `generateResultsGraph` for a __graph__ in [igraph](http://igraph.org/r/) format:
+
+```{r, warning=F, message=T}
+myGraph <- generateResultsGraph(object = myAnalysis, 
+                                method = "diffusion", 
+                                threshold = 0.1, 
+                                data = FELLA.sample)
+
+show(myGraph)
+```
+
+### Exporting outside R
+
+Results can be saved as permanent files. The __data.frame__ data format can be saved as a `.csv` file:
+
+```{r, warning=F, message=T, results='asis'}
+myTempDir <- tempdir()
+myExp_csv <- paste0(myTempDir, "/table.csv")
+exportResults(format = "csv", 
+              file = myExp_csv, 
+              method = "pagerank", 
+              threshold = 0.1, 
+              object = myAnalysis, 
+              data = FELLA.sample)
+
+test <- read.csv(file = myExp_csv)
+knitr::kable(head(test))
+```
+
+In the same line, the __graph__ can be saved in `RData`:
+
+```{r, warning=F, message=T, results='asis'}
+myExp_graph <- paste0(myTempDir, "/graph.RData")
+exportResults(format = "igraph", 
+              file = myExp_graph, 
+              method = "pagerank", 
+              threshold = 0.1, 
+              object = myAnalysis, 
+              data = FELLA.sample)
+
+stopifnot("graph.RData" %in% list.files(myTempDir))
+```
+
+Other formats exported by [igraph](http://igraph.org/r/) are also available, internally using their function `igraph::write.graph`. For example, using `"pajek"` format:
+
+```{r, warning=F, message=T, results='asis'}
+myExp_pajek <- paste0(myTempDir, "/graph.pajek")
+exportResults(format = "pajek", 
+              file = myExp_pajek, 
+              method = "diffusion", 
+              threshold = 0.1, 
+              object = myAnalysis, 
+              data = FELLA.sample)
+
+stopifnot("graph.pajek" %in% list.files(myTempDir))
+```
+

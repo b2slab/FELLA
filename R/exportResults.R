@@ -113,6 +113,7 @@ exportResults <- function(format = "csv",
   if (format == "png") {
     message("Generating png image...")
     
+    warning("This feature is temporary down :(")
 #     plot(object, 
 #          method = method, 
 #          data = data, 

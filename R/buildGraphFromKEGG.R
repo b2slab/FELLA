@@ -22,7 +22,9 @@
 #' @import igraph
 #' @import Matrix
 # @importFrom org.Hs.eg.db org.Hs.egGO ## maybe gives trouble because we use annotationdbi too?
-#' @import org.Hs.eg.db 
+#' @importFrom org.Hs.eg.db org.Hs.egGO
+#' @importFrom AnnotationDbi as.list
+#' @importFrom stringr str_match_all
 #' @export
 buildGraphFromKEGG <- function(KEGGdirectory = NULL, 
                                saveLists = NULL, 
@@ -58,7 +60,7 @@ buildGraphFromKEGG <- function(KEGGdirectory = NULL,
     load(paste0(loadLists, "/keggLists.RData"))
   } else {
     message("This whole process can take some time.")
-    library(stringr)
+    #library(stringr)
     
     #   path.kegg <- "/data/kegg/ftp.bioinformatics.jp/kegg/"
     path.kegg <- KEGGdirectory  
