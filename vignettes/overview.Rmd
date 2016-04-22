@@ -244,7 +244,7 @@ exportResults(format = "igraph",
 stopifnot("graph.RData" %in% list.files(myTempDir))
 ```
 
-Other formats exported by [igraph](http://igraph.org/r/) are also available, internally using their function `igraph::write.graph`. For example, using `"pajek"` format:
+Other formats exported by [igraph](http://igraph.org/r/) are also available, internally using their function `igraph::write.graph`. Check the __format__ argument of `?igraph::write.graph` for a list of the supported formats. For example, using `"pajek"` format:
 
 ```{r, warning=F, message=T, results='asis'}
 myExp_pajek <- paste0(myTempDir, "/graph.pajek")
@@ -258,3 +258,4 @@ exportResults(format = "pajek",
 stopifnot("graph.pajek" %in% list.files(myTempDir))
 ```
 
+This option is toggled if the format does not match any other predefined export option. 
