@@ -226,7 +226,7 @@ setMethod("show", signature = "FELLA.USER", function(object) {
 #' @rdname FELLA.USER
 #' @exportMethod plot
 setMethod("plot", 
-          signature(x = "FELLA.USER"), 
+          signature(x = "FELLA.USER", y = "missing"), 
           function(x = 1, 
                    method = "hypergeom", 
                    main = "Affected subgraph", 
