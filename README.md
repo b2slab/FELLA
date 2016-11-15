@@ -1,4 +1,5 @@
 # Enriching metabolomics data through diffusion
+## Bioconductor version
 
 
 This repository contains the `FELLA` package. `FELLA` is a metabolomics data enrichment tool that contextualises the experimental results using KEGG reactions, enzymes, modules and pathways. 
