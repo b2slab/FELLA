@@ -6,7 +6,7 @@
 \usage{
 generateResultsTable(method = "diffusion", threshold = 0.005, plimit = 15,
   nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
-  object = NULL, data = FELLA.DATA)
+  object = NULL, data = NULL)
 }
 \arguments{
 \item{method}{Character, one of: "hypergeom", "diffusion" or "pagerank"}
@@ -35,7 +35,7 @@ A table that contains the KEGG graph nodes with their p-value
 }
 \description{
 Function \code{generateResultsTable} returns a table that contains the results
-of a \code{\link{FELLA.USER}} object
+of a \code{\link[FELLA]{FELLA.USER}} object
 with a successful enrichment analysis.
 }
 

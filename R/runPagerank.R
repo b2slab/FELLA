@@ -1,7 +1,7 @@
 #' Pathway enrichment through PageRank
 #' 
 #' Function \code{runPagerank} performs the random walk based enrichment on a 
-#' \code{\link{FELLA.USER}} object, making use of igraph function 
+#' \code{\link[FELLA]{FELLA.USER}} object, making use of igraph function 
 #' \code{\link[igraph]{page.rank}}. 
 #' If a custom background was specified, it will be used. 
 #' This procedure gives statistical significance measures for each node 
@@ -14,13 +14,13 @@
 #' @inheritParams .niter
 #' @inheritParams .p.adjust
 #'
-#' @return The \code{\link{FELLA.USER}} object with the PageRank enrichment results
+#' @return The \code{\link[FELLA]{FELLA.USER}} object with the PageRank enrichment results
 #' 
 #' @import Matrix
 #' @import igraph
 #' @export
 runPagerank <- function(object = NULL, 
-                        data = "FELLA.DATA", 
+                        data = NULL, 
                         approx = "simulation", 
                         t.df = 10, 
                         niter = 1000, 

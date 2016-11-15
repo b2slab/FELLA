@@ -19,6 +19,7 @@
 #' 
 #' @import igraph
 #' @export
+# Will remove this and move it to suggests # @importFrom knitr knit2pdf
 exportResults <- function(format = "csv", 
                           file = "myOutput", 
 #                           filename = "myOutput",
@@ -27,10 +28,14 @@ exportResults <- function(format = "csv",
                           plimit = 15, 
                           nlimit = 250, 
                           object = NULL, 
-                          data = FELLA.DATA, 
+                          data = NULL, 
                           ...) {
   
-
+  if (!is.FELLA.DATA(data)) {
+    stop("'data' is not a FELLA.DATA object")
+  } else if (data@keggdata@status != "loaded"){
+    stop("'data' points to an empty FELLA.DATA object")
+  }
   
   # Writing tables that summarise the results
   if (format == "csv") {
@@ -132,9 +137,10 @@ exportResults <- function(format = "csv",
   if (format == "pdf") {
     message("Generating pdf report...")
     
+    message("Temporarily unavailable. Will be fixed soon")
 #     knit2pdf(input = "/home/sergi/Rstuffbro/FEllA/data/report.Rnw")
-    knit2pdf(input = "/home/sergi/Rstuffbro/FEllA/data/report.Rnw", 
-             output = file)
+    # knitr::knit2pdf(input = "/home/sergi/Rstuffbro/FEllA/data/report.Rnw", 
+    #          output = file)
 # output = "report.tex")
     
     message("Done")

@@ -23,7 +23,7 @@ Curated KEGG graph (class \code{\link[igraph]{igraph}})
 \description{
 Function \code{buildGraphFromKEGG} returns the curated KEGG graph, necessary
 to build the other KEGG RData files and, ultimately, build the
-\code{\link{FELLA.USER}} object. This procedure should only be used once, and
+\code{\link[FELLA]{FELLA.USER}} object. This procedure should only be used once, and
 might take some amount of time.
 }
 

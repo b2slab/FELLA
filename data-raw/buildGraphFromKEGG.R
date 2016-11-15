@@ -2,7 +2,7 @@
 #' 
 #' Function \code{buildGraphFromKEGG} returns the curated KEGG graph, necessary 
 #' to build the other KEGG RData files and, ultimately, build the 
-#' \code{\link{FELLA.USER}} object. This procedure should only be used once, and 
+#' \code{\link[FELLA]{FELLA.USER}} object. This procedure should only be used once, and 
 #' might take some amount of time.
 #' 
 #'
@@ -24,7 +24,8 @@
 # @importFrom org.Hs.eg.db org.Hs.egGO ## maybe gives trouble because we use annotationdbi too?
 #' @importFrom org.Hs.eg.db org.Hs.egGO
 #' @importFrom AnnotationDbi as.list
-#' @importFrom stringr str_match_all
+# comment this for a neater imports 
+# no longer needed in final package #' @importFrom stringr str_match_all
 #' @export
 buildGraphFromKEGG <- function(KEGGdirectory = NULL, 
                                saveLists = NULL, 

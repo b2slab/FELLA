@@ -10,9 +10,9 @@ is.FELLA.USER(x = NULL)
 \item{x}{Object to check}
 }
 \value{
-Logical value stating if \code{x} is a \code{\link{FELLA.USER}} object
+Logical value stating if \code{x} is a \code{\link[FELLA]{FELLA.USER}} object
 }
 \description{
-Is \code{x} a \code{\link{FELLA.USER}} object?
+Is \code{x} a \code{\link[FELLA]{FELLA.USER}} object?
 }
 

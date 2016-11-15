@@ -66,7 +66,7 @@ plotGraph <- function(graph = NULL,
   vertex.number <- vcount(graph)
   
   # Centrality for the transparency attribute
-  graph.alpha <- betweenness(graph, directed = F, normalize = T)
+  graph.alpha <- betweenness(graph, directed = F, normalized = T)
   graph.alpha[is.nan(graph.alpha)] <- 0
   
   graph.asp <- 1

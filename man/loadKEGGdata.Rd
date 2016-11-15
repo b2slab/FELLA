@@ -13,11 +13,11 @@ loadKEGGdata(path = "", loadMatrix = NULL)
 One of: "diffusion", "pagerank", "all" or NULL}
 }
 \value{
-The \code{\link{FELLA.DATA}} object that contains the KEGG representation
+The \code{\link[FELLA]{FELLA.DATA}} object that contains the KEGG representation
 }
 \description{
 This function loads all necessary contextual data from KEGG as a
-\code{\link{FELLA.DATA}} object. This object is necessary to perform any
-kind of enrichment using \code{\link{FELLA}}.
+\code{\link[FELLA]{FELLA.DATA}} object. This object is necessary to perform any
+kind of enrichment using \code{\link[FELLA]{FELLA}}.
 }
 

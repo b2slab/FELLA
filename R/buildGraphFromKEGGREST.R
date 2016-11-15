@@ -2,7 +2,7 @@
 #' 
 #' Function \code{buildGraphFromKEGG} returns the curated KEGG graph, necessary 
 #' to build the other KEGG RData files and, ultimately, build the 
-#' \code{\link{FELLA.USER}} object. This procedure should only be used once, and 
+#' \code{\link[FELLA]{FELLA.USER}} object. This procedure should only be used once, and 
 #' might take some amount of time.
 #' 
 #' @param organism Character, KEGG code for the organism of interest
@@ -18,11 +18,11 @@
 #' @import Matrix
 #' @import KEGGREST
 #' @import plyr
-#' @import dplyr
-# @importFrom org.Hs.eg.db org.Hs.egGO ## maybe gives trouble because we use annotationdbi too?
-#' @importFrom org.Hs.eg.db org.Hs.egGO
-#' @importFrom AnnotationDbi as.list Term
 #' @export
+# by now out - why do I need it? # @import dplyr
+# @importFrom org.Hs.eg.db org.Hs.egGO ## maybe gives trouble because we use annotationdbi too?
+# @importFrom org.Hs.eg.db org.Hs.egGO
+# @importFrom AnnotationDbi as.list Term
 buildGraphFromKEGGREST <- function(organism = "hsa",  
                                    filter.path = NULL, 
                                    GOterms_hsa = T) {
@@ -223,19 +223,19 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
   # i.e. delete reactions that don't have any 3-weight edge
   g.raw <- (setdiff(
     which(V(g.raw)$com == 4), 
-    get.edges(g.raw, E(g.raw)[weight == 3])[, 1]) %>%
+    get.edges(g.raw, E(g.raw)[E(g.raw)$weight == 3])[, 1]) %>%
       delete.vertices(graph = g.raw, .))
   
   # Keep only compounds that are reactants/products in these reactions
   # i.e. delete compounds that don't have any 1-weight edge
   g.raw <- (setdiff(
     which(V(g.raw)$com == 5), 
-    get.edges(g.raw, E(g.raw)[weight == 1])[, 1]) %>%
+    get.edges(g.raw, E(g.raw)[E(g.raw)$weight == 1])[, 1]) %>%
       delete.vertices(graph = g.raw, .)) 
   
   # Other filtering (remove nodes?)
   if (!is.null(filter.path)) {
-    names.path <- V(g.raw)[com == 1]$name
+    names.path <- V(g.raw)[V(g.raw)$com == 1]$name
     filter.out <- lapply(filter.path, 
                          function(p) {
                             which(grepl(p, names.path))
@@ -303,6 +303,12 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
   if (GOterms_hsa) {
     # GO terms
     message("Adding GO terms to enzymes...")
+    
+    if (!requireNamespace("org.Hs.eg.db", "AnnotationDbi", quietly = T)) {
+      stop(
+        "Packages org.Hs.eg.db, AnnotationDbi must be installed to add GO terms", 
+        call. = F)
+    }
     
     # library(org.Hs.eg.db)
     gene.all <- V(g.curated)$GENE

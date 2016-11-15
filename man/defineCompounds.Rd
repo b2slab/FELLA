@@ -4,8 +4,7 @@
 \alias{defineCompounds}
 \title{Define the list of input compounds}
 \usage{
-defineCompounds(compounds = NULL, compoundsBackground = NULL,
-  data = FELLA.DATA)
+defineCompounds(compounds = NULL, compoundsBackground = NULL, data = NULL)
 }
 \arguments{
 \item{compounds}{Character vector containing the KEGG IDs of the compounds
@@ -18,12 +17,12 @@ default background (all compounds)}
 \item{data}{FELLA.DATA object}
 }
 \value{
-The \code{\link{FELLA.USER}} object to perform the user analysis
+The \code{\link[FELLA]{FELLA.USER}} object to perform the user analysis
 }
 \description{
 This function maps the specficied list of compounds, usually from an
 experimental metabolomics study, in the graph contained in the
-\code{\link{FELLA.DATA}} object. Once the compounds are mapped, the enrichment
+\code{\link[FELLA]{FELLA.DATA}} object. Once the compounds are mapped, the enrichment
 can be performed. There is also the option to define a personalised background.
 }
 

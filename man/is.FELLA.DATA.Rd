@@ -10,9 +10,9 @@ is.FELLA.DATA(x = NULL)
 \item{x}{Object to check}
 }
 \value{
-Logical value stating if \code{x} is a \code{\link{FELLA.DATA}} object
+Logical value stating if \code{x} is a \code{\link[FELLA]{FELLA.DATA}} object
 }
 \description{
-Is \code{x} a \code{\link{FELLA.DATA}} object?
+Is \code{x} a \code{\link[FELLA]{FELLA.DATA}} object?
 }
 

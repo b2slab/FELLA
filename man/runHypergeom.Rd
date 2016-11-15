@@ -14,13 +14,13 @@ runHypergeom(object = NULL, data = FELLA.DATA, p.adjust = "fdr")
 \item{p.adjust}{Character passed to the \code{\link[stats]{p.adjust}} method}
 }
 \value{
-The \code{\link{FELLA.USER}} object with the hypergeometric test results
+The \code{\link[FELLA]{FELLA.USER}} object with the hypergeometric test results
 }
 \description{
 Function \code{runHypergeom} performs the over representation analysis through
-the hypergeometric test on a \code{\link{FELLA.USER}} object.
+the hypergeometric test on a \code{\link[FELLA]{FELLA.USER}} object.
 If a custom background was specified, it will be used.
-By default, this test has smaller background than \code{\link{runDiffusion}}
-and \code{\link{runPagerank}}.
+By default, this test has smaller background than \code{\link[FELLA]{runDiffusion}}
+and \code{\link[FELLA]{runPagerank}}.
 }
 

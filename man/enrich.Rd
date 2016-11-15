@@ -30,19 +30,19 @@ if the approximation \code{approx = "t"} is used}
 \item{niter}{Number of iterations (permutations) for Monte Carlo ("simulation"),
 must be a numeric value between 1e2 and 1e5}
 
-\item{path}{Character, path to load the \code{\link{FELLA.DATA}} object if
+\item{path}{Character, path to load the \code{\link[FELLA]{FELLA.DATA}} object if
 it is not already passed through the argument \code{data}}
 
 \item{data}{FELLA.DATA object}
 }
 \value{
-The \code{\link{FELLA.USER}} and the \code{\link{FELLA.DATA}} objects
+The \code{\link[FELLA]{FELLA.USER}} and the \code{\link[FELLA]{FELLA.DATA}} objects
 in a list.
 }
 \description{
-The function \code{\link{enrich}} is a big wrapper to perform the enrichment
+The function \code{\link[FELLA]{enrich}} is a big wrapper to perform the enrichment
 analysis. It loads affected compounds, KEGG data and return a list containing
-the \code{\link{FELLA.DATA}} context data and the \code{\link{FELLA.USER}}
+the \code{\link[FELLA]{FELLA.DATA}} context data and the \code{\link[FELLA]{FELLA.USER}}
 object with the enrichment results available.
 }
 

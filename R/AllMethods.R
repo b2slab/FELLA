@@ -76,7 +76,7 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
 
 #' \code{"show"} is an S4 method to show a FELLA.DATA object
 #'
-#' @param object A \code{\link{FELLA.DATA}} object
+#' @param object A \code{\link[FELLA]{FELLA.DATA}} object
 #' 
 #' @return \code{show} returns \code{invisible()}
 #' 
@@ -87,53 +87,53 @@ setMethod("show", signature = "FELLA.DATA", function(object) {
   
   cat("General data:\n")
   if (vcount(object@keggdata@graph) == 0) {
-    cat("·KEGG graph not loaded.\n")
+    cat("- KEGG graph not loaded.\n")
   } else {
-    cat("·KEGG graph is ready.\n")
+    cat("- KEGG graph is ready.\n")
   }
   if (length(object@keggdata@id2name) == 0) {
-    cat("·KEGG names not loaded.")
+    cat("- KEGG names not loaded.")
   } else {
-    cat("·KEGG names are ready.")
+    cat("- KEGG names are ready.")
   }
   
   cat(breakline)
   
   cat("Hypergeometric test:\n")
   if (prod(dim(object@hypergeom@matrix)) == 1) {
-    cat("·Matrix not loaded.")
+    cat("- Matrix not loaded.")
   } else {
-    cat("·Matrix is ready.")
+    cat("- Matrix is ready.")
   }
   
   cat(breakline)
   
   cat("Heat diffusion:\n")
   if (prod(dim(object@diffusion@matrix)) == 1) {
-    cat("·Matrix not loaded.\n")
+    cat("- Matrix not loaded.\n")
   } else {
-    cat("·Matrix is ready.\n")
+    cat("- Matrix is ready.\n")
   }
   if (length(object@diffusion@rowSums) == 0 || 
         length(object@diffusion@squaredRowSums) == 0) {
-    cat("·RowSums not loaded.")
+    cat("- RowSums not loaded.")
   } else {
-    cat("·RowSums are ready.")
+    cat("- RowSums are ready.")
   }
   
   cat(breakline)
   
   cat("PageRank:\n")
   if (prod(dim(object@pagerank@matrix)) == 1) {
-    cat("·Matrix not loaded.\n")
+    cat("- Matrix not loaded.\n")
   } else {
-    cat("·Matrix is ready.\n")
+    cat("- Matrix is ready.\n")
   }
   if (length(object@pagerank@rowSums) == 0 || 
         length(object@pagerank@squaredRowSums) == 0) {
-    cat("·RowSums not loaded.\n")
+    cat("- RowSums not loaded.\n")
   } else {
-    cat("·RowSums are ready.\n")
+    cat("- RowSums are ready.\n")
   }
   
   invisible()

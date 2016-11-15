@@ -9,7 +9,7 @@
 \S4method{show}{FELLA.DATA}(object)
 }
 \arguments{
-\item{object}{A \code{\link{FELLA.DATA}} object}
+\item{object}{A \code{\link[FELLA]{FELLA.DATA}} object}
 }
 \value{
 \code{show} returns \code{invisible()}

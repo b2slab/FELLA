@@ -6,7 +6,7 @@
 results graph object}
 \usage{
 addCellularComponentToGraph(graph = NULL, GO.CellularComponent = NULL,
-  GONamesAsLabels = T)
+  GONamesAsLabels = T, organism = "human")
 }
 \arguments{
 \item{graph}{An \code{\link[igraph]{igraph}} object, typically a small one
@@ -17,6 +17,8 @@ in the solution graph. If no similarity is desired, leave it as NULL}
 
 \item{GONamesAsLabels}{Logical, should GO names be displayed as labels instead
 of GO identifiers?}
+
+\item{organism}{Character, organism to pass to \code{\link[GOSemSim]{goSim}}}
 }
 \value{
 An \code{\link{igraph}} object that contains an extra attribute: \code{GO.CC}

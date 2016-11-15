@@ -2,19 +2,19 @@
 #' 
 #' This function maps the specficied list of compounds, usually from an 
 #' experimental metabolomics study, in the graph contained in the
-#' \code{\link{FELLA.DATA}} object. Once the compounds are mapped, the enrichment 
+#' \code{\link[FELLA]{FELLA.DATA}} object. Once the compounds are mapped, the enrichment 
 #' can be performed. There is also the option to define a personalised background.
 #'
 #' @inheritParams .compounds
 #' @inheritParams .compoundsBackground
 #' @inheritParams .data
 #'
-#' @return The \code{\link{FELLA.USER}} object to perform the user analysis
+#' @return The \code{\link[FELLA]{FELLA.USER}} object to perform the user analysis
 #' 
 #' @export
 defineCompounds <- function(compounds = NULL, 
                             compoundsBackground = NULL, 
-                            data = FELLA.DATA) {
+                            data = NULL) {
   
   FELLA.USER <- new("FELLA.USER")
   

@@ -1,7 +1,7 @@
 #' Pathway enrichment through heat diffusion
 #' 
 #' Function \code{runDiffusion} performs the diffusion-based enrichment on a 
-#' \code{\link{FELLA.USER}} object. If a custom background was specified, 
+#' \code{\link[FELLA]{FELLA.USER}} object. If a custom background was specified, 
 #' it will be used. 
 #' This procedure gives statistical significance measures for each node and allows 
 #' the extraction of a subgraph according to a fixed threshold.
@@ -14,13 +14,13 @@
 #' @inheritParams .p.adjust
 #' @inheritParams .BIMODAL
 #'
-#' @return The \code{\link{FELLA.USER}} object with the diffusion enrichment results
+#' @return The \code{\link[FELLA]{FELLA.USER}} object with the diffusion enrichment results
 #' 
 #' @import Matrix
 #' @import igraph
 #' @export
 runDiffusion <- function(object = NULL, 
-                         data = FELLA.DATA, 
+                         data = NULL, 
                          approx = "simulation", 
                          t.df = 10, 
                          niter = 1000, 

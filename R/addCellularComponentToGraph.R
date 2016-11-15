@@ -9,16 +9,22 @@
 #' coming from an enrichment procedure
 #' @inheritParams .GO.CellularComponent
 #' @inheritParams .GONamesAsLabels
+#' @param organism Character, organism to pass to \code{\link[GOSemSim]{goSim}}
 #'
 #' @return An \code{\link{igraph}} object that contains an extra attribute: \code{GO.CC}
 #' 
 #' @import igraph
-#' @importFrom GOSemSim goSim
+# @importFrom GOSemSim goSim
 addCellularComponentToGraph <- function(graph = NULL, 
                                         GO.CellularComponent = NULL, 
-                                        GONamesAsLabels = T) {
+                                        GONamesAsLabels = T, 
+                                        organism = "human") {
   
-  #library(GOSemSim)
+  # check if GOSemSim is available
+  if (!requireNamespace("GOSemSim", quietly = T)) {
+    stop("Package GOSemSim must be installed to add the CC ontology", 
+         call. = F)
+  }
   
   if ((length(GO.CellularComponent) == 0) | (GO.CellularComponent == ""))
     return(graph)
@@ -28,10 +34,11 @@ addCellularComponentToGraph <- function(graph = NULL,
       ids <- names(x)
       #     browser()
       
-      sim <- GOSemSim::goSim(GOID1 = GO.CellularComponent, 
-                             GOID2 = ids, 
-                             # ont = "CC", 
-                             organism = "human")
+      sim <- GOSemSim::goSim(
+        GOID1 = GO.CellularComponent, 
+        GOID2 = ids, 
+        # ont = "CC", 
+        organism = organism)
       
       # Pick best similarity
       val <- max(sim, na.rm = T)
@@ -58,7 +65,10 @@ addCellularComponentToGraph <- function(graph = NULL,
   #detach("package:GOSemSim", unload = T)
   
   # Careful! We add it as a list!
-  graph <- set.vertex.attribute(graph = graph, name = "GO.CC", value = similarity.CC)
+  graph <- set.vertex.attribute(
+    graph = graph, 
+    name = "GO.CC", 
+    value = similarity.CC)
   
   return(graph)
 }

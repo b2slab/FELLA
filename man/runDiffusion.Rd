@@ -4,7 +4,7 @@
 \alias{runDiffusion}
 \title{Pathway enrichment through heat diffusion}
 \usage{
-runDiffusion(object = NULL, data = FELLA.DATA, approx = "simulation",
+runDiffusion(object = NULL, data = NULL, approx = "simulation",
   t.df = 10, niter = 1000, p.adjust = "fdr", BIMODAL = F)
 }
 \arguments{
@@ -26,11 +26,11 @@ must be a numeric value between 1e2 and 1e5}
 \item{BIMODAL}{Logical value, should the bimodal test for compounds be used?}
 }
 \value{
-The \code{\link{FELLA.USER}} object with the diffusion enrichment results
+The \code{\link[FELLA]{FELLA.USER}} object with the diffusion enrichment results
 }
 \description{
 Function \code{runDiffusion} performs the diffusion-based enrichment on a
-\code{\link{FELLA.USER}} object. If a custom background was specified,
+\code{\link[FELLA]{FELLA.USER}} object. If a custom background was specified,
 it will be used.
 This procedure gives statistical significance measures for each node and allows
 the extraction of a subgraph according to a fixed threshold.

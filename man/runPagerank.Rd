@@ -4,7 +4,7 @@
 \alias{runPagerank}
 \title{Pathway enrichment through PageRank}
 \usage{
-runPagerank(object = NULL, data = "FELLA.DATA", approx = "simulation",
+runPagerank(object = NULL, data = NULL, approx = "simulation",
   t.df = 10, niter = 1000, p.adjust = "fdr")
 }
 \arguments{
@@ -24,11 +24,11 @@ must be a numeric value between 1e2 and 1e5}
 \item{p.adjust}{Character passed to the \code{\link[stats]{p.adjust}} method}
 }
 \value{
-The \code{\link{FELLA.USER}} object with the PageRank enrichment results
+The \code{\link[FELLA]{FELLA.USER}} object with the PageRank enrichment results
 }
 \description{
 Function \code{runPagerank} performs the random walk based enrichment on a
-\code{\link{FELLA.USER}} object, making use of igraph function
+\code{\link[FELLA]{FELLA.USER}} object, making use of igraph function
 \code{\link[igraph]{page.rank}}.
 If a custom background was specified, it will be used.
 This procedure gives statistical significance measures for each node

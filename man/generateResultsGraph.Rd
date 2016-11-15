@@ -8,7 +8,7 @@ generateResultsGraph(method = "diffusion", threshold = 0.05, plimit = 15,
   nlimit = 250, splitByConnectedComponent = F,
   thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
   GONamesAsLabels = T, LabelLengthAtPlot = 22, object = NULL,
-  data = FELLA.DATA)
+  data = NULL)
 }
 \arguments{
 \item{method}{Character, one of: "hypergeom", "diffusion" or "pagerank"}
@@ -46,7 +46,7 @@ a list of \code{\link{igraph}} objects otherwise.
 \description{
 Function \code{generateResultsGraph} returns a graph object with class
 \code{\link[igraph]{igraph}} or a list of graphs of the same class.
-according to the specified threshold. A \code{\link{FELLA.USER}} object
+according to the specified threshold. A \code{\link[FELLA]{FELLA.USER}} object
 with a successful enrichment analysis must be supplied.
 }
 

@@ -2,7 +2,7 @@
 #' 
 #' Function \code{generateResultsGraph} returns a graph object with class 
 #' \code{\link[igraph]{igraph}} or a list of graphs of the same class. 
-#' according to the specified threshold. A \code{\link{FELLA.USER}} object 
+#' according to the specified threshold. A \code{\link[FELLA]{FELLA.USER}} object 
 #' with a successful enrichment analysis must be supplied.
 #' 
 #'
@@ -23,30 +23,38 @@
 #' 
 #' @import igraph
 #' @export
-generateResultsGraph <- function(method = "diffusion", 
-                                 threshold = 0.05, 
-                                 plimit = 15, 
-                                 nlimit = 250, 
-                                 splitByConnectedComponent = F, 
-                                 thresholdConnectedComponent = 0.05, 
-                                 GO.CellularComponent = NULL,
-                                 GONamesAsLabels = T, 
-                                 LabelLengthAtPlot = 22, 
-                                 object = NULL, 
-                                 data = FELLA.DATA) {
+generateResultsGraph <- function(
+  method = "diffusion", 
+  threshold = 0.05, 
+  plimit = 15, 
+  nlimit = 250, 
+  splitByConnectedComponent = F, 
+  thresholdConnectedComponent = 0.05, 
+  GO.CellularComponent = NULL,
+  GONamesAsLabels = T, 
+  LabelLengthAtPlot = 22, 
+  object = NULL, 
+  data = NULL) {
   
 #   browser()
-  checkArgs <- checkArguments(method = method, 
-                              threshold = threshold, 
-                              plimit = plimit, 
-                              nlimit = nlimit, 
-                              splitByConnectedComponent = splitByConnectedComponent, 
-                              thresholdConnectedComponent = thresholdConnectedComponent, 
-                              GO.CellularComponent = GO.CellularComponent, 
-                              GONamesAsLabels = GONamesAsLabels, 
-                              LabelLengthAtPlot = LabelLengthAtPlot, 
-                              object = object, 
-                              data = data)
+  if (!is.FELLA.DATA(data)) {
+    stop("'data' is not a FELLA.DATA object")
+  } else if (data@keggdata@status != "loaded"){
+    stop("'data' points to an empty FELLA.DATA object")
+  }
+  
+  checkArgs <- checkArguments(
+    method = method, 
+    threshold = threshold, 
+    plimit = plimit, 
+    nlimit = nlimit, 
+    splitByConnectedComponent = splitByConnectedComponent, 
+    thresholdConnectedComponent = thresholdConnectedComponent, 
+    GO.CellularComponent = GO.CellularComponent, 
+    GONamesAsLabels = GONamesAsLabels, 
+    LabelLengthAtPlot = LabelLengthAtPlot, 
+    object = object, 
+    data = data)
  
   if (!checkArgs$valid)
     stop("Bad argument when calling function 'generateResultsGraph'.")

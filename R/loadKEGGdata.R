@@ -1,13 +1,13 @@
 #' Load KEGG data 
 #' 
 #' This function loads all necessary contextual data from KEGG as a 
-#' \code{\link{FELLA.DATA}} object. This object is necessary to perform any 
-#' kind of enrichment using \code{\link{FELLA}}.
+#' \code{\link[FELLA]{FELLA.DATA}} object. This object is necessary to perform any 
+#' kind of enrichment using \code{\link[FELLA]{FELLA}}.
 #'
 #' @param path Path for the KEGG RData files
 #' @inheritParams .loadMatrix
 #'
-#' @return The \code{\link{FELLA.DATA}} object that contains the KEGG representation
+#' @return The \code{\link[FELLA]{FELLA.DATA}} object that contains the KEGG representation
 #' 
 #' @import igraph
 #' @export
@@ -33,23 +33,26 @@ loadKEGGdata <- function(path = "",
 
   # Load the graph and the identifiers (required)
   if (file.exists(paste0(path, "keggdata.graph.RData"))) {
-          load(paste0(path, "keggdata.graph.RData"))
-          
-          F.DATA@keggdata@graph <- keggdata.graph
-          F.DATA@keggdata@pvalues.size <- keggdata.pvalues.size
-          F.DATA@keggdata@id2name <- V(keggdata.graph)$NAME
-          names(F.DATA@keggdata@id2name) <- V(keggdata.graph)$name
-          
-          F.DATA@keggdata@id$pathway <- which(V(keggdata.graph)$com == 1)
-          names(F.DATA@keggdata@id$pathway) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$pathway]
-          F.DATA@keggdata@id$module <- which(V(keggdata.graph)$com == 2)
-          names(F.DATA@keggdata@id$module) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$module]
-          F.DATA@keggdata@id$enzyme <- which(V(keggdata.graph)$com == 3)
-          names(F.DATA@keggdata@id$enzyme) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$enzyme]
-          F.DATA@keggdata@id$reaction <- which(V(keggdata.graph)$com == 4)
-          names(F.DATA@keggdata@id$reaction) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$reaction]
-          F.DATA@keggdata@id$compound <- which(V(keggdata.graph)$com == 5)
-          names(F.DATA@keggdata@id$compound) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$compound]
+    load(paste0(path, "keggdata.graph.RData"))
+    keggdata.graph <- get("keggdata.graph")
+    keggdata.pvalues.size <- get("keggdata.pvalues.size")
+    
+    
+    F.DATA@keggdata@graph <- keggdata.graph
+    F.DATA@keggdata@pvalues.size <- keggdata.pvalues.size
+    F.DATA@keggdata@id2name <- V(keggdata.graph)$NAME
+    names(F.DATA@keggdata@id2name) <- V(keggdata.graph)$name
+    
+    F.DATA@keggdata@id$pathway <- which(V(keggdata.graph)$com == 1)
+    names(F.DATA@keggdata@id$pathway) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$pathway]
+    F.DATA@keggdata@id$module <- which(V(keggdata.graph)$com == 2)
+    names(F.DATA@keggdata@id$module) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$module]
+    F.DATA@keggdata@id$enzyme <- which(V(keggdata.graph)$com == 3)
+    names(F.DATA@keggdata@id$enzyme) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$enzyme]
+    F.DATA@keggdata@id$reaction <- which(V(keggdata.graph)$com == 4)
+    names(F.DATA@keggdata@id$reaction) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$reaction]
+    F.DATA@keggdata@id$compound <- which(V(keggdata.graph)$com == 5)
+    names(F.DATA@keggdata@id$compound) <- (V(keggdata.graph)$name)[F.DATA@keggdata@id$compound]
   } else {
     stop(paste0("'keggdata.graph.RData' not present in:", 
                 paste0(path, "keggdata.graph.RData"), 
@@ -62,6 +65,8 @@ loadKEGGdata <- function(path = "",
   message("Loading matrix...")
   if (file.exists(paste0(path, "hypergeom.matrix.RData"))) {
     load(paste0(path, "hypergeom.matrix.RData"))
+    hypergeom.matrix <- get("hypergeom.matrix")
+    
     F.DATA@hypergeom@matrix <- hypergeom.matrix
   } else {
     message(paste0("'hypergeom.matrix.RData' not present in:", 
@@ -80,6 +85,8 @@ loadKEGGdata <- function(path = "",
                      ". Simulated p-values will execute slower for diffusion."))  
     } else {
       load(paste0(path, "diffusion.matrix.RData"))
+      diffusion.matrix <- get("diffusion.matrix")
+      
       F.DATA@diffusion@matrix <- diffusion.matrix
     }
     
@@ -93,6 +100,8 @@ loadKEGGdata <- function(path = "",
   message("Loading rowSums...")
   if (file.exists(paste0(path, "diffusion.rowSums.RData")) ) {
     load(paste0(path, "diffusion.rowSums.RData"))
+    diffusion.rowSums <- get("diffusion.rowSums")
+    diffusion.squaredRowSums <- get("diffusion.squaredRowSums")
     
     F.DATA@diffusion@rowSums <- diffusion.rowSums
     F.DATA@diffusion@squaredRowSums <- diffusion.squaredRowSums
@@ -113,6 +122,8 @@ loadKEGGdata <- function(path = "",
                      ". Simulated p-values may execute slower for pagerank."))  
     } else {
       load(paste0(path, "pagerank.matrix.RData"))
+      pagerank.matrix <- get("pagerank.matrix")
+      
       F.DATA@pagerank@matrix <- pagerank.matrix
     }
     
@@ -126,6 +137,8 @@ loadKEGGdata <- function(path = "",
   message("Loading rowSums...")
   if (file.exists(paste0(path, "pagerank.rowSums.RData")) ) {
     load(paste0(path, "pagerank.rowSums.RData"))
+    pagerank.rowSums <- get("pagerank.rowSums")
+    pagerank.squaredRowSums <- get("pagerank.squaredRowSums")
     
     F.DATA@pagerank@rowSums <- pagerank.rowSums
     F.DATA@pagerank@squaredRowSums <- pagerank.squaredRowSums

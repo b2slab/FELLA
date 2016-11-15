@@ -1,7 +1,7 @@
 #' Generate readable tables from the enrichment results
 #' 
 #' Function \code{generateResultsTable} returns a table that contains the results 
-#' of a \code{\link{FELLA.USER}} object 
+#' of a \code{\link[FELLA]{FELLA.USER}} object 
 #' with a successful enrichment analysis.
 #' 
 #'
@@ -27,15 +27,22 @@ generateResultsTable <- function(method = "diffusion",
                                  LabelLengthAtPlot = 45, 
                                  capPvalues = 1e-10, 
                                  object = NULL, 
-                                 data = FELLA.DATA) {
+                                 data = NULL) {
   
-  checkArgs <- checkArguments(method = method, 
-                              threshold = threshold, 
-                              plimit = plimit, 
-                              nlimit = nlimit, 
-                              LabelLengthAtPlot = LabelLengthAtPlot, 
-                              object = object, 
-                              data = data)
+  if (!is.FELLA.DATA(data)) {
+    stop("'data' is not a FELLA.DATA object")
+  } else if (data@keggdata@status != "loaded"){
+    stop("'data' points to an empty FELLA.DATA object")
+  }
+  
+  checkArgs <- checkArguments(
+    method = method, 
+    threshold = threshold, 
+    plimit = plimit, 
+    nlimit = nlimit, 
+    LabelLengthAtPlot = LabelLengthAtPlot, 
+    object = object, 
+    data = data)
   
   if (!checkArgs$valid)
     stop("Bad argument when calling function 'generateResultsGraph'.")

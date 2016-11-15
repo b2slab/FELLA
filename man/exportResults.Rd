@@ -6,7 +6,7 @@
 \usage{
 exportResults(format = "csv", file = "myOutput", method = "diffusion",
   threshold = 0.05, plimit = 15, nlimit = 250, object = NULL,
-  data = FELLA.DATA, ...)
+  data = NULL, ...)
 }
 \arguments{
 \item{format}{Character, one of: \code{"csv"}, \code{"igraph"},
