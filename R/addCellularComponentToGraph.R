@@ -24,13 +24,13 @@ addCellularComponentToGraph <- function(graph = NULL,
     return(graph)
   
   similarity.CC <- lapply(V(graph)$GO, FUN = function(x) {
-    if (!is.na(x[1])) {
+    if (!is.na(x)) {
       ids <- names(x)
       #     browser()
       
       sim <- GOSemSim::goSim(GOID1 = GO.CellularComponent, 
                              GOID2 = ids, 
-                             ont = "CC", 
+                             # ont = "CC", 
                              organism = "human")
       
       # Pick best similarity

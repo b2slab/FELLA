@@ -3,7 +3,7 @@
 \docType{class}
 \name{FELLA.USER-class}
 \alias{FELLA.USER-class}
-\alias{plot,FELLA.USER,ANY-method}
+\alias{plot,FELLA.USER,missing-method}
 \alias{show,FELLA.USER-method}
 \alias{summary,FELLA.USER-method}
 \title{An S4 class to save all the user analysis data}
@@ -12,7 +12,7 @@
 
 \S4method{show}{FELLA.USER}(object)
 
-\S4method{plot}{FELLA.USER,ANY}(x = 1, method = "hypergeom",
+\S4method{plot}{FELLA.USER,missing}(x = 1, method = "hypergeom",
   main = "Affected subgraph", threshold = 0.005, plimit = 15,
   nlimit = 250, layout = F, filename = NULL,
   splitByConnectedComponent = F, askPlots = T,
