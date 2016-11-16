@@ -21,23 +21,24 @@
 #' in a list.
 #' 
 #' @export
-enrich <- function(compounds = NULL, 
-                   compoundsBackground = NULL, 
-                   method = "all", 
-                   loadMatrix = "none", 
-                   approx = "normality", 
-                   t.df = 10, 
-                   niter = 1000, 
-                   path = "", 
-                   data = NULL, 
-                   ...) {
+enrich <- function(
+  compounds = NULL, 
+  compoundsBackground = NULL, 
+  method = "all", 
+  loadMatrix = "none", 
+  approx = "normality", 
+  t.df = 10, 
+  niter = 1000, 
+  path = "", 
+  data = NULL, 
+  ...) {
   
   
   # Check if data is loaded
-  returnList <- F
+  returnList <- FALSE
   if (class(data) != "FELLA.DATA") {
     message("No data object supplied. Loading it from the 'path' argument...")
-    returnList <- T
+    returnList <- TRUE
     data <- loadKEGGdata(path = path, 
                          loadMatrix = loadMatrix)
   } 

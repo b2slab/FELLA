@@ -1,7 +1,7 @@
 Package: FELLA
 Type: Package
 Title: FELLA, an interpretation and enrichment tool for metabolomics data
-Version: 0.99.2
+Version: 0.992.1
 Date: 28-04-2015
 Authors@R: c(person("Sergio", "Picart-Armada", role = c("aut", "cre"),
                      email = "sergi.picart@upc.edu"), 
@@ -24,7 +24,7 @@ Imports:
     plyr
 Enhances: 
 Depends:
-    R (>= 3.0)
+    R (>= 3.2)
 Suggests:
     knitr,
     rmarkdown,
@@ -33,3 +33,4 @@ Suggests:
     GOSemSim
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
+biocViews: Software, Metabolomics, GraphAndNetwork, KEGG, Pathways

@@ -30,15 +30,18 @@ defineCompounds <- function(compounds = NULL,
   
   # Optional: load the background of compounds for p-value calculation
   if (length(compoundsBackground) == 0) {
-    message("No background compounds specified. Default background will be used.")
+    message("No background compounds specified. ", 
+            "Default background will be used.")
     compoundsBackground <- getCom(data, "compound")
   } else {
     compoundsBackground <- as.character(compoundsBackground)
-    compoundsBackground <- intersect(compoundsBackground, getCom(data, "compound"))
+    compoundsBackground <- intersect(compoundsBackground, 
+                                     getCom(data, "compound"))
     
     if (length(compoundsBackground) < 10) {
-      warning(paste0("Less than ten of the specified background compounds", 
-            "appear in the available KEGG data. Default background will be used instead."))
+      warning("Less than ten of the specified background compounds", 
+              "appear in the available KEGG data. ", 
+              "Default background will be used instead.")
       compoundsBackground <- getCom(data, "compound")
     } else {
       FELLA.USER@userinput@metabolitesbackground <- compoundsBackground
@@ -56,8 +59,10 @@ defineCompounds <- function(compounds = NULL,
   
   compoundsInBackground <- intersect(compoundsBackground, compounds)
   if (length(compoundsInBackground) < length(compounds)) {
-    warning("Some compounds were introduced as affected but they do not belong to the background.", 
-            " These compounds will be excluded from the analysis. Use 'getExcluded' to see them.")
+    warning("Some compounds were introduced as affected ", 
+            "but they do not belong to the background. ", 
+            "These compounds will be excluded from the analysis. ", 
+            "Use 'getExcluded' to see them.")
     compounds <- compoundsInBackground
   }
   

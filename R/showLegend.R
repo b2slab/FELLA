@@ -9,8 +9,9 @@
 #' 
 #' @return This function is only used for its effect, so it returns \code{invisible()}
 #' 
-showLegend <- function(GO.CellularComponent = F, 
-                       cex = 0.75) {
+showLegend <- function(
+  GO.CellularComponent = FALSE, 
+  cex = 0.75) {
   # In the left side, legend for node categories
   legend(
 #       x = -1.5, y = -1, 

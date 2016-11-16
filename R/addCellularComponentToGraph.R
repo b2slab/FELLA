@@ -15,15 +15,16 @@
 #' 
 #' @import igraph
 # @importFrom GOSemSim goSim
-addCellularComponentToGraph <- function(graph = NULL, 
-                                        GO.CellularComponent = NULL, 
-                                        GONamesAsLabels = T, 
-                                        organism = "human") {
+addCellularComponentToGraph <- function(
+  graph = NULL, 
+  GO.CellularComponent = NULL, 
+  GONamesAsLabels = TRUE, 
+  organism = "human") {
   
   # check if GOSemSim is available
-  if (!requireNamespace("GOSemSim", quietly = T)) {
+  if (!requireNamespace("GOSemSim", quietly = TRUE)) {
     stop("Package GOSemSim must be installed to add the CC ontology", 
-         call. = F)
+         call. = FALSE)
   }
   
   if ((length(GO.CellularComponent) == 0) | (GO.CellularComponent == ""))
@@ -41,7 +42,7 @@ addCellularComponentToGraph <- function(graph = NULL,
         organism = organism)
       
       # Pick best similarity
-      val <- max(sim, na.rm = T)
+      val <- max(sim, na.rm = TRUE)
       
       # Infinity if all the similarities are NA... so we treat is as missing (-1)
       if (val == -Inf) {

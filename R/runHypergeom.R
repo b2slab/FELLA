@@ -23,16 +23,19 @@ runHypergeom <- function(object = NULL,
   # Checking the input
   ##############################################################################
   if (!is.FELLA.USER(object)) {
-    message("'object' is not a FELLA.USER object. Returning NULL...")
+    message("'object' is not a FELLA.USER object. ", 
+            "Returning NULL...")
     return(invisible())
   } 
   if (!is.FELLA.DATA(data)) {
-    message("'data' is not a FELLA.DATA object. Returning NULL...")
+    message("'data' is not a FELLA.DATA object. ", 
+            "Returning NULL...")
     return(invisible())
   }
   
   if (data@keggdata@status != "loaded"){
-    message("'data' points to an empty FELLA.DATA object! Returning original 'object'...")
+    message("'data' points to an empty FELLA.DATA object! ", 
+            "Returning original 'object'...")
     return(object)
   }
   ##############################################################################
@@ -46,20 +49,26 @@ runHypergeom <- function(object = NULL,
   }
   hypergeom.matrix <- getMatrix(data, "hypergeom")
   metabolites.input <- getInput(object)
-  metabolites.input.intersect <- intersect(metabolites.input, 
-                                           rownames(hypergeom.matrix))
-  metabolites.background.intersect <- intersect(getBackground(object), 
-                                                rownames(hypergeom.matrix))
+  metabolites.input.intersect <- intersect(
+    metabolites.input, 
+    rownames(hypergeom.matrix))
+  metabolites.background.intersect <- intersect(
+    getBackground(object), 
+    rownames(hypergeom.matrix))
     
   # Metabolites in the input
   if (length(metabolites.input) == 0) {
-    message("Hypergeometric test failed because there are no compounds in the input.")
+    message("Hypergeometric test failed because ", 
+            "there are no compounds in the input.")
     return(object)
   } else if (length(metabolites.input.intersect) == 0) {
-    message("None of the compounds were in the hypergeometric test background.")
+    message("None of the compounds were in the ", 
+            "hypergeometric test background.")
     return(object)
-  } else if (length(metabolites.input.intersect) < length(metabolites.input)) {
-    message("Some of the compounds have been excluded as they are not in the hypergeometric test background.")
+  } else if (length(metabolites.input.intersect) < 
+             length(metabolites.input)) {
+    message("Some of the compounds have been excluded ", 
+            "as they are not in the hypergeometric test background.")
     message(paste0("Amount decreased from ", length(metabolites.input), 
                    " to ", length(metabolites.input.intersect)))
     metabolites.input <- metabolites.input.intersect
@@ -93,11 +102,12 @@ runHypergeom <- function(object = NULL,
     total_failure <- dim(hypergeom.matrix)[1] - total_success
     sample_size <- length(row_comp)
     
-    pvalues.path[path] <- phyper(sample_success - 1, 
-                                 total_success, 
-                                 total_failure, 
-                                 sample_size, 
-                                 lower.tail = F)
+    pvalues.path[path] <- phyper(
+      sample_success - 1, 
+      total_success, 
+      total_failure, 
+      sample_size, 
+      lower.tail = FALSE)
   }
 
   object@hypergeom@pvalues <- p.adjust(pvalues.path, method = p.adjust)
@@ -109,6 +119,6 @@ runHypergeom <- function(object = NULL,
   message("Done.")
 
 
-  object@hypergeom@valid <- T
+  object@hypergeom@valid <- TRUE
   return(object)
 }

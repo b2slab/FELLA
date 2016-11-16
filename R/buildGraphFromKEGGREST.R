@@ -23,9 +23,10 @@
 # @importFrom org.Hs.eg.db org.Hs.egGO ## maybe gives trouble because we use annotationdbi too?
 # @importFrom org.Hs.eg.db org.Hs.egGO
 # @importFrom AnnotationDbi as.list Term
-buildGraphFromKEGGREST <- function(organism = "hsa",  
-                                   filter.path = NULL, 
-                                   GOterms_hsa = T) {
+buildGraphFromKEGGREST <- function(
+  organism = "hsa",  
+  filter.path = NULL, 
+  GOterms_hsa = TRUE) {
 
 # library(KEGGREST)
 # library(plyr)
@@ -108,7 +109,7 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
     list.list, 
     function(categ) 
       data.frame(id = names(categ), 
-                 stringsAsFactors = F), 
+                 stringsAsFactors = FALSE), 
     .id = "category") 
   map.category <- setNames(as.character(map.category$category), 
                            map.category$id)
@@ -117,8 +118,8 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
   list.link <- plyr::alply(
     expand.grid(categories, 
                 categories, 
-                KEEP.OUT.ATTRS = F, 
-                stringsAsFactors = F)[lower.tri(matrix(1:25, nrow = 5)), ], 
+                KEEP.OUT.ATTRS = FALSE, 
+                stringsAsFactors = FALSE)[lower.tri(matrix(1:25, nrow = 5)), ], 
     1, 
     function(row) {
       # browser()
@@ -145,7 +146,7 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
   m.enzyme_gene <- KEGGREST::keggLink(organism, "enzyme") %>% 
     setNames(., sanitise(names(.), "enzyme", organism)) %>%
     sanitise(., "gene", organism) %>% 
-    split(., names(.), drop = T) %>%
+    split(., names(.), drop = TRUE) %>%
     plyr::llply(., function(r) sort(as.character(r)))
   
   
@@ -196,7 +197,9 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
   message("Done.")
   
   message("Building graph...")
-  g.raw <- igraph::simplify(graph.edgelist(matrix.adjacency, directed = T)) 
+  g.raw <- igraph::simplify(
+    graph.edgelist(matrix.adjacency, 
+                   directed = TRUE)) 
      
   V(g.raw)$com <- match(map.category[V(g.raw)$name], categories) 
   
@@ -263,7 +266,7 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
   g.curated <- subgraph.edges(
     graph = g.raw, 
     eids = edges.split[[1]], 
-    delete.vertices = F)
+    delete.vertices = FALSE)
   
   for (w in names(edges.split)[-1]) {
     current.w <- as.numeric(w)
@@ -304,10 +307,12 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
     # GO terms
     message("Adding GO terms to enzymes...")
     
-    if (!requireNamespace("org.Hs.eg.db", "AnnotationDbi", quietly = T)) {
+    if (!requireNamespace("org.Hs.eg.db", "AnnotationDbi", 
+                          quietly = TRUE)) {
       stop(
-        "Packages org.Hs.eg.db, AnnotationDbi must be installed to add GO terms", 
-        call. = F)
+        "Packages org.Hs.eg.db, AnnotationDbi ", 
+        "must be installed to add GO terms", 
+        call. = FALSE)
     }
     
     # library(org.Hs.eg.db)
@@ -321,7 +326,7 @@ buildGraphFromKEGGREST <- function(organism = "hsa",
           # browser()
           tmp <- gene2GO[gene]
           names(tmp) <- NULL
-          go_terms <- names(unlist(tmp, recursive = F))
+          go_terms <- names(unlist(tmp, recursive = FALSE))
           if (!is.null(go_terms)) {
             return(AnnotationDbi::Term(go_terms))
           }

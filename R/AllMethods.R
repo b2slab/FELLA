@@ -18,8 +18,9 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
     n.show <- min(30, length(object@hypergeom@pvalues))
     p.values <- sort(object@hypergeom@pvalues)[1:n.show]
     
-    # output$hypergeom <- data.frame(dic[names(p.values)], signif(p.values, digits = 4))
-    output$hypergeom <- data.frame(names(p.values), signif(p.values, digits = 4))
+    output$hypergeom <- data.frame(
+      names(p.values), 
+      signif(p.values, digits = 4))
     names(output$hypergeom) <- c("Description", "p.value")
   }
   
@@ -40,7 +41,6 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
     
     out.order <- order(out.names)
     
-    # output$diffusion <- data.frame(out.names, out.pvalues, out.description, out.highlight, 
     output$diffusion <- data.frame(out.names, out.pvalues, 
                                    row.names = NULL)[out.order, ]
     row.names(output$diffusion) <- NULL
@@ -62,9 +62,10 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
     #out.description <- dic[out.names]
     #out.highlight <- out.names %in% object@diffusion@highlight
     
-    # output$pagerank <- data.frame(out.names, out.pvalues, out.description, out.highlight, 
-    output$pagerank <- data.frame(out.names, out.pvalues, 
-                                   row.names = NULL)
+    
+    output$pagerank <- data.frame(
+      out.names, out.pvalues, 
+      row.names = NULL)
     row.names(output$pagerank) <- NULL
     # names(output$pagerank) <- c("KEGG id", "p.value", "Description", "Guess?")
     names(output$pagerank) <- c("KEGG id", "p.value")
@@ -150,15 +151,15 @@ setMethod("show", signature = "FELLA.DATA", function(object) {
 #' @exportMethod show
 setMethod("show", signature = "FELLA.USER", function(object) {
   breakline <- function() {
-    cat(fill = T)
-    cat("---------------------------------------------------", fill = T)
+    cat(fill = TRUE)
+    cat("---------------------------------------------------", fill = TRUE)
   }
   
   cat("Compounds in the input: ")
   if (length(getInput(object)) == 0) {
-    cat("empty", fill = T)
+    cat("empty", fill = TRUE)
   } else {
-    cat(length(getInput(object)), fill = T)
+    cat(length(getInput(object)), fill = TRUE)
     print(getInput(object))
   }
   if (length(getBackground(object)) == 0) {
@@ -173,9 +174,10 @@ setMethod("show", signature = "FELLA.USER", function(object) {
   if (is.na(getValid(object, "hypergeom"))) cat("not performed")
   else if (!getValid(object, "hypergeom")) cat("error during execution")
   else {
-    cat("ready.", fill = T)
-    n.show <- min(15, length(getPvalues(object = object, type = "hypergeom")))
-    cat("Top", n.show, "p-values:", fill = T)
+    cat("ready.", fill = TRUE)
+    n.show <- min(15, length(
+      getPvalues(object = object, type = "hypergeom")))
+    cat("Top", n.show, "p-values:", fill = TRUE)
     print(sort(getPvalues(object, "hypergeom"))[1:n.show])
   }
   
@@ -185,8 +187,9 @@ setMethod("show", signature = "FELLA.USER", function(object) {
   if (is.na(getValid(object, "diffusion"))) cat("not performed")
   else if (!getValid(object, "diffusion")) cat("error during execution")
   else {
-    cat("ready.", fill = T)
-    cat("Significant nodes (0.05): ", sum(getPvalues(object, "diffusion") < 0.05))
+    cat("ready.", fill = TRUE)
+    cat("Significant nodes (0.05): ", 
+        sum(getPvalues(object, "diffusion") < 0.05))
   }
   
   breakline()
@@ -195,8 +198,9 @@ setMethod("show", signature = "FELLA.USER", function(object) {
   if (is.na(getValid(object, "pagerank"))) cat("not performed")
   else if (!getValid(object, "pagerank")) cat("error during execution")
   else {
-    cat("ready.", fill = T)
-    cat("Significant nodes (0.05): ", sum(getPvalues(object, "pagerank") < 0.05))
+    cat("ready.", fill = TRUE)
+    cat("Significant nodes (0.05): ", 
+        sum(getPvalues(object, "pagerank") < 0.05))
   }
   
   invisible()
@@ -235,30 +239,31 @@ setMethod("plot",
                    threshold = 0.005, 
                    plimit = 15, 
                    nlimit = 250, 
-                   layout = F, 
+                   layout = FALSE, 
                    filename = NULL, 
-                   splitByConnectedComponent = F, 
-                   askPlots = T,  
+                   splitByConnectedComponent = FALSE, 
+                   askPlots = TRUE,  
                    thresholdConnectedComponent = 0.05, 
                    GO.CellularComponent = NULL, 
-                   GONamesAsLabels = T, 
+                   GONamesAsLabels = TRUE, 
                    LabelLengthAtPlot = 22, 
                    data = NULL, 
                    ...) {
 
-  checkArgs <- checkArguments(method = method, 
-                              threshold = threshold, 
-                              plimit = plimit, 
-                              nlimit = nlimit, 
-                              layout = layout, 
-                              splitByConnectedComponent = splitByConnectedComponent, 
-                              askPlots = askPlots, 
-                              thresholdConnectedComponent = thresholdConnectedComponent, 
-                              GO.CellularComponent = GO.CellularComponent, 
-                              GONamesAsLabels = GONamesAsLabels, 
-                              LabelLengthAtPlot = LabelLengthAtPlot, 
-                              object = x, 
-                              data = data)
+  checkArgs <- checkArguments(
+    method = method, 
+    threshold = threshold, 
+    plimit = plimit, 
+    nlimit = nlimit, 
+    layout = layout, 
+    splitByConnectedComponent = splitByConnectedComponent, 
+    askPlots = askPlots, 
+    thresholdConnectedComponent = thresholdConnectedComponent, 
+    GO.CellularComponent = GO.CellularComponent, 
+    GONamesAsLabels = GONamesAsLabels, 
+    LabelLengthAtPlot = LabelLengthAtPlot, 
+    object = x, 
+    data = data)
   if (!checkArgs$valid)
     stop("Bad argument when calling function 'FELLA::plot'.")
             
@@ -272,19 +277,22 @@ setMethod("plot",
     } 
       
 
-    graph.bipartite <- generateResultsGraph(method = method, 
-                                          threshold = threshold, 
-                                          plimit = plimit,
-                                          object = x, 
-                                          data = data)
+    graph.bipartite <- generateResultsGraph(
+      method = method, 
+      threshold = threshold, 
+      plimit = plimit,
+      object = x, 
+      data = data)
 
-    if (!is.null(filename)) png(filename = filename, height = 1000, width = 800)
+    if (!is.null(filename)) 
+      png(filename = filename, height = 1000, width = 800)
 
 
-    ans.return <- plotBipartite(graph = graph.bipartite, 
-                                layout = layout, 
-                                main = "Hypergeometric test results", 
-                                ...)
+    ans.return <- plotBipartite(
+      graph = graph.bipartite, 
+      layout = layout, 
+      main = "Hypergeometric test results", 
+      ...)
 
     if (!is.null(filename)) dev.off()
 
@@ -298,55 +306,69 @@ setMethod("plot",
 
     # That may be a list or a unique graph
     if (!splitByConnectedComponent) {
-      graph <- generateResultsGraph(method = method, 
-                                    threshold = threshold, 
-                                    nlimit = nlimit,
-                                    splitByConnectedComponent = F, 
-                                    GO.CellularComponent = GO.CellularComponent, 
-                                    GONamesAsLabels = GONamesAsLabels, 
-                                    LabelLengthAtPlot = LabelLengthAtPlot, 
-                                    object = x, 
-                                    data = data)
+      graph <- generateResultsGraph(
+        method = method, 
+        threshold = threshold, 
+        nlimit = nlimit,
+        splitByConnectedComponent = FALSE, 
+        GO.CellularComponent = GO.CellularComponent, 
+        GONamesAsLabels = GONamesAsLabels, 
+        LabelLengthAtPlot = LabelLengthAtPlot, 
+        object = x, 
+        data = data)
       
-      if (!is.null(filename)) png(filename = filename, height = 1400, width = 1500)
-      ans.return <- plotGraph(graph = graph, 
-                    input = getInput(x), 
-                    layout = layout, 
-                    main = main, 
-                    ...)
+      if (!is.null(filename)) 
+        png(filename = filename, height = 1400, width = 1500)
+      
+      ans.return <- plotGraph(
+        graph = graph, 
+        input = getInput(x), 
+        layout = layout, 
+        main = main, 
+        ...)
       if (!is.null(filename)) dev.off()
       return(invisible(ans.return))
     } else {
-      graph.list <- generateResultsGraph(method = method, 
-                                         threshold = threshold, 
-                                         nlimit = nlimit,
-                                         splitByConnectedComponent = T, 
-                                         GO.CellularComponent = GO.CellularComponent, 
-                                         GONamesAsLabels = GONamesAsLabels, 
-                                         LabelLengthAtPlot = LabelLengthAtPlot, 
-                                         object = x, 
-                                         data = data)
+      graph.list <- generateResultsGraph(
+        method = method, 
+        threshold = threshold, 
+        nlimit = nlimit,
+        splitByConnectedComponent = TRUE, 
+        GO.CellularComponent = GO.CellularComponent, 
+        GONamesAsLabels = GONamesAsLabels, 
+        LabelLengthAtPlot = LabelLengthAtPlot, 
+        object = x, 
+        data = data)
       
       if (is.null(filename) & askPlots) {
         parOld <- par(mar = c(0, 0, 0, 0))
-        par(ask = T)
+        par(ask = TRUE)
       } 
       ans <- lapply(1:length(graph.list), function(graph.id) {
         graph <- graph.list[[graph.id]]
         
-        if (!is.null(filename)) png(filename = paste0(substr(filename, 1, nchar(filename) - 4), 
-                                                      "_", 
-                                                      graph.id, 
-                                                      ".png"), height = 1400, width = 1500)
+        if (!is.null(filename)) {
+          png(
+            filename = paste0(
+              substr(filename, 1, nchar(filename) - 4), 
+              "_", 
+              graph.id, 
+              ".png"), 
+            height = 1400, 
+            width = 1500)
+        }
+          
         
-        ans.layout <- plotGraph(graph = graph, 
-                                input = getInput(x), 
-                                layout = layout, 
-                                main = main, 
-                                ...)
-        mtext(paste0("p-value from permutation by component size (", 
-                      vcount(graph), 
-                      " nodes): " , names(graph.list)[graph.id]))
+        ans.layout <- plotGraph(
+          graph = graph, 
+          input = getInput(x), 
+          layout = layout, 
+          main = main, 
+          ...)
+        mtext(paste0(
+          "p-value from permutation by component size (", 
+          vcount(graph), 
+          " nodes): " , names(graph.list)[graph.id]))
         
         if (!is.null(filename)) dev.off()
         ans.layout

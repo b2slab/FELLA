@@ -28,10 +28,10 @@ generateResultsGraph <- function(
   threshold = 0.05, 
   plimit = 15, 
   nlimit = 250, 
-  splitByConnectedComponent = F, 
+  splitByConnectedComponent = FALSE, 
   thresholdConnectedComponent = 0.05, 
   GO.CellularComponent = NULL,
-  GONamesAsLabels = T, 
+  GONamesAsLabels = TRUE, 
   LabelLengthAtPlot = 22, 
   object = NULL, 
   data = NULL) {
@@ -60,7 +60,8 @@ generateResultsGraph <- function(
     stop("Bad argument when calling function 'generateResultsGraph'.")
   
   if (is.na(getValid(object, method)) || !getValid(object, method)) {
-    warning(paste0("Mehod ", method, " has not been executed yet. Returning NULL..."))
+    warning(paste0("Mehod ", method, " has not been executed yet. "), 
+            "Returning NULL...")
     return(invisible())
   } 
   
@@ -83,34 +84,38 @@ generateResultsGraph <- function(
       path.hypergeom <- names(pvalues)[pvalues < threshold]
     }
     
-    comp.hypergeom <- intersect(getInput(object), rownames(getMatrix(data, "hypergeom")))
+    comp.hypergeom <- intersect(
+      getInput(object), 
+      rownames(getMatrix(data, "hypergeom")))
 #     browser()
     # Build the bipartite graph
     
     if (length(path.hypergeom) == 1) {
-      incidence <- as.matrix(getMatrix(data, "hypergeom")[comp.hypergeom, path.hypergeom], 
-                             ncol = 1)
+      incidence <- as.matrix(
+        getMatrix(data, "hypergeom")[comp.hypergeom, path.hypergeom], 
+        ncol = 1)
       colnames(incidence) <- path.hypergeom
     } else {
       incidence <- getMatrix(data, "hypergeom")[comp.hypergeom, 
                                                 path.hypergeom]
     }
       
-    graph.bipartite <- graph.incidence(incidence = incidence)
+    graph.bipartite <- graph.incidence(
+      incidence = incidence)
 #     browser()
-    graph.bipartite <- induced.subgraph(graph.bipartite, 
-                                        vids = (degree(graph.bipartite) > 0))
+    graph.bipartite <- induced.subgraph(
+      graph.bipartite, 
+      vids = (degree(graph.bipartite) > 0))
     
     # The com attribute for each node
-    V(graph.bipartite)$com <- sapply(V(graph.bipartite)$name, function(name) {
-      if (nchar(name) == 6) return(5)
-      return(1)
-    })
+    V(graph.bipartite)$com <- ifelse(
+      grepl("C\\d{5}", V(graph.bipartite)$name), 
+      5, 
+      1
+    )
 
     return(graph.bipartite)
   } else { 
-    
-    
     # DIFFUSION AND PAGERANK
     pvalues <- getPvalues(object, method)
     
@@ -119,10 +124,11 @@ generateResultsGraph <- function(
       message("Graph is empty.")
       return(NULL)
     } else if (n.nodes > nlimit) {
-      message(paste0(n.nodes, 
-                     " nodes below the threshold have been limited to ", 
-                     nlimit, 
-                     " nodes."))
+      message(paste0(
+        n.nodes, 
+        " nodes below the threshold have been limited to ", 
+        nlimit, 
+        " nodes."))
       nodes <- names(pvalues)[sort(head(order(pvalues), nlimit))]
     } else {
       nodes <- names(pvalues)[pvalues < threshold]
@@ -133,18 +139,21 @@ generateResultsGraph <- function(
     if (method == "diffusion") graph <- as.undirected(graph)
     
     # Build the cellular component data if specified
-    if (!is.null(GO.CellularComponent) & !identical(GO.CellularComponent, "")) {
+    if (!is.null(GO.CellularComponent) & 
+        !identical(GO.CellularComponent, "")) {
       message("Adding cellular component similarity...")
       
-      graph <- addCellularComponentToGraph(graph = graph, 
-                                           GO.CellularComponent = GO.CellularComponent, 
-                                           GONamesAsLabels = GONamesAsLabels)
+      graph <- addCellularComponentToGraph(
+        graph = graph, 
+        GO.CellularComponent = GO.CellularComponent, 
+        GONamesAsLabels = GONamesAsLabels)
       
       message("Done.")
     } else {
-      graph <- set.vertex.attribute(graph = graph, 
-                                    name = "GO.CC", 
-                                    value = rep(-1, vcount(graph)))
+      graph <- set.vertex.attribute(
+        graph = graph, 
+        name = "GO.CC", 
+        value = rep(-1, vcount(graph)))
     }
     
     # Define labels for the plot
@@ -174,17 +183,20 @@ generateResultsGraph <- function(
     
     # Size cannot exceed 250 to calculate p-values... we will approximate
     if (n.nodes.graph > 250) {
-      warning(paste0("The number of nodes of the whole solution, which is ", 
-                     n.nodes.graph, 
-                     ", exceeds 250. p-values will be computed using 250 nodes instead."))
+      warning(paste0(
+        "The number of nodes of the whole solution, which is ", 
+        n.nodes.graph, 
+        ", exceeds 250. p-values will be computed ", 
+        "using 250 nodes instead."))
       
       n.nodes.graph <- 250
     }
       
-    csize.significant <- which(getPvaluesSize(data)[, n.nodes.graph] < 
-                                 thresholdConnectedComponent)[1]
+    csize.significant <- which(
+      getPvaluesSize(data)[, n.nodes.graph] < thresholdConnectedComponent)[1]
     if (length(csize.significant) == 0) {
-      warning("None of the connected components are below the 'thresholdConnectedComponent'. Returning NULL...")
+      warning("None of the connected components are below the ", 
+              "'thresholdConnectedComponent'. Returning NULL...")
       return(invisible())
     } 
     
@@ -197,7 +209,8 @@ generateResultsGraph <- function(
       nodes.graph <- which(graph.clust$membership == clust)
       graph.temp <- induced.subgraph(graph = graph, vids = nodes.graph)
       graph.listed[[i]] <- graph.temp
-      names(graph.listed)[i] <- getPvaluesSize(data)[vcount(graph.temp), n.nodes.graph]
+      names(graph.listed)[i] <- getPvaluesSize(data)[vcount(graph.temp), 
+                                                     n.nodes.graph]
     }
     
     return(graph.listed)

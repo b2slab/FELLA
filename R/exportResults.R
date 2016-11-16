@@ -21,16 +21,17 @@
 #' @import igraph
 #' @export
 # Will remove this and move it to suggests # @importFrom knitr knit2pdf
-exportResults <- function(format = "csv", 
-                          file = "myOutput", 
-#                           filename = "myOutput",
-                          method = "diffusion", 
-                          threshold = 0.05, 
-                          plimit = 15, 
-                          nlimit = 250, 
-                          object = NULL, 
-                          data = NULL, 
-                          ...) {
+exportResults <- function(
+  format = "csv", 
+  file = "myOutput", 
+  # filename = "myOutput",
+  method = "diffusion", 
+  threshold = 0.05, 
+  plimit = 15, 
+  nlimit = 250, 
+  object = NULL, 
+  data = NULL, 
+  ...) {
   
   if (!is.FELLA.DATA(data)) {
     stop("'data' is not a FELLA.DATA object")
@@ -43,39 +44,45 @@ exportResults <- function(format = "csv",
     message("Exporting to a csv file...")
     if (method %in% c("hypergeom", "all")) {
 #       filename <- paste0(file, "_hypergeom.csv")
-      df <- generateResultsTable(method = "hypergeom", 
-                                 threshold = threshold, 
-                                 plimit = plimit, 
-                                 object = object, 
-                                 data = data)
-      write.table(df, 
-                  file = file, 
-                  sep = ",", 
-                  row.names = F)
+      df <- generateResultsTable(
+        method = "hypergeom", 
+        threshold = threshold, 
+        plimit = plimit, 
+        object = object, 
+        data = data)
+      write.table(
+        df, 
+        file = file, 
+        sep = ",", 
+        row.names = FALSE)
     }
     if (method %in% c("diffusion", "all")) {
 #       filename <- paste0(file, "_diffusion.csv")
-      df <- generateResultsTable(method = "diffusion", 
-                                 threshold = threshold, 
-                                 nlimit = nlimit, 
-                                 object = object, 
-                                 data = data)
-      write.table(df, 
-                  file = file, 
-                  sep = ",", 
-                  row.names = F)
+      df <- generateResultsTable(
+        method = "diffusion", 
+        threshold = threshold, 
+        nlimit = nlimit, 
+        object = object, 
+        data = data)
+      write.table(
+        df, 
+        file = file, 
+        sep = ",", 
+        row.names = FALSE)
     }
     if (method %in% c("pagerank", "all")) {
 #       filename <- paste0(file, "_pagerank.csv")
-      df <- generateResultsTable(method = "pagerank", 
-                                 threshold = threshold, 
-                                 nlimit = nlimit, 
-                                 object = object, 
-                                 data = data)
-      write.table(df, 
-                  file = file, 
-                  sep = ",", 
-                  row.names = F)
+      df <- generateResultsTable(
+        method = "pagerank", 
+        threshold = threshold, 
+        nlimit = nlimit, 
+        object = object, 
+        data = data)
+      write.table(
+        df, 
+        file = file, 
+        sep = ",", 
+        row.names = FALSE)
     }
     message("Done")
     return(invisible())
@@ -86,29 +93,32 @@ exportResults <- function(format = "csv",
     message("Exporting to a RData file using 'igraph' object...")
     if (method %in% c("hypergeom", "all")) {
 #       filename <- paste0(file, "_hypergeom.RData")
-      graph <- generateResultsGraph(method = "hypergeom", 
-                                    threshold = threshold, 
-                                    plimit = plimit, 
-                                    object = object, 
-                                    data = data)
+      graph <- generateResultsGraph(
+        method = "hypergeom", 
+        threshold = threshold, 
+        plimit = plimit, 
+        object = object, 
+        data = data)
       save(graph, file = file)
     }
     if (method %in% c("diffusion", "all")) {
 #       filename <- paste0(file, "_diffusion.RData")
-      graph <- generateResultsGraph(method = "diffusion", 
-                                    threshold = threshold, 
-                                    nlimit = nlimit, 
-                                    object = object, 
-                                    data = data)
+      graph <- generateResultsGraph(
+        method = "diffusion", 
+        threshold = threshold, 
+        nlimit = nlimit, 
+        object = object, 
+        data = data)
       save(graph, file = file)
     }
     if (method %in% c("pagerank", "all")) {
 #       filename <- paste0(file, "_pagerank.RData")
-      graph <- generateResultsGraph(method = "pagerank", 
-                                    threshold = threshold, 
-                                    nlimit = nlimit, 
-                                    object = object, 
-                                    data = data)
+      graph <- generateResultsGraph(
+        method = "pagerank", 
+        threshold = threshold, 
+        nlimit = nlimit, 
+        object = object, 
+        data = data)
       save(graph, file = file)
     }
     message("Done")
@@ -152,29 +162,32 @@ exportResults <- function(format = "csv",
   message(paste0("Exporting to custom format ", format, " using igraph...")) 
   if (method %in% c("hypergeom", "all")) {
 #     filename <- paste0(file, "_hypergeom.", format)
-    graph <- generateResultsGraph(method = "hypergeom", 
-                                  threshold = threshold, 
-                                  plimit = plimit, 
-                                  object = object, 
-                                  data = data)
+    graph <- generateResultsGraph(
+      method = "hypergeom", 
+      threshold = threshold, 
+      plimit = plimit, 
+      object = object, 
+      data = data)
     write.graph(graph = graph, file = file, format = format)
   }
   if (method %in% c("diffusion", "all")) {
 #     filename <- paste0(file, "_diffusion.", format)
-    graph <- generateResultsGraph(method = "diffusion", 
-                                  threshold = threshold, 
-                                  nlimit = nlimit, 
-                                  object = object, 
-                                  data = data)
+    graph <- generateResultsGraph(
+      method = "diffusion", 
+      threshold = threshold, 
+      nlimit = nlimit, 
+      object = object, 
+      data = data)
     write.graph(graph = graph, file = file, format = format)
   }
   if (method %in% c("pagerank", "all")) {
 #     filename <- paste0(file, "_pagerank.", format)
-    graph <- generateResultsGraph(method = "pagerank", 
-                                  threshold = threshold, 
-                                  nlimit = nlimit, 
-                                  object = object, 
-                                  data = data)
+    graph <- generateResultsGraph(
+      method = "pagerank", 
+      threshold = threshold, 
+      nlimit = nlimit, 
+      object = object, 
+      data = data)
     write.graph(graph = graph, file = file, format = format)
   }
   message("Done")

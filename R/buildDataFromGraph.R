@@ -22,15 +22,14 @@
 #' @import igraph
 #' @import Matrix
 #' @export
-buildDataFromGraph <- function(keggdata.graph = NULL, 
-                               outputDir = NULL, 
-                               matrices = c("hypergeom", "diffusion", "pagerank"), 
-                               normality = c("diffusion", "pagerank"), 
-                               dampingFactor = 0.7, 
-                               niter = 1e3) {
-#   library(igraph)
-#   library(Matrix)
-  
+buildDataFromGraph <- function(
+  keggdata.graph = NULL, 
+  outputDir = NULL, 
+  matrices = c("hypergeom", "diffusion", "pagerank"), 
+  normality = c("diffusion", "pagerank"), 
+  dampingFactor = 0.7, 
+  niter = 1e3) {
+
   # Checking the input
   ##############################################################################
   graph <- keggdata.graph
@@ -42,16 +41,19 @@ buildDataFromGraph <- function(keggdata.graph = NULL,
     stop("'keggdata.graph' is not connected!")
   
   if (!("com" %in% list.vertex.attributes(graph))) 
-    stop("'keggdata.graph' is not a valid graph: 'com' attribute is missing.")
+    stop("'keggdata.graph' is not a valid graph: ",
+         "'com' attribute is missing.")
   
   if (!is.character(outputDir))
     stop("You must supply an 'outputDir' to save the data!")
   
   if (!is.null(matrices) & !is.character(matrices))
-    stop("'matrices' should be a character vector containing one or more: 'hypergeom', 'diffusion', 'pagerank'.")
+    stop("'matrices' should be a character vector containing one or more: ", 
+         "'hypergeom', 'diffusion', 'pagerank'.")
   
   if (!is.null(normality) & !is.character(normality))
-    stop("'normality' should be a character vector containing one or more: 'diffusion', 'pagerank'.")
+    stop("'normality' should be a character vector containing one or more: ",
+         "'diffusion', 'pagerank'.")
   
   if (!is.numeric(dampingFactor)) 
     stop("'dampingFactor' must be a number between 0 and 1, both excluded.")
@@ -72,7 +74,8 @@ buildDataFromGraph <- function(keggdata.graph = NULL,
   subgraph.size <- 1:250
   component.size <- 1:250
   
-  message("Computing probabilities for random subgraphs... (this may take a while)")
+  message("Computing probabilities for random subgraphs... ", 
+          "(this may take a while)")
   keggdata.pvalues.size <- sapply(subgraph.size, function(k) {
     if (k %% round(.1*tail(subgraph.size, 1)) == 0) 
       message(round(k*100/tail(subgraph.size, 1)), "%")
@@ -101,7 +104,7 @@ buildDataFromGraph <- function(keggdata.graph = NULL,
   
   if (!dir.exists(outputDir)) {
     message(paste0("Directory ", outputDir, " does not exist. Creating it..."))
-    dir.create(path = outputDir, recursive = T)
+    dir.create(path = outputDir, recursive = TRUE)
     message("Done.")
   }
   
@@ -129,9 +132,10 @@ buildDataFromGraph <- function(keggdata.graph = NULL,
                                        v = id.compound, 
                                        to = id.pathway, 
                                        mode = "out") == 4
-    hypergeom.matrix <- Matrix(data = hypergeom.matrix, sparse = T)
+    hypergeom.matrix <- Matrix(data = hypergeom.matrix, sparse = TRUE)
     
-    save(hypergeom.matrix, file = paste0(outputDir, "/hypergeom.matrix.RData"))
+    save(hypergeom.matrix, 
+         file = paste0(outputDir, "/hypergeom.matrix.RData"))
     
     rm(hypergeom.matrix)
     gc()
@@ -144,12 +148,13 @@ buildDataFromGraph <- function(keggdata.graph = NULL,
   ###################
   
   if ("diffusion" %in% c(matrices, normality)) {
-    message("Computing diffusion.matrix... (this may take a while and use some memory)")
+    message("Computing diffusion.matrix... ", 
+            "(this may take a while and use some memory)")
     
     graph <- as.undirected(keggdata.graph)
     
     # Laplacian matrix
-    K <- graph.laplacian(graph, normalized = F, sparse = T)
+    K <- graph.laplacian(graph, normalized = FALSE, sparse = TRUE)
     
     # Boundary conditions
     diag(K)[id.pathway] <- diag(K)[id.pathway] + 1
@@ -163,7 +168,8 @@ buildDataFromGraph <- function(keggdata.graph = NULL,
     diffusion.matrix <- R[, id.compound]
     
     if ("diffusion" %in% matrices) {
-      save(diffusion.matrix, file = paste0(outputDir, "/diffusion.matrix.RData"))
+      save(diffusion.matrix, 
+           file = paste0(outputDir, "/diffusion.matrix.RData"))
       
       message("Done")
     }
@@ -192,7 +198,8 @@ buildDataFromGraph <- function(keggdata.graph = NULL,
   ##################
   
   if ("pagerank" %in% c(matrices, normality)) {
-    message("Computing pagerank.matrix... (this may take a while and use some memory)")
+    message("Computing pagerank.matrix... ", 
+            "(this may take a while and use some memory)")
     
     graph <- keggdata.graph
     
@@ -215,7 +222,8 @@ buildDataFromGraph <- function(keggdata.graph = NULL,
     pagerank.matrix <- R[, id.compound]
     
     if ("pagerank" %in% matrices) {
-      save(pagerank.matrix, file = paste0(outputDir, "/pagerank.matrix.RData"))
+      save(pagerank.matrix, 
+           file = paste0(outputDir, "/pagerank.matrix.RData"))
       
       message("Done.")
     }

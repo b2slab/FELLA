@@ -19,57 +19,69 @@
 #' @import Matrix
 #' @import igraph
 #' @export
-runDiffusion <- function(object = NULL, 
-                         data = NULL, 
-                         approx = "simulation", 
-                         t.df = 10, 
-                         niter = 1000, 
-                         p.adjust = "fdr", 
-                         BIMODAL = F) {
+runDiffusion <- function(
+  object = NULL, 
+  data = NULL, 
+  approx = "simulation", 
+  t.df = 10, 
+  niter = 1000, 
+  p.adjust = "fdr", 
+  BIMODAL = FALSE) {
   
   # Checking the input
   ##############################################################################
   if (!is.FELLA.USER(object)) {
-    message("'object' is not a FELLA.USER object. Returning NULL...")
+    message("'object' is not a FELLA.USER object. ", 
+            "Returning NULL...")
     return(invisible())
   } 
   if (!is.FELLA.DATA(data)) {
-    message("'data' is not a FELLA.DATA object. Returning NULL...")
+    message("'data' is not a FELLA.DATA object. ", 
+            "Returning NULL...")
     return(invisible())
   }
   
   if (data@keggdata@status != "loaded"){
-    message("'data' points to an empty FELLA.DATA object! Returning original 'object'...")
+    message("'data' points to an empty FELLA.DATA object! ", 
+            "Returning original 'object'...")
     return(object)
   }
   
   if (!is.character(approx)) {
-    message("'approx' must be a character: 'simulation', 'normality', 'gamma' or 't'. Returning original 'object'...")
+    message("'approx' must be a character: ", 
+            "'simulation', 'normality', 'gamma' or 't'. ", 
+            "Returning original 'object'...")
     return(object)
   }
   
   if (!(approx %in% c("simulation", "normality", "gamma", "t"))) {
-    message("'approx' must be a character: 'simulation', 'normality', 'gamma' or 't'. Returning original 'object'...")
+    message("'approx' must be a character: ", 
+            "'simulation', 'normality', 'gamma' or 't'. ", 
+            "Returning original 'object'...")
     return(object)
   }
   
   if (!is.numeric(t.df)) {
-    message("'t.df' must be a real value greater than 0. Returning original 'object'...")
+    message("'t.df' must be a real value greater than 0. ", 
+            "Returning original 'object'...")
     return(object)
   }
   
   if (t.df <= 0) {
-    message("'t.df' must be a real value greater than 0. Returning original 'object'...")
+    message("'t.df' must be a real value greater than 0. ", 
+            "Returning original 'object'...")
     return(object)
   }
   
   if (!is.numeric(niter)) {
-    message("'niter' must be an integer between 100 and 1e5. Returning original 'object'...")
+    message("'niter' must be an integer between 100 and 1e5. ", 
+            "Returning original 'object'...")
     return(object)
   }
   
   if (niter < 100 | niter > 1e5) {
-    message("'niter' must be an integer between 100 and 1e5. Returning original 'object'...")
+    message("'niter' must be an integer between 100 and 1e5. ", 
+            "Returning original 'object'...")
     return(object)
   }
   ##############################################################################
@@ -101,10 +113,11 @@ runDiffusion <- function(object = NULL,
       # Load the graph as undirected and its Laplacian
       graph <- as.undirected(getGraph(data))
       KI <- graph.laplacian(graph = graph, 
-                            normalized = F, 
-                            sparse = T)
+                            normalized = FALSE, 
+                            sparse = TRUE)
       # Connect pathways to boundary
-      Matrix::diag(KI)[getCom(data, "pathway", "id")] <- Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
+      Matrix::diag(KI)[getCom(data, "pathway", "id")] <- 
+        Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
       
       # Heat generation vector
       generation <- numeric(dim(KI)[1])
@@ -117,7 +130,8 @@ runDiffusion <- function(object = NULL,
       
       # Null model
       null.temp <- sapply(1:niter, function(dummy) {
-        if (dummy %% round(.1*niter) == 0) message(round(dummy*100/niter),"%")
+        if (dummy %% round(.1*niter) == 0) 
+          message(round(dummy*100/niter),"%")
         
         generation[sample(comp.background, n.input)] <- 1
         as.vector(solve(KI, generation)) 
@@ -125,12 +139,12 @@ runDiffusion <- function(object = NULL,
       
       n.nodes <- length(current.temp)
       pvalues <- sapply(1:n.nodes, function(row) {
-        ((1 - ecdf(null.temp[row, ])(current.temp[row]))*n.nodes + 1)/(n.nodes + 1)
+        ((1 - ecdf(null.temp[row, ])(current.temp[row]))*
+           n.nodes + 1)/(n.nodes + 1)
       })
       names(pvalues) <- V(graph)$name
       
       
-
     } else {
       # Calculate current temperature
       diffusion.matrix <- getMatrix(data, "diffusion")
@@ -142,19 +156,19 @@ runDiffusion <- function(object = NULL,
       
 
       null.temp <- sapply(1:niter, function(dummy) {
-        if (dummy %% round(.1*niter) == 0) message(round(dummy*100/niter),"%")
+        if (dummy %% round(.1*niter) == 0) 
+          message(round(dummy*100/niter),"%")
         
         rowSums(diffusion.matrix[, sample(comp.background, n.input)])
       })
 
       n.nodes <- length(current.temp)
       pvalues <- sapply(1:n.nodes, function(row) {
-        ((1 - ecdf(null.temp[row, ])(current.temp[row]))*n.nodes + 1)/(n.nodes + 1)
+        ((1 - ecdf(null.temp[row, ])(current.temp[row]))*
+           n.nodes + 1)/(n.nodes + 1)
       })
       names(pvalues) <- rownames(diffusion.matrix)
     }
-    
-    
     
   } else if (approx %in% c("normality", "gamma", "t")) {
     message("Estimating p-values through the specified distribution.")
@@ -162,7 +176,8 @@ runDiffusion <- function(object = NULL,
     if (length(getBackground(object)) > 0 | BIMODAL) {
       if (prod(dim(getMatrix(data, "diffusion"))) == 1) {
         # Custom background, no matrix...
-        message("Diffusion matrix not loaded. Normality is not available yet for custom background.")
+        message("Diffusion matrix not loaded. ", 
+                "Normality is not available yet for custom background.")
         return(object)
       } else if (BIMODAL) {
         # THIS ELSE IS THE ONLY BIMODAL THING
@@ -183,7 +198,8 @@ runDiffusion <- function(object = NULL,
         n.comp <- dim(background.matrix)[2]
       } else {
         # Custom background, matrix available
-        background.matrix <- getMatrix(data, "diffusion")[, getBackground(object)]
+        background.matrix <- 
+          getMatrix(data, "diffusion")[, getBackground(object)]
         RowSums <- rowSums(background.matrix)
         squaredRowSums <- apply(X = background.matrix, 
                                 MARGIN = 1, 
@@ -195,19 +211,21 @@ runDiffusion <- function(object = NULL,
       n.comp <- length(getCom(data, "compound"))
       
       # RowSums
-      if (length(getSums(data, "diffusion", squared = F)) == 0) {
-        message("RowSums not available. The normal approximation cannot be done.")
+      if (length(getSums(data, "diffusion", squared = FALSE)) == 0) {
+        message("RowSums not available. ", 
+                "The normal approximation cannot be done.")
         return(object)
       } else {
-        RowSums <- getSums(data, "diffusion", squared = F)
+        RowSums <- getSums(data, "diffusion", squared = FALSE)
       }
       
       # Squared RowSums
-      if (length(getSums(data, "diffusion", squared = T)) == 0) {
-        message("squaredRowSums not available. The normal approximation cannot be done.")
+      if (length(getSums(data, "diffusion", squared = TRUE)) == 0) {
+        message("squaredRowSums not available. ", 
+                "The normal approximation cannot be done.")
         return(object)
       } else {
-        squaredRowSums <- getSums(data, "diffusion", squared = T)
+        squaredRowSums <- getSums(data, "diffusion", squared = TRUE)
       }
     }
     
@@ -215,10 +233,11 @@ runDiffusion <- function(object = NULL,
     # Load the graph as undirected and its Laplacian
     graph <- as.undirected(getGraph(data))
     KI <- graph.laplacian(graph = graph, 
-                          normalized = F, 
-                          sparse = T)
+                          normalized = FALSE, 
+                          sparse = TRUE)
     # Connect pathways to boundary
-    Matrix::diag(KI)[getCom(data, "pathway", "id")] <- Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
+    Matrix::diag(KI)[getCom(data, "pathway", "id")] <- 
+      Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
     
     # Heat generation vector
     generation <- numeric(dim(KI)[1])
@@ -230,46 +249,52 @@ runDiffusion <- function(object = NULL,
     
     # p-values
     temp.means <- RowSums*n.input/n.comp
-    temp.vars <- n.input*(n.comp - n.input)/(n.comp*(n.comp - 1))*(squaredRowSums 
-                                                                   - (RowSums^2)/n.comp)
+    temp.vars <- n.input*(n.comp - n.input)/(n.comp*(n.comp - 1))*
+      (squaredRowSums - (RowSums^2)/n.comp)
     # ONLY THIS IS BIMODAL
     if (BIMODAL){
       # need to change the compounds
       temp.means[idComp] <- RowSums[idComp]*(n.input)/(n.comp - 1) 
-      temp.vars[idComp] <- (n.input )*(n.comp - 1 - n.input)/((n.comp - 1)*(n.comp - 2))*(squaredRowSums[idComp] 
-                                                                                           - (RowSums[idComp]^2)/(n.comp - 1))
+      temp.vars[idComp] <- 
+        n.input*(n.comp - 1 - n.input)/((n.comp - 1)*(n.comp - 2))*
+        (squaredRowSums[idComp] - (RowSums[idComp]^2)/(n.comp - 1))
 #       browser()
       # input:
       theInput <- getInput(object)
-      temp.means[theInput] <- RowSums[theInput]*(n.input - 1)/(n.comp - 1) + inputInfluence[theInput]
-      temp.vars[theInput] <- (n.input - 1)*(n.comp - n.input)/((n.comp - 1)*(n.comp - 2))*(squaredRowSums[theInput] 
-                                                                     - (RowSums[theInput]^2)/(n.comp - 1))
-      
-      
+      temp.means[theInput] <- 
+        RowSums[theInput]*(n.input - 1)/(n.comp - 1) + inputInfluence[theInput]
+      temp.vars[theInput] <- 
+        (n.input - 1)*(n.comp - n.input)/((n.comp - 1)*(n.comp - 2))*
+        (squaredRowSums[theInput] - (RowSums[theInput]^2)/(n.comp - 1))
+
     }
     
     if (approx == "normality") {
-      pvalues <- pnorm(q = current.temp, 
-                       mean = temp.means, 
-                       sd = sqrt(temp.vars), 
-                       lower.tail = F)
+      pvalues <- pnorm(
+        q = current.temp, 
+        mean = temp.means, 
+        sd = sqrt(temp.vars), 
+        lower.tail = FALSE)
     }
     if (approx == "gamma") {
-      pvalues <- pgamma(q = current.temp, 
-                        shape = temp.means^2/temp.vars, 
-                        scale = temp.vars/temp.means, 
-                        lower.tail = F)
+      pvalues <- pgamma(
+        q = current.temp, 
+        shape = temp.means^2/temp.vars, 
+        scale = temp.vars/temp.means, 
+        lower.tail = FALSE)
     }
     if (approx == "t") {
-      pvalues <- pt(q = (current.temp - temp.means)/sqrt(temp.vars), 
-                    df = t.df, 
-                    lower.tail = F)
+      pvalues <- pt(
+        q = (current.temp - temp.means)/sqrt(temp.vars), 
+        df = t.df, 
+        lower.tail = FALSE)
     }
     
     names(pvalues) <- names(RowSums)
 #     browser()
   } else {
-    stop("Invalid 'type' argument for heat diffusion. Please choose between 'simulation' and 'normality'")
+    stop("Invalid 'type' argument for heat diffusion. ", 
+         "Please choose between 'simulation' and 'normality'")
   }
 
   pvalues <- p.adjust(p = pvalues, method = p.adjust)
@@ -279,6 +304,6 @@ runDiffusion <- function(object = NULL,
   object@diffusion@niter <- niter
 
   message("Done.")
-  object@diffusion@valid <- T
+  object@diffusion@valid <- TRUE
   return(object)
 }

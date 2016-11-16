@@ -20,14 +20,15 @@
 #' 
 #' @import igraph
 #' @export
-generateResultsTable <- function(method = "diffusion", 
-                                 threshold = 0.005, 
-                                 plimit = 15, 
-                                 nlimit = 250, 
-                                 LabelLengthAtPlot = 45, 
-                                 capPvalues = 1e-10, 
-                                 object = NULL, 
-                                 data = NULL) {
+generateResultsTable <- function(
+  method = "diffusion", 
+  threshold = 0.005, 
+  plimit = 15, 
+  nlimit = 250, 
+  LabelLengthAtPlot = 45, 
+  capPvalues = 1e-10, 
+  object = NULL, 
+  data = NULL) {
   
   if (!is.FELLA.DATA(data)) {
     stop("'data' is not a FELLA.DATA object")
@@ -48,7 +49,8 @@ generateResultsTable <- function(method = "diffusion",
     stop("Bad argument when calling function 'generateResultsGraph'.")
   
   if (is.na(getValid(object, method)) || !getValid(object, method)) {
-    warning(paste0("Mehod ", method, " has not been executed yet. Returning NULL..."))
+    warning(paste0("Mehod ", method, " has not been executed yet. "),  
+            "Returning NULL...")
     return(invisible())
   } 
   
