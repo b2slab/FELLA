@@ -13,6 +13,7 @@
 #' @inheritParams .nlimit
 #' @inheritParams .object
 #' @inheritParams .data
+#' @param ... Developer parameter, currently ignored
 #'
 #' @return Return value is \code{invisible()}, but as a permanent action the 
 #' specified \code{file} is created.

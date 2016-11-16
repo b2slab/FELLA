@@ -1,6 +1,7 @@
 #' \code{"summary"} is an S4 method to show a summary of the FELLA.USER object
 #'
-#' @param object A \code{\link{FELLA.USER}} object
+# @param object A \code{\link{FELLA.USER}} object
+# Already in the show documentation
 #' 
 #' @return \code{summary} returns a list with the summary data
 #' 
@@ -207,6 +208,7 @@ setMethod("show", signature = "FELLA.USER", function(object) {
 #' @inheritParams .methodSingle
 #' @param main Character; plot title
 #' @inheritParams .threshold
+#' @inheritParams .thresholdConnectedComponent
 #' @inheritParams .plimit
 #' @inheritParams .nlimit
 #' @inheritParams .layout 

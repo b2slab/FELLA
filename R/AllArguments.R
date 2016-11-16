@@ -27,6 +27,9 @@
 #' @param threshold Numeric value between 0 and 1. Applied when filtering KEGG nodes
 .threshold <- function() NULL
 
+#' @param thresholdConnectedComponent Numeric value between 0 and 1. Connected components that are below the threshold are kept, while the ones exceeding it (because they are too small) are discarded. 
+.thresholdConnectedComponent <- function() NULL
+
 #' @param plimit Pathway limit, must be a numeric value between 1 and 50
 .plimit <- function() NULL
 

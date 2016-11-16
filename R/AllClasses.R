@@ -1,6 +1,6 @@
+#' @import methods
 #' @import igraph
-
-setClass("igraph")
+methods::setClass("igraph")
 
 #' An internal S4 class to represent the KEGG graph and related files
 #'
@@ -11,21 +11,22 @@ setClass("igraph")
 #' @slot status Character that specifies the current status of this S4 class
 #' 
 #' @rdname D.keggdata
-setClass("D.keggdata",
-         representation(
-           graph = "igraph", 
-           id2name = "list", 
-           pvalues.size = "matrix", 
-           id = "list", 
-           status = "character"
-         ),
-         prototype(
-           graph = igraph::graph.empty(), 
-           id2name = list(), 
-           pvalues.size = matrix(), 
-           id = list(), 
-           status = "empty"
-         )
+setClass(
+  "D.keggdata",
+  representation(
+    graph = "igraph", 
+    id2name = "list", 
+    pvalues.size = "matrix", 
+    id = "list", 
+    status = "character"
+  ),
+  prototype(
+    graph = igraph::graph.empty(), 
+    id2name = list(), 
+    pvalues.size = matrix(), 
+    id = list(), 
+    status = "empty"
+  )
 )
 
 #' An internal S4 class for the binary matrix (hypergeometric test)
@@ -33,13 +34,14 @@ setClass("D.keggdata",
 #' @slot matrix Binary sparse matrix
 #' 
 #' @rdname D.hypergeom
-setClass("D.hypergeom",
-         representation(
-           matrix = "Matrix"
-         ),
-         prototype(
-           matrix = Matrix::Matrix()
-         )
+setClass(
+  "D.hypergeom",
+  representation(
+    matrix = "Matrix"
+  ),
+  prototype(
+    matrix = Matrix::Matrix()
+  )
 )
 
 #' An internal S4 class for the diffusion data
@@ -50,17 +52,18 @@ setClass("D.hypergeom",
 #' squaredRowSums internal data
 #' 
 #' @rdname D.diffusion
-setClass("D.diffusion",
-         representation(
-           matrix = "matrix", 
-           rowSums = "vector", 
-           squaredRowSums = "vector"
-         ),
-         prototype(
-           matrix = matrix(), 
-           rowSums = vector(), 
-           squaredRowSums = vector()
-         )
+setClass(
+  "D.diffusion",
+  representation(
+    matrix = "matrix", 
+    rowSums = "vector", 
+    squaredRowSums = "vector"
+  ),
+  prototype(
+    matrix = matrix(), 
+    rowSums = vector(), 
+    squaredRowSums = vector()
+  )
 )
 
 #' An internal S4 class for the PageRank data
@@ -71,17 +74,18 @@ setClass("D.diffusion",
 #' squaredRowSums internal data
 #' 
 #' @rdname D.pagerank
-setClass("D.pagerank",
-         representation(
-           matrix = "matrix", 
-           rowSums = "vector", 
-           squaredRowSums = "vector"
-         ),
-         prototype(
-           matrix = matrix(), 
-           rowSums = vector(), 
-           squaredRowSums = vector()
-         )
+setClass(
+  "D.pagerank",
+  representation(
+    matrix = "matrix", 
+    rowSums = "vector", 
+    squaredRowSums = "vector"
+  ),
+  prototype(
+    matrix = matrix(), 
+    rowSums = vector(), 
+    squaredRowSums = vector()
+  )
 )
 
 #' An S4 class to represent all the necessary KEGG data
@@ -91,22 +95,24 @@ setClass("D.pagerank",
 #' @slot diffusion A \code{D.diffusion} S4 object
 #' @slot pagerank A \code{D.pagerank} S4 object
 #' 
+#' @aliases FELLA.DATA
 #' @rdname FELLA.DATA
 #' @exportClass FELLA.DATA
-setClass("FELLA.DATA",
-         representation(
-           keggdata = "D.keggdata",
-           hypergeom = "D.hypergeom",
-           diffusion = "D.diffusion",
-           pagerank = "D.pagerank"
-           ),
-         prototype(
-           keggdata = new("D.keggdata"),
-           hypergeom = new("D.hypergeom"),
-           diffusion = new("D.diffusion"),
-           pagerank = new("D.pagerank")
-           )
-         )
+setClass(
+  "FELLA.DATA",
+  representation(
+    keggdata = "D.keggdata",
+    hypergeom = "D.hypergeom",
+    diffusion = "D.diffusion",
+    pagerank = "D.pagerank"
+  ),
+  prototype(
+    keggdata = new("D.keggdata"),
+    hypergeom = new("D.hypergeom"),
+    diffusion = new("D.diffusion"),
+    pagerank = new("D.pagerank")
+  )
+)
 
 #' An internal S4 class for the user input data
 #'
@@ -118,17 +124,18 @@ setClass("FELLA.DATA",
 #' excluded because they cannot be mapped to KEGG graph compounds
 #' 
 #' @rdname U.userinput
-setClass("U.userinput",
-         representation(
-           metabolites = "vector",
-           metabolitesbackground = "vector", 
-           excluded = "vector"
-         ),
-         prototype(
-           metabolites = vector(),
-           metabolitesbackground = vector(), 
-           excluded = vector()
-         )
+setClass(
+  "U.userinput",
+  representation(
+    metabolites = "vector",
+    metabolitesbackground = "vector", 
+    excluded = "vector"
+  ),
+  prototype(
+    metabolites = vector(),
+    metabolitesbackground = vector(), 
+    excluded = vector()
+  )
 )
 
 #' An internal S4 class for the user data of the hypergeometric over representation 
@@ -146,24 +153,25 @@ setClass("U.userinput",
 #' rownames
 #' 
 #' @rdname U.hypergeom
-setClass("U.hypergeom",
-         representation(
-           valid = "logical",
-           pvalues = "vector",
-           pathhits = "vector", 
-           pathbackground = "vector", 
-           nbackground = "numeric", 
-           ninput = "numeric"
-           ),
-         prototype(
-           valid = NA, 
-           pvalues = vector(), 
-           pathhits = vector(), 
-           pathbackground = vector(), 
-           nbackground = numeric(), 
-           ninput = numeric()
-           )
-         )
+setClass(
+  "U.hypergeom",
+  representation(
+    valid = "logical",
+    pvalues = "vector",
+    pathhits = "vector", 
+    pathbackground = "vector", 
+    nbackground = "numeric", 
+    ninput = "numeric"
+  ),
+  prototype(
+    valid = NA, 
+    pvalues = vector(), 
+    pathhits = vector(), 
+    pathbackground = vector(), 
+    nbackground = numeric(), 
+    ninput = numeric()
+  )
+)
 
 #' An internal S4 class for the user data of the diffusion enrichment analysis
 #'
@@ -174,22 +182,23 @@ setClass("U.hypergeom",
 #' @slot niter Numeric value, number of iterations for the simulated approach
 #' 
 #' @rdname U.diffusion
-setClass("U.diffusion",
-         representation(
-           valid = "logical",
-           pvalues = "vector",
-           approx = "character", 
-           niter = "numeric", 
-           used = "character"
-           ),
-         prototype(
-           valid = NA, 
-           pvalues = vector(),
-           approx = character(), 
-           niter = numeric(), 
-           used = character()
-           )
-         )
+setClass(
+  "U.diffusion",
+  representation(
+    valid = "logical",
+    pvalues = "vector",
+    approx = "character", 
+    niter = "numeric", 
+    used = "character"
+  ),
+  prototype(
+    valid = NA, 
+    pvalues = vector(),
+    approx = character(), 
+    niter = numeric(), 
+    used = character()
+  )
+)
 
 #' An internal S4 class for the user data of the PageRank enrichment analysis
 #'
@@ -200,22 +209,23 @@ setClass("U.diffusion",
 #' @slot niter Numeric value, number of iterations for the simulated approach
 #' 
 #' @rdname U.pagerank
-setClass("U.pagerank",
-         representation(
-           valid = "logical", 
-           pvalues = "vector",
-           approx = "character", 
-           niter = "numeric", 
-           used = "character"
-           ),
-         prototype(
-           valid = NA, 
-           pvalues = vector(),
-           approx = character(), 
-           niter = numeric(), 
-           used = character()
-           )
-         )
+setClass(
+  "U.pagerank",
+  representation(
+    valid = "logical", 
+    pvalues = "vector",
+    approx = "character", 
+    niter = "numeric", 
+    used = "character"
+  ),
+  prototype(
+    valid = NA, 
+    pvalues = vector(),
+    approx = character(), 
+    niter = numeric(), 
+    used = character()
+  )
+)
 
 #' An S4 class to save all the user analysis data
 #'
@@ -224,19 +234,21 @@ setClass("U.pagerank",
 #' @slot diffusion A \code{U.diffusion} S4 object
 #' @slot pagerank A \code{U.pagerank} S4 object
 #' 
+#' @aliases FELLA.USER
 #' @rdname FELLA.USER
 #' @exportClass FELLA.USER
-setClass("FELLA.USER",
-         representation(
-           userinput = "U.userinput",
-           hypergeom = "U.hypergeom",
-           diffusion = "U.diffusion",
-           pagerank = "U.pagerank"
-           ),
-         prototype(
-           userinput = new("U.userinput"),
-           hypergeom = new("U.hypergeom"),
-           diffusion = new("U.diffusion"),
-           pagerank = new("U.pagerank")
-           )
-         )
+setClass(
+  "FELLA.USER",
+  representation(
+    userinput = "U.userinput",
+    hypergeom = "U.hypergeom",
+    diffusion = "U.diffusion",
+    pagerank = "U.pagerank"
+  ),
+  prototype(
+    userinput = new("U.userinput"),
+    hypergeom = new("U.hypergeom"),
+    diffusion = new("U.diffusion"),
+    pagerank = new("U.pagerank")
+  )
+)

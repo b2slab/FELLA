@@ -6,7 +6,7 @@
 #' it is useful to play around with \code{FELLA}'s 
 #' functions. It is also used for internal testing of this package. 
 #' @docType data
-#' @usage \code{data(FELLA.sample)}
+#' @usage data(FELLA.sample)
 #' @format a \code{FELLA.DATA} object
 #' @source Generated from a mid-2014 KEGG release
 NULL
@@ -18,7 +18,7 @@ NULL
 #' with preference for the hsa00640 pathway, so that the enrichment results choose 
 #' pathway hsa00640 over hsa00010. 
 #' @docType data
-#' @usage \code{data(input.sample)}
+#' @usage data(input.sample)
 #' @format A \code{character} vector containing 30 KEGG IDs
 #' @source Generated from a mid-2014 KEGG release
 NULL

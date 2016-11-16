@@ -15,7 +15,7 @@
 #' @import Matrix
 #' @export
 runHypergeom <- function(object = NULL, 
-                         data = FELLA.DATA, 
+                         data = NULL, 
                          p.adjust = "fdr") {
 
   message("Running hypergeom...")

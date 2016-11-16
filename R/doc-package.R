@@ -6,7 +6,8 @@
 #' while the output contains a comprehensive biological network layout 
 #' that relates to the affected metabolites.
 #' 
-#' @usage browseVignettes("FELLA")
+#' @examples 
+#' browseVignettes("FELLA")
 #' ?FELLA.sample
 #' ?input.sample
 #' ?enrich

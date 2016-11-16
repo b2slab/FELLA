@@ -12,10 +12,11 @@
 #' @inheritParams .approx
 #' @inheritParams .t.df
 #' @inheritParams .niter
-#' @param path Character, path to load the \code{\link[FELLA]{FELLA.DATA}} object if 
+#' @param path Character, path to load the \code{\link[FELLA]{FELLA.DATA}} object if
 #' it is not already passed through the argument \code{data}
 #' @inheritParams .data
-#'
+#' @param ... Further arguments for the enrichment function(s) \code{\link[FELLA]{runDiffusion}}, \code{\link[FELLA]{runPagerank}}
+#' 
 #' @return The \code{\link[FELLA]{FELLA.USER}} and the \code{\link[FELLA]{FELLA.DATA}} objects 
 #' in a list.
 #' 
