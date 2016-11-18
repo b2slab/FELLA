@@ -21,11 +21,21 @@
 #' @inheritParams .object
 #' @inheritParams .data
 #' 
-#' @return A list with values. Currently only a logical value named \code{valid} 
-#' if the process runs smoothly. If the checking fails, it also returns an 
-#' object called \code{ans}, which depends on the situation (can be the original object, 
+#' @return A list with values. Currently only a 
+#' logical value named \code{valid} 
+#' if the process runs smoothly. If the checking fails, 
+#' it also returns an 
+#' object called \code{ans}, which depends on 
+#' the situation (can be the original object, 
 #' \code{NULL}, et cetera). 
 #' 
+#' @examples 
+#' ## This function is internal
+#' attach(environment(FELLA:::checkArguments))
+#' arg1 <- checkArguments(method = "hello")
+#' arg1$valid
+#' arg2 <- checkArguments(method = "diffusion")
+#' arg2$valid
 checkArguments <- function(
   method = "diffusion", 
   approx = "normality", 

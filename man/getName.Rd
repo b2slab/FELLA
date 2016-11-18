@@ -12,10 +12,17 @@ getName(data, id)
 \item{id}{KEGG IDs whose name is desired}
 }
 \value{
-List whose names are KEGG IDs and whose entries are the vectors of matches
+List whose names are KEGG IDs and 
+whose entries are the vectors of matches
 }
 \description{
-Map KEGG identifiers to KEGG names, multiple names for an ID are reported if annotated. 
+Map KEGG identifiers to KEGG names, multiple names 
+for an ID are reported if annotated. 
 The KEGG identifiers may have mixed levels.
+}
+\examples{
+data(FELLA.sample)
+getName(FELLA.sample, c("C00002", "C00040"))
+
 }
 

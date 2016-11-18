@@ -4,7 +4,20 @@
 #'
 #' @param x Object to check
 #'
-#' @return Logical value stating if \code{x} is a \code{\link[FELLA]{FELLA.USER}} object
+#' @return Logical value stating if \code{x} 
+#' is a \code{\link[FELLA]{FELLA.USER}} object
+#' 
+#' @examples 
+#' is.FELLA.USER(new("FELLA.USER"))
+#' is.FELLA.USER(42)
+#' 
+#' data(FELLA.sample)
+#' data(input.sample)
+#' obj <- enrich(
+#' compounds = input.sample, 
+#' method = "diffusion", 
+#' data = FELLA.sample)
+#' is.FELLA.USER(obj)
 #' 
 #' @export
 is.FELLA.USER <- function(x = NULL) {

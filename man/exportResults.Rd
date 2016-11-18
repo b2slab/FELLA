@@ -14,9 +14,11 @@ exportResults(format = "csv", file = "myOutput", method = "diffusion",
 
 \item{file}{Character specifying the output directory for the exported files}
 
-\item{method}{Character, one of: "hypergeom", "diffusion", "pagerank" or "all"}
+\item{method}{Character, one of: 
+"hypergeom", "diffusion", "pagerank" or "all"}
 
-\item{threshold}{Numeric value between 0 and 1. Applied when filtering KEGG nodes}
+\item{threshold}{Numeric value between 0 and 1. 
+Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
@@ -37,5 +39,22 @@ specified \code{file} is created.
 Function \code{exportResults} writes the enrichment results in a 
 proper layout and filetype. It can be a plot image (png), a table (csv), 
 an \code{\link[igraph]{igraph}} object or a pdf report [under construction]
+}
+\examples{
+data(FELLA.sample)
+data(input.sample)
+obj <- enrich(
+compounds = input.sample, 
+data = FELLA.sample)
+out.file <- tempfile()
+exportResults(
+format = "csv", 
+threshold = 0.1, 
+file = out.file, 
+object = obj, 
+data = FELLA.sample)
+df <- read.csv(out.file)
+head(df)
+
 }
 

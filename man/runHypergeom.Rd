@@ -14,13 +14,36 @@ runHypergeom(object = NULL, data = NULL, p.adjust = "fdr")
 \item{p.adjust}{Character passed to the \code{\link[stats]{p.adjust}} method}
 }
 \value{
-The \code{\link[FELLA]{FELLA.USER}} object with the hypergeometric test results
+The \code{\link[FELLA]{FELLA.USER}} object 
+with the hypergeometric test results
 }
 \description{
-Function \code{runHypergeom} performs the over representation analysis through
-the hypergeometric test on a \code{\link[FELLA]{FELLA.USER}} object. 
+Function \code{runHypergeom} performs the over representation analysis 
+through the hypergeometric test on a 
+\code{\link[FELLA]{FELLA.USER}} object. 
 If a custom background was specified, it will be used. 
-By default, this test has smaller background than \code{\link[FELLA]{runDiffusion}}
+By default, this test has smaller background than 
+\code{\link[FELLA]{runDiffusion}}
 and \code{\link[FELLA]{runPagerank}}.
+}
+\examples{
+data(FELLA.sample)
+## Load a list of compounds to enrich
+data(input.sample)
+obj.empty <- defineCompounds(
+compounds = input.sample, 
+data = FELLA.sample)
+obj.diff <- runHypergeom(
+object = obj.empty, 
+data = FELLA.sample)
+obj.diff
+
+## Note that the enrich wrapper can do this in a compact way
+obj.diff <- enrich(
+compounds = input.sample, 
+method = "hypergeom", 
+data = FELLA.sample)
+obj.diff
+
 }
 

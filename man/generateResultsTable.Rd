@@ -9,9 +9,11 @@ generateResultsTable(method = "diffusion", threshold = 0.005, plimit = 15,
   object = NULL, data = NULL)
 }
 \arguments{
-\item{method}{Character, one of: "hypergeom", "diffusion" or "pagerank"}
+\item{method}{Character, one of: 
+"hypergeom", "diffusion" or "pagerank"}
 
-\item{threshold}{Numeric value between 0 and 1. Applied when filtering KEGG nodes}
+\item{threshold}{Numeric value between 0 and 1. 
+Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
@@ -22,8 +24,10 @@ the order of the solution graph}
 a label can reach when plotting the graph. The remaining characters will be 
 truncated using "..."}
 
-\item{capPvalues}{Numeric value, minimum p-value admitted for the readable 
-formatting. Smaller p-values will be displayed as \code{< capPvalues} in the 
+\item{capPvalues}{Numeric value, minimum p-value 
+admitted for the readable 
+formatting. Smaller p-values will be displayed 
+as \code{< capPvalues} in the 
 table.}
 
 \item{object}{FELLA.USER object}
@@ -34,8 +38,22 @@ table.}
 A table that contains the KEGG graph nodes with their p-value
 }
 \description{
-Function \code{generateResultsTable} returns a table that contains the results 
+Function \code{generateResultsTable} returns a table 
+that contains the results 
 of a \code{\link[FELLA]{FELLA.USER}} object 
 with a successful enrichment analysis.
+}
+\examples{
+data(FELLA.sample)
+data(input.sample)
+obj <- enrich(
+compounds = input.sample, 
+data = FELLA.sample)
+tab <- generateResultsTable(
+threshold = 0.1, 
+object = obj, 
+data = FELLA.sample)
+head(tab)
+
 }
 

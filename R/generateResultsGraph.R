@@ -2,8 +2,8 @@
 #' 
 #' Function \code{generateResultsGraph} returns a graph object with class 
 #' \code{\link[igraph]{igraph}} or a list of graphs of the same class. 
-#' according to the specified threshold. A \code{\link[FELLA]{FELLA.USER}} object 
-#' with a successful enrichment analysis must be supplied.
+#' according to the specified threshold. A \code{\link[FELLA]{FELLA.USER}} 
+#' object with a successful enrichment analysis must be supplied.
 #' 
 #'
 #' @inheritParams .methodSingle
@@ -18,8 +18,23 @@
 #' @inheritParams .object
 #' @inheritParams .data
 #'
-#' @return An \code{\link{igraph}} object if \code{splitByConnectedComponent = F}; 
+#' @return An \code{\link{igraph}} object if 
+#' \code{splitByConnectedComponent = F}; 
 #' a list of \code{\link{igraph}} objects otherwise.
+#' 
+#' @examples 
+#' data(FELLA.sample)
+#' data(input.sample)
+#' ## Enrich input
+#' obj <- enrich(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' ## Generate graph
+#' g <- generateResultsGraph(
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' g
 #' 
 #' @import igraph
 #' @export

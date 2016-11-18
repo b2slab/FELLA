@@ -4,7 +4,7 @@
 \alias{showLegend}
 \title{Internal function to add a legend to a graph plot}
 \usage{
-showLegend(GO.CellularComponent = F, cex = 0.75)
+showLegend(GO.CellularComponent = FALSE, cex = 0.75)
 }
 \arguments{
 \item{GO.CellularComponent}{Character, GO entry to draw semantic similarity 
@@ -14,10 +14,22 @@ in the solution graph. If no similarity is desired, leave it as NULL}
 \code{\link[graphics]{legend}}}
 }
 \value{
-This function is only used for its effect, so it returns \code{invisible()}
+This function is only used for its effect, 
+so it returns \code{invisible()}
 }
 \description{
-This function adds a legend to a solution plot. It can include the CC 
-similarity.
+This function adds a legend to a solution plot. 
+It can include the CC similarity.
+}
+\examples{
+## This function is internal
+attach(environment(FELLA:::showLegend))
+
+library(igraph)
+g <- barabasi.game(20)
+plot(g)
+showLegend()
+plot(g)
+showLegend(GO.CellularComponent = TRUE)
 }
 

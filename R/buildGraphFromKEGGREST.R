@@ -1,28 +1,46 @@
 #' Generate the KEGG graph 
 #' 
-#' Function \code{buildGraphFromKEGG} returns the curated KEGG graph, necessary 
+#' Function \code{buildGraphFromKEGG} returns the 
+#' curated KEGG graph, necessary 
 #' to build the other KEGG RData files and, ultimately, build the 
-#' \code{\link[FELLA]{FELLA.USER}} object. This procedure should only be used once, and 
+#' \code{\link[FELLA]{FELLA.USER}} object. 
+#' This procedure should only be used once, and 
 #' might take some amount of time.
 #' 
 #' @param organism Character, KEGG code for the organism of interest
-#' @param filter.path Character vector, pathways to filter. This is a pattern 
-#' matched using regexp. E.g: '01100' to filter metabolic pathways in any species
-#' @param GOterms_hsa Logical value, should GO terms be added to the KEGG enzyme 
+#' @param filter.path Character vector, pathways to filter. 
+#' This is a pattern 
+#' matched using regexp. E.g: '01100' to filter 
+#' metabolic pathways in any species
+#' @param GOterms_hsa Logical value, should GO terms 
+#' be added to the KEGG enzyme 
 #' category? This is performed by default, and allows the GO 
 #' similarity analysis for the enrichment output
 #' 
 #' @return Curated KEGG graph (class \code{\link[igraph]{igraph}})
+#' 
+#' @examples 
+#' ## These examples take several seconds to compute and require an 
+#' ## active internet conenction to connect to the KEGG API
+#' 
+#' \dontrun{
+#' ## Graph for Homo sapiens using all the pathways
+#' library(igraph)
+#' g <- buildGraphFromKEGGREST()
+#' summary(g)}
+#' 
+#' \dontrun{
+#' ## Graph for Mus musculus discarding the mmu01100 pathway
+#' g <- buildGraphFromKEGGREST(
+#' organism = "mmu", 
+#' filter.path = "mmu01100", 
+#' GOterms_hsa = FALSE)}
 #' 
 #' @import igraph
 #' @import Matrix
 #' @import KEGGREST
 #' @import plyr
 #' @export
-# by now out - why do I need it? # @import dplyr
-# @importFrom org.Hs.eg.db org.Hs.egGO ## maybe gives trouble because we use annotationdbi too?
-# @importFrom org.Hs.eg.db org.Hs.egGO
-# @importFrom AnnotationDbi as.list Term
 buildGraphFromKEGGREST <- function(
   organism = "hsa",  
   filter.path = NULL, 
@@ -88,7 +106,7 @@ buildGraphFromKEGGREST <- function(
   message("Building through KEGGREST...")
   
   list.list <- plyr::llply(
-    setNames(categories, categories), 
+    stats::setNames(categories, categories), 
     function(category) {
       if (category %in% c("pathway", "module")) {
         ans <- KEGGREST::keggList(
@@ -111,15 +129,17 @@ buildGraphFromKEGGREST <- function(
       data.frame(id = names(categ), 
                  stringsAsFactors = FALSE), 
     .id = "category") 
-  map.category <- setNames(as.character(map.category$category), 
-                           map.category$id)
+  map.category <- stats::setNames(
+    as.character(map.category$category), 
+    map.category$id)
   
   # List of kegg links - essentially our edges
   list.link <- plyr::alply(
-    expand.grid(categories, 
-                categories, 
-                KEEP.OUT.ATTRS = FALSE, 
-                stringsAsFactors = FALSE)[lower.tri(matrix(1:25, nrow = 5)), ], 
+    expand.grid(
+      categories, 
+      categories, 
+      KEEP.OUT.ATTRS = FALSE, 
+      stringsAsFactors = FALSE)[lower.tri(matrix(1:25, nrow = 5)), ], 
     1, 
     function(row) {
       # browser()
@@ -137,14 +157,14 @@ buildGraphFromKEGGREST <- function(
   
   # To mine mapping through enzymes
   m.path_gene <- KEGGREST::keggLink(organism, "pathway") %>% 
-    setNames(., sanitise(names(.), "pathway", organism))
+    stats::setNames(., sanitise(names(.), "pathway", organism))
   m.mod_gene <- KEGGREST::keggLink(organism, "module") %>% 
-    setNames(., sanitise(names(.), "module", organism))
+    stats::setNames(., sanitise(names(.), "module", organism))
   
   m.gene_enzyme <- KEGGREST::keggLink("enzyme", organism) %>% 
     sanitise(., "enzyme", organism)
   m.enzyme_gene <- KEGGREST::keggLink(organism, "enzyme") %>% 
-    setNames(., sanitise(names(.), "enzyme", organism)) %>%
+    stats::setNames(., sanitise(names(.), "enzyme", organism)) %>%
     sanitise(., "gene", organism) %>% 
     split(., names(.), drop = TRUE) %>%
     plyr::llply(., function(r) sort(as.character(r)))
@@ -307,10 +327,15 @@ buildGraphFromKEGGREST <- function(
     # GO terms
     message("Adding GO terms to enzymes...")
     
-    if (!requireNamespace("org.Hs.eg.db", "AnnotationDbi", 
-                          quietly = TRUE)) {
+    if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
       stop(
-        "Packages org.Hs.eg.db, AnnotationDbi ", 
+        "Package org.Hs.eg.db ", 
+        "must be installed to add GO terms", 
+        call. = FALSE)
+    }
+    if (!requireNamespace("AnnotationDbi", quietly = TRUE)) {
+      stop(
+        "Package AnnotationDbi ", 
         "must be installed to add GO terms", 
         call. = FALSE)
     }

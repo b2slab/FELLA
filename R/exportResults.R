@@ -18,6 +18,22 @@
 #' @return Return value is \code{invisible()}, but as a permanent action the 
 #' specified \code{file} is created.
 #' 
+#' @examples 
+#' data(FELLA.sample)
+#' data(input.sample)
+#' obj <- enrich(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' out.file <- tempfile()
+#' exportResults(
+#' format = "csv", 
+#' threshold = 0.1, 
+#' file = out.file, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' df <- read.csv(out.file)
+#' head(df)
+#' 
 #' @import igraph
 #' @export
 # Will remove this and move it to suggests # @importFrom knitr knit2pdf
@@ -50,7 +66,7 @@ exportResults <- function(
         plimit = plimit, 
         object = object, 
         data = data)
-      write.table(
+      utils::write.table(
         df, 
         file = file, 
         sep = ",", 
@@ -64,7 +80,7 @@ exportResults <- function(
         nlimit = nlimit, 
         object = object, 
         data = data)
-      write.table(
+      utils::write.table(
         df, 
         file = file, 
         sep = ",", 
@@ -78,7 +94,7 @@ exportResults <- function(
         nlimit = nlimit, 
         object = object, 
         data = data)
-      write.table(
+      utils::write.table(
         df, 
         file = file, 
         sep = ",", 

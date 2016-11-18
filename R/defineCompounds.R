@@ -2,19 +2,37 @@
 #' 
 #' This function maps the specficied list of compounds, usually from an 
 #' experimental metabolomics study, in the graph contained in the
-#' \code{\link[FELLA]{FELLA.DATA}} object. Once the compounds are mapped, the enrichment 
-#' can be performed. There is also the option to define a personalised background.
+#' \code{\link[FELLA]{FELLA.DATA}} object. 
+#' Once the compounds are mapped, the enrichment 
+#' can be performed. There is also the option 
+#' to define a personalised background.
 #'
 #' @inheritParams .compounds
 #' @inheritParams .compoundsBackground
 #' @inheritParams .data
 #'
-#' @return The \code{\link[FELLA]{FELLA.USER}} object to perform the user analysis
+#' @return The \code{\link[FELLA]{FELLA.USER}} object 
+#' to perform the user analysis
+#' 
+#' @examples 
+#' data(FELLA.sample)
+#' obj <- defineCompounds(
+#' compounds = c("C00010", "C00011", "C00000"), 
+#' data = FELLA.sample)
+#' obj
+#' 
+#' ## If no compounds are mapped an error is thrown
+#' \dontrun{
+#' data(FELLA.sample)
+#' obj <- defineCompounds(
+#' compounds = c("C00049", "C00050"), 
+#' data = FELLA.sample)}
 #' 
 #' @export
-defineCompounds <- function(compounds = NULL, 
-                            compoundsBackground = NULL, 
-                            data = NULL) {
+defineCompounds <- function(
+  compounds = NULL, 
+  compoundsBackground = NULL, 
+  data = NULL) {
   
   FELLA.USER <- new("FELLA.USER")
   
@@ -55,7 +73,8 @@ defineCompounds <- function(compounds = NULL,
   compoundsOld <- compounds
   
   
-  # Check whether any of the compounds in the input are not in the background...
+  # Check whether any of the compounds 
+  # in the input are not in the background...
   
   compoundsInBackground <- intersect(compoundsBackground, compounds)
   if (length(compoundsInBackground) < length(compounds)) {

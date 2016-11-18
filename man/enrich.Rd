@@ -6,7 +6,7 @@
 \usage{
 enrich(compounds = NULL, compoundsBackground = NULL, method = "all",
   loadMatrix = "none", approx = "normality", t.df = 10, niter = 1000,
-  path = "", data = NULL, ...)
+  databaseDir = "myDatabase", internalDir = TRUE, data = NULL, ...)
 }
 \arguments{
 \item{compounds}{Character vector containing the KEGG IDs of the compounds
@@ -16,7 +16,8 @@ considered as affected}
 the compounds that belong to the background. Can be \code{NULL} for the 
 default background (all compounds)}
 
-\item{method}{Character, one of: "hypergeom", "diffusion", "pagerank" or "all"}
+\item{method}{Character, one of: 
+"hypergeom", "diffusion", "pagerank" or "all"}
 
 \item{loadMatrix}{Character to choose if heavy matrices should be loaded. 
 One of: "diffusion", "pagerank", "all" or NULL}
@@ -27,24 +28,45 @@ One of: "diffusion", "pagerank", "all" or NULL}
 \item{t.df}{Numeric value; number of degrees of freedom of the t distribution 
 if the approximation \code{approx = "t"} is used}
 
-\item{niter}{Number of iterations (permutations) for Monte Carlo ("simulation"), 
+\item{niter}{Number of iterations (permutations) 
+for Monte Carlo ("simulation"), 
 must be a numeric value between 1e2 and 1e5}
 
-\item{path}{Character, path to load the \code{\link[FELLA]{FELLA.DATA}} object if
+\item{databaseDir}{Character, path to load the 
+\code{\link[FELLA]{FELLA.DATA}} object if
 it is not already passed through the argument \code{data}}
+
+\item{internalDir}{Logical, is the directory located 
+in the package directory?}
 
 \item{data}{FELLA.DATA object}
 
-\item{...}{Further arguments for the enrichment function(s) \code{\link[FELLA]{runDiffusion}}, \code{\link[FELLA]{runPagerank}}}
+\item{...}{Further arguments for the enrichment function(s) 
+\code{\link[FELLA]{runDiffusion}}, \code{\link[FELLA]{runPagerank}}}
 }
 \value{
-The \code{\link[FELLA]{FELLA.USER}} and the \code{\link[FELLA]{FELLA.DATA}} objects 
+The \code{\link[FELLA]{FELLA.USER}} 
+and the \code{\link[FELLA]{FELLA.DATA}} objects 
 in a list.
 }
 \description{
 The function \code{\link[FELLA]{enrich}} is a big wrapper to perform the enrichment 
 analysis. It loads affected compounds, KEGG data and return a list containing 
-the \code{\link[FELLA]{FELLA.DATA}} context data and the \code{\link[FELLA]{FELLA.USER}} 
+the \code{\link[FELLA]{FELLA.DATA}} context data and the 
+\code{\link[FELLA]{FELLA.USER}} 
 object with the enrichment results available.
+}
+\examples{
+## Load the internal database. This one is a toy example!
+## Do not use as a regular database)
+data(FELLA.sample)
+## Load a list of compounds to enrich
+data(input.sample)
+## Launch wrapper
+obj <- enrich(
+compounds = input.sample, 
+data = FELLA.sample)
+obj
+
 }
 

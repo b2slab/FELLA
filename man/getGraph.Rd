@@ -15,4 +15,11 @@ KEGG graph as an \link[igraph]{igraph} object
 \description{
 Extractor function for the KEGG graph from the FELLA.DATA object
 }
+\examples{
+## This function is internal
+attach(environment(FELLA:::getGraph))
+data(FELLA.sample)
+g <- getGraph(FELLA.sample)
+class(g)
+}
 

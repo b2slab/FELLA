@@ -17,12 +17,30 @@ default background (all compounds)}
 \item{data}{FELLA.DATA object}
 }
 \value{
-The \code{\link[FELLA]{FELLA.USER}} object to perform the user analysis
+The \code{\link[FELLA]{FELLA.USER}} object 
+to perform the user analysis
 }
 \description{
 This function maps the specficied list of compounds, usually from an 
 experimental metabolomics study, in the graph contained in the
-\code{\link[FELLA]{FELLA.DATA}} object. Once the compounds are mapped, the enrichment 
-can be performed. There is also the option to define a personalised background.
+\code{\link[FELLA]{FELLA.DATA}} object. 
+Once the compounds are mapped, the enrichment 
+can be performed. There is also the option 
+to define a personalised background.
+}
+\examples{
+data(FELLA.sample)
+obj <- defineCompounds(
+compounds = c("C00010", "C00011", "C00000"), 
+data = FELLA.sample)
+obj
+
+## If no compounds are mapped an error is thrown
+\dontrun{
+data(FELLA.sample)
+obj <- defineCompounds(
+compounds = c("C00049", "C00050"), 
+data = FELLA.sample)}
+
 }
 

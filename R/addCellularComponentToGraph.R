@@ -1,17 +1,47 @@
 #' Internal function to add the CC semantic similarity attribute to the 
 #' results graph object
 #' 
-#' Function \code{addCellularComponentToGraph} takes and returns a graph object with class 
-#' \code{\link[igraph]{igraph}} adding the attribute \code{GO.CC} for semantic similarity.
+#' Function \code{addCellularComponentToGraph} takes and returns 
+#' a graph object with class 
+#' \code{\link[igraph]{igraph}} adding the attribute 
+#' \code{GO.CC} for semantic similarity.
 #' 
-#'
 #' @param graph An \code{\link[igraph]{igraph}} object, typically a small one 
 #' coming from an enrichment procedure
 #' @inheritParams .GO.CellularComponent
 #' @inheritParams .GONamesAsLabels
-#' @param organism Character, organism to pass to \code{\link[GOSemSim]{goSim}}
+#' @param organism Character, organism to pass to 
+#' \code{\link[GOSemSim]{goSim}}
 #'
-#' @return An \code{\link{igraph}} object that contains an extra attribute: \code{GO.CC}
+#' @return An \code{\link{igraph}} object that contains 
+#' an extra attribute: \code{GO.CC}
+#' 
+#' @examples 
+#' ## This function is internal
+#' attach(environment(FELLA:::addCellularComponentToGraph))
+#' library(igraph)
+#' data(FELLA.sample)
+#' data(input.sample)
+#' ## Enrich input
+#' obj <- enrich(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' ## Generate graph
+#' g <- generateResultsGraph(
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' ## Add the cellular component
+#' g.cc <- addCellularComponentToGraph(
+#' graph = g, 
+#' GO.CellularComponent = "GO:0005739")
+#' 
+#' ## Without the CC
+#' any(V(g)$GO.CC >= 0)
+#' ## With the CC
+#' v.cc <- unlist(V(g.cc)$GO.CC)
+#' sum(v.cc >= 0)
+#' table(v.cc)
 #' 
 #' @import igraph
 # @importFrom GOSemSim goSim
@@ -44,9 +74,11 @@ addCellularComponentToGraph <- function(
       # Pick best similarity
       val <- max(sim, na.rm = TRUE)
       
-      # Infinity if all the similarities are NA... so we treat is as missing (-1)
+      # Infinity if all the similarities are NA... 
+      # so we treat is as missing (-1)
       if (val == -Inf) {
-        warning("Semantic similarity returned NA. Is the GO term properly typed?")
+        warning("Semantic similarity returned NA. ", 
+                "Is the GO term properly typed?")
         val <- -1
         names(val) <- "NONE"
       } else {

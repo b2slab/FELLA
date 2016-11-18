@@ -1,18 +1,46 @@
 #' Load KEGG data 
 #' 
 #' This function loads all necessary contextual data from KEGG as a 
-#' \code{\link[FELLA]{FELLA.DATA}} object. This object is necessary to perform any 
-#' kind of enrichment using \code{\link[FELLA]{FELLA}}.
+#' \code{\link[FELLA]{FELLA.DATA}} object. This object is necessary 
+#' to perform any kind of enrichment using \code{\link[FELLA]{FELLA}}.
 #'
-#' @param path Path for the KEGG RData files
+#' @param databaseDir Path for the KEGG RData files
+#' @param internalDir Logical, is the directory located 
+#' in the package directory?
 #' @inheritParams .loadMatrix
 #'
-#' @return The \code{\link[FELLA]{FELLA.DATA}} object that contains the KEGG representation
+#' @return The \code{\link[FELLA]{FELLA.DATA}} object 
+#' that contains the KEGG representation
+#' 
+#' @examples 
+#' \dontrun{
+#' ## Toy example
+#' data("FELLA.sample")
+#' ## Graph to build the database
+#' g.sample <- FELLA:::getGraph(FELLA.sample)
+#' dir.tmp <- tempdir()
+#' ## Save it in a temporary directory
+#' buildDataFromGraph(
+#' keggdata.graph = g.sample, 
+#' databaseDir = dir.tmp, 
+#' internalDir = FALSE, 
+#' matrices = c("hypergeom", "diffusion", "pagerank"), 
+#' normality = c("diffusion", "pagerank"), 
+#' dampingFactor = 0.7,
+#' niter = 10)
+#' ## Load database
+#' myFELLA.DATA <- loadKEGGdata(
+#' dir.tmp, 
+#' internalDir = FALSE)
+#' myFELLA.DATA
+#' }
 #' 
 #' @import igraph
 #' @export
-loadKEGGdata <- function(path = "", 
-                         loadMatrix = NULL) { 
+loadKEGGdata <- function(
+  databaseDir = "myDatabase", 
+  internalDir = TRUE, 
+  loadMatrix = NULL) { 
   
   message("Loading KEGG graph data...")
 #   dataLoad <- new.env()
@@ -27,12 +55,30 @@ loadKEGGdata <- function(path = "",
     stop("'loadMatrix' can only be a length 1 character ", 
          "('diffusion', 'pagerank', 'all') or NULL.")
 
-  if (!is.character(path) | length(path) > 1) 
-    stop("'path' must be a length 1 character of an existing directory.")
+  if (!is.character(databaseDir) | length(databaseDir) > 1) 
+    stop("'databaseDir' must be a length 1 character ", 
+         " of an existing directory.")
+  
+  if (!is.logical(internalDir) | is.na(internalDir))
+    stop("'internalDir' must be a non-NA logical value")
     
   ##############################################################################
   assign("F.DATA", new("FELLA.DATA"))
 
+  # Make sure there is a slash
+  path <- ifelse(
+    internalDir, 
+    paste0(system.file("database", package = "FELLA"), 
+           "/", databaseDir, "/"), 
+    paste0(databaseDir, "/"))
+  
+  # Does the dir exist?
+  if (!dir.exists(path)) {
+    stop("Directory ", path, " does not exist. ", 
+      "Database '", databaseDir, "' cannot be found. ",
+      "Aborting...")
+  }
+  
   # Load the graph and the identifiers (required)
   if (file.exists(paste0(path, "keggdata.graph.RData"))) {
     load(paste0(path, "keggdata.graph.RData"))

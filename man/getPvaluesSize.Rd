@@ -16,4 +16,12 @@ Matrix with p-values for CC size (internal usage)
 Extractor function for the matrix containing p-value by CC size
 that compares to a random selection of nodes in the KEGG graph
 }
+\examples{
+## This function is internal
+attach(environment(FELLA:::getPvaluesSize))
+data(FELLA.sample)
+M <- getPvaluesSize(FELLA.sample)
+dim(M)
+summary(as.vector(M))
+}
 

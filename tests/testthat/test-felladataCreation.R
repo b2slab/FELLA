@@ -11,9 +11,11 @@ background.sample <- try(FELLA:::getCom(FELLA.sample, 5))
 
 
 test_that("All compounds map, personalised background", {
-  FELLA.test <- try(defineCompounds(compounds = input.sample, 
-                                    compoundsBackground = background.sample, 
-                                    data = FELLA.sample))
+  FELLA.test <- try(
+    defineCompounds(
+      compounds = input.sample, 
+      compoundsBackground = background.sample, 
+      data = FELLA.sample))
   
   expect_s4_class(FELLA.test, "FELLA.USER")
   expect_equivalent(getInput(object = FELLA.test), 
@@ -25,10 +27,12 @@ test_that("All compounds map, personalised background", {
 })
 
 test_that("All compounds map, no background", {
-  expect_message(FELLA.test <- try(defineCompounds(compounds = input.sample, 
-                                    compoundsBackground = NULL, 
-                                    data = FELLA.sample)), 
-                 "No background compounds specified")
+  expect_message(FELLA.test <- try(
+    defineCompounds(
+      compounds = input.sample, 
+      compoundsBackground = NULL, 
+      data = FELLA.sample)), 
+    "No background compounds specified")
   
   expect_s4_class(FELLA.test, "FELLA.USER")
   expect_equivalent(getInput(object = FELLA.test), 
@@ -41,10 +45,12 @@ test_that("All compounds map, no background", {
 
 test_that("Not all compounds map, no background", {
   intruder.sample <- paste0("intruder", 1:10)
-  expect_warning(FELLA.test <- try(defineCompounds(compounds = c(input.sample, intruder.sample), 
-                                                   compoundsBackground = NULL, 
-                                                   data = FELLA.sample)), 
-                "excluded")
+  expect_warning(FELLA.test <- try(
+    defineCompounds(
+      compounds = c(input.sample, intruder.sample), 
+      compoundsBackground = NULL, 
+      data = FELLA.sample)), 
+    "excluded")
   
   expect_s4_class(FELLA.test, "FELLA.USER")
   expect_equivalent(sort(getInput(object = FELLA.test)), 
@@ -58,10 +64,12 @@ test_that("Not all compounds map, no background", {
 test_that("Not all compounds map, background with mapping issues too", {
   intruder1.sample <- paste0("intruder", 1:5)
   intruder2.sample <- paste0("intruder", 1:10)
-  expect_warning(FELLA.test <- try(defineCompounds(compounds = c(input.sample, intruder1.sample), 
-                                                   compoundsBackground = c(background.sample, intruder2.sample), 
-                                                   data = FELLA.sample)), 
-                 "excluded")
+  expect_warning(FELLA.test <- try(
+    defineCompounds(
+      compounds = c(input.sample, intruder1.sample), 
+      compoundsBackground = c(background.sample, intruder2.sample), 
+      data = FELLA.sample)), 
+    "excluded")
   
   expect_s4_class(FELLA.test, "FELLA.USER")
   expect_equivalent(sort(getInput(object = FELLA.test)), 

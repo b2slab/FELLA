@@ -4,22 +4,45 @@
 \alias{plotBipartite}
 \title{Internal function to plot a bipartite graph}
 \usage{
-plotBipartite(graph = NULL, layout = F, ...)
+plotBipartite(graph = NULL, layout = FALSE, ...)
 }
 \arguments{
-\item{graph}{Graph result that must come from the hypergeometric test analysis}
+\item{graph}{Graph result that must come from the 
+hypergeometric test analysis}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 
-\item{...}{Additional parameters passed to \code{\link[igraph]{plot.igraph}}}
+\item{...}{Additional parameters passed to 
+\code{\link[igraph]{plot.igraph}}}
 }
 \value{
-If \code{layout = F} then the value returned is \code{invisible()}. 
+If \code{layout = F} then the value 
+returned is \code{invisible()}. 
 Otherwise, the layout is returned, also in an invisible fashion.
 }
 \description{
 This function plots a bipartite graph, tailored for the hypergeometric 
 over representation analysis. As the nodes can only be compounds and 
 pathways, the layout is simple and bipartite.
+}
+\examples{
+## This function is internal
+attach(environment(FELLA:::plotBipartite))
+
+data(FELLA.sample)
+data(input.sample)
+## Enrich input
+obj <- enrich(
+compounds = input.sample, 
+data = FELLA.sample)
+## Generate the bipartite graph (only in the hypergeometric test)
+g <- generateResultsGraph(
+method = "hypergeom", 
+threshold = 1, 
+object = obj, 
+data = FELLA.sample)
+## Plot it
+plotBipartite(g)
+
 }
 

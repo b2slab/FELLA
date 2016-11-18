@@ -5,6 +5,12 @@
 #' @inheritParams .data
 #'
 #' @return KEGG graph as an \link[igraph]{igraph} object
+#' @examples 
+#' ## This function is internal
+#' attach(environment(FELLA:::getGraph))
+#' data(FELLA.sample)
+#' g <- getGraph(FELLA.sample)
+#' class(g)
 getGraph <- function(data) {
   return(data@keggdata@graph)
 }

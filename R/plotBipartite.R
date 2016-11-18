@@ -4,17 +4,40 @@
 #' over representation analysis. As the nodes can only be compounds and 
 #' pathways, the layout is simple and bipartite.
 #'
-#' @param graph Graph result that must come from the hypergeometric test analysis
+#' @param graph Graph result that must come from the 
+#' hypergeometric test analysis
 #' @inheritParams .layout
-#' @param ... Additional parameters passed to \code{\link[igraph]{plot.igraph}}
+#' @param ... Additional parameters passed to 
+#' \code{\link[igraph]{plot.igraph}}
 #' 
-#' @return If \code{layout = F} then the value returned is \code{invisible()}. 
+#' @return If \code{layout = F} then the value 
+#' returned is \code{invisible()}. 
 #' Otherwise, the layout is returned, also in an invisible fashion.
 #' 
+#' @examples 
+#' ## This function is internal
+#' attach(environment(FELLA:::plotBipartite))
+#' 
+#' data(FELLA.sample)
+#' data(input.sample)
+#' ## Enrich input
+#' obj <- enrich(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' ## Generate the bipartite graph (only in the hypergeometric test)
+#' g <- generateResultsGraph(
+#' method = "hypergeom", 
+#' threshold = 1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' ## Plot it
+#' plotBipartite(g)
+#' 
 #' @import igraph
-plotBipartite <- function(graph = NULL, 
-                          layout = FALSE, 
-                          ...) {
+plotBipartite <- function(
+  graph = NULL, 
+  layout = FALSE, 
+  ...) {
 
   graph.com <- as.character(V(graph)$com)
 

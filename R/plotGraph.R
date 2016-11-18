@@ -1,22 +1,46 @@
 #' Internal function to plot a solution graph
 #' 
-#' This function plots a solution graph, tailored for the diffusion and pagerank
+#' This function plots a solution graph, 
+#' tailored for the diffusion and pagerank
 #' analysis. 
 #'
-#' @param graph Graph result that must come from diffusion or pagerank analysis
+#' @param graph Graph result that must come 
+#' from diffusion or pagerank analysis
 #' @param input Character vector, compounds in the input to be highlighted
 #' @inheritParams .layout
 #' @inheritParams .NamesAsLabels
-#' @param ... Additional parameters passed to \code{\link[igraph]{plot.igraph}}
+#' @param ... Additional parameters passed to 
+#' \code{\link[igraph]{plot.igraph}}
 #' 
-#' @return If \code{layout = F} then the value returned is \code{invisible()}. 
-#' Otherwise, the layout is returned, also in an invisible fashion.
+#' @return If \code{layout = F} then the value 
+#' returned is \code{invisible()}. 
+#' Otherwise, the layout is returned, 
+#' also in an invisible fashion.
+#' 
+#' @examples 
+#' ## This function is internal
+#' attach(environment(FELLA:::plotGraph))
+#' 
+#' data(FELLA.sample)
+#' data(input.sample)
+#' ## Enrich input
+#' obj <- enrich(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' ## Generate graph
+#' g <- generateResultsGraph(
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' ## Plot it
+#' plotGraph(g)
 #' 
 #' @import igraph
-plotGraph <- function(graph = NULL, 
-                      input = NULL, 
-                      layout = FALSE,
-                      NamesAsLabels = TRUE, 
+plotGraph <- function(
+  graph = NULL, 
+  input = NULL, 
+  layout = FALSE,
+  NamesAsLabels = TRUE, 
                       ...) {
   
   if (vcount(graph) == 0) {
@@ -44,7 +68,7 @@ plotGraph <- function(graph = NULL,
       vertex.size <- vertex.size[v]
     }
     
-    symbols(x=coords[,1], y=coords[,2], bg=vertex.color,
+    graphics::symbols(x=coords[,1], y=coords[,2], bg=vertex.color,
             stars=cbind(vertex.size, vertex.size, vertex.size),
             add=TRUE, inches=FALSE)
   }

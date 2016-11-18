@@ -13,11 +13,12 @@ test_that("Enrichment wrapper", {
   
   for (method in c("hypergeom", "diffusion", "pagerank")) {
     for (approx in c("normality", "simulation", "t", "gamma")) {
-      FELLA.test <- enrich(compounds = input.sample, 
-                         method = method, 
-                         approx = approx, 
-                         niter = 100, 
-                         data = FELLA.sample)
+      FELLA.test <- enrich(
+        compounds = input.sample, 
+        method = method, 
+        approx = approx, 
+        niter = 100, 
+        data = FELLA.sample)
       
       expect_s4_class(FELLA.test, "FELLA.USER")
       

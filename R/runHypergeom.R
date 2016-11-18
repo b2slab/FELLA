@@ -1,22 +1,45 @@
 #' Pathway enrichment through hypergeometric test 
 #' 
-#' Function \code{runHypergeom} performs the over representation analysis through
-#' the hypergeometric test on a \code{\link[FELLA]{FELLA.USER}} object. 
+#' Function \code{runHypergeom} performs the over representation analysis 
+#' through the hypergeometric test on a 
+#' \code{\link[FELLA]{FELLA.USER}} object. 
 #' If a custom background was specified, it will be used. 
-#' By default, this test has smaller background than \code{\link[FELLA]{runDiffusion}}
+#' By default, this test has smaller background than 
+#' \code{\link[FELLA]{runDiffusion}}
 #' and \code{\link[FELLA]{runPagerank}}.
 #'
 #' @inheritParams .object
 #' @inheritParams .data
 #' @inheritParams .p.adjust
 #'
-#' @return The \code{\link[FELLA]{FELLA.USER}} object with the hypergeometric test results
+#' @return The \code{\link[FELLA]{FELLA.USER}} object 
+#' with the hypergeometric test results
+#' 
+#' @examples 
+#' data(FELLA.sample)
+#' ## Load a list of compounds to enrich
+#' data(input.sample)
+#' obj.empty <- defineCompounds(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' obj.diff <- runHypergeom(
+#' object = obj.empty, 
+#' data = FELLA.sample)
+#' obj.diff
+#' 
+#' ## Note that the enrich wrapper can do this in a compact way
+#' obj.diff <- enrich(
+#' compounds = input.sample, 
+#' method = "hypergeom", 
+#' data = FELLA.sample)
+#' obj.diff
 #' 
 #' @import Matrix
 #' @export
-runHypergeom <- function(object = NULL, 
-                         data = NULL, 
-                         p.adjust = "fdr") {
+runHypergeom <- function(
+  object = NULL, 
+  data = NULL, 
+  p.adjust = "fdr") {
 
   message("Running hypergeom...")
   
@@ -102,7 +125,7 @@ runHypergeom <- function(object = NULL,
     total_failure <- dim(hypergeom.matrix)[1] - total_success
     sample_size <- length(row_comp)
     
-    pvalues.path[path] <- phyper(
+    pvalues.path[path] <- stats::phyper(
       sample_success - 1, 
       total_success, 
       total_failure, 
@@ -110,7 +133,7 @@ runHypergeom <- function(object = NULL,
       lower.tail = FALSE)
   }
 
-  object@hypergeom@pvalues <- p.adjust(pvalues.path, method = p.adjust)
+  object@hypergeom@pvalues <- stats::p.adjust(pvalues.path, method = p.adjust)
   object@hypergeom@nbackground <- dim(hypergeom.matrix)[1]
   object@hypergeom@ninput <- length(metabolites.input.intersect)
   object@hypergeom@pathhits <- pathhits

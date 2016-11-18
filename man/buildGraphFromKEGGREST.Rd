@@ -5,15 +5,18 @@
 \title{Generate the KEGG graph}
 \usage{
 buildGraphFromKEGGREST(organism = "hsa", filter.path = NULL,
-  GOterms_hsa = T)
+  GOterms_hsa = TRUE)
 }
 \arguments{
 \item{organism}{Character, KEGG code for the organism of interest}
 
-\item{filter.path}{Character vector, pathways to filter. This is a pattern 
-matched using regexp. E.g: '01100' to filter metabolic pathways in any species}
+\item{filter.path}{Character vector, pathways to filter. 
+This is a pattern 
+matched using regexp. E.g: '01100' to filter 
+metabolic pathways in any species}
 
-\item{GOterms_hsa}{Logical value, should GO terms be added to the KEGG enzyme 
+\item{GOterms_hsa}{Logical value, should GO terms 
+be added to the KEGG enzyme 
 category? This is performed by default, and allows the GO 
 similarity analysis for the enrichment output}
 }
@@ -21,9 +24,29 @@ similarity analysis for the enrichment output}
 Curated KEGG graph (class \code{\link[igraph]{igraph}})
 }
 \description{
-Function \code{buildGraphFromKEGG} returns the curated KEGG graph, necessary 
+Function \code{buildGraphFromKEGG} returns the 
+curated KEGG graph, necessary 
 to build the other KEGG RData files and, ultimately, build the 
-\code{\link[FELLA]{FELLA.USER}} object. This procedure should only be used once, and 
+\code{\link[FELLA]{FELLA.USER}} object. 
+This procedure should only be used once, and 
 might take some amount of time.
+}
+\examples{
+## These examples take several seconds to compute and require an 
+## active internet conenction to connect to the KEGG API
+
+\dontrun{
+## Graph for Homo sapiens using all the pathways
+library(igraph)
+g <- buildGraphFromKEGGREST()
+summary(g)}
+
+\dontrun{
+## Graph for Mus musculus discarding the mmu01100 pathway
+g <- buildGraphFromKEGGREST(
+organism = "mmu", 
+filter.path = "mmu01100", 
+GOterms_hsa = FALSE)}
+
 }
 

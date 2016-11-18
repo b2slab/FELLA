@@ -11,12 +11,20 @@ getSums(data, type, squared)
 
 \item{type}{Character, one of "hypergeom", "diffusion" or "pagerank"}
 
-\item{squared}{Logical, whether to return \code{rowSums} (\code{F}) or \code{squaredRowSums} (\code{T})}
+\item{squared}{Logical, whether to return 
+\code{rowSums} (\code{F}) or \code{squaredRowSums} (\code{T})}
 }
 \value{
 Named vector with rowSums/squaredRowSums (internal usage)
 }
 \description{
 Extractor function for rowSums/squaredRowSums
+}
+\examples{
+## This function is internal
+attach(environment(FELLA:::getSums))
+data(FELLA.sample)
+rowsums <- getSums(FELLA.sample, "diffusion", squared = FALSE)
+hist(rowsums)
 }
 

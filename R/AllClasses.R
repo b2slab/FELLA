@@ -138,7 +138,8 @@ setClass(
   )
 )
 
-#' An internal S4 class for the user data of the hypergeometric over representation 
+#' An internal S4 class for the user data 
+#' of the hypergeometric over representation 
 #' analysis
 #'
 #' @slot valid Logical value; is the analysis valid?
@@ -188,15 +189,13 @@ setClass(
     valid = "logical",
     pvalues = "vector",
     approx = "character", 
-    niter = "numeric", 
-    used = "character"
+    niter = "numeric"
   ),
   prototype(
     valid = NA, 
     pvalues = vector(),
     approx = character(), 
-    niter = numeric(), 
-    used = character()
+    niter = numeric()
   )
 )
 
@@ -215,15 +214,13 @@ setClass(
     valid = "logical", 
     pvalues = "vector",
     approx = "character", 
-    niter = "numeric", 
-    used = "character"
+    niter = "numeric"
   ),
   prototype(
     valid = NA, 
     pvalues = vector(),
     approx = character(), 
-    niter = numeric(), 
-    used = character()
+    niter = numeric()
   )
 )
 

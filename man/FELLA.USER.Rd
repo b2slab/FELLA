@@ -15,21 +15,23 @@
 
 \S4method{plot}{FELLA.USER,missing}(x = 1, method = "hypergeom",
   main = "Affected subgraph", threshold = 0.005, plimit = 15,
-  nlimit = 250, layout = F, filename = NULL,
-  splitByConnectedComponent = F, askPlots = T,
+  nlimit = 250, layout = FALSE, filename = NULL,
+  splitByConnectedComponent = FALSE, askPlots = TRUE,
   thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
-  GONamesAsLabels = T, LabelLengthAtPlot = 22, data = NULL, ...)
+  GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, data = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{FELLA.USER}} object}
 
 \item{x}{A \code{\link{FELLA.USER}} object}
 
-\item{method}{Character, one of: "hypergeom", "diffusion" or "pagerank"}
+\item{method}{Character, one of: 
+"hypergeom", "diffusion" or "pagerank"}
 
 \item{main}{Character; plot title}
 
-\item{threshold}{Numeric value between 0 and 1. Applied when filtering KEGG nodes}
+\item{threshold}{Numeric value between 0 and 1. 
+Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
@@ -40,7 +42,8 @@ the order of the solution graph}
 
 \item{filename}{Character; optional file name to save the plot}
 
-\item{splitByConnectedComponent}{Logical, should the solution be split by CC?}
+\item{splitByConnectedComponent}{Logical, 
+should the solution be split by CC?}
 
 \item{askPlots}{Logical, should R ask for the next plots using hit<ENTER>?}
 
@@ -49,8 +52,8 @@ the order of the solution graph}
 \item{GO.CellularComponent}{Character, GO entry to draw semantic similarity 
 in the solution graph. If no similarity is desired, leave it as NULL}
 
-\item{GONamesAsLabels}{Logical, should GO names be displayed as labels instead 
-of GO identifiers?}
+\item{GONamesAsLabels}{Logical, should GO names be displayed as labels 
+instead of GO identifiers?}
 
 \item{LabelLengthAtPlot}{Numeric value between 10 and 50. Maximum length that
 a label can reach when plotting the graph. The remaining characters will be 

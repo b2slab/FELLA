@@ -17,4 +17,14 @@ Named vector of p-values
 \description{
 Extractor function for the p-values using the desired methodology
 }
+\examples{
+data(FELLA.sample)
+data(input.sample)
+obj <- enrich(
+compounds = input.sample, 
+data = FELLA.sample)
+p <- getPvalues(obj, "diffusion")
+sum(p < 0.1)
+
+}
 

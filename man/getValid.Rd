@@ -17,4 +17,24 @@ Slot "valid" (internal usage)
 \description{
 Extractor function for the slot "valid"
 }
+\examples{
+## This function is internal
+attach(environment(FELLA:::getValid))
+
+data(FELLA.sample)
+data(input.sample)
+
+obj <- enrich(
+compounds = input.sample, 
+method = "diffusion", 
+data = FELLA.sample)
+
+## If the analysis is valid
+getValid(obj, "diffusion")
+
+## Otherwise
+getValid(new("FELLA.USER"), "diffusion")
+getValid(obj, "pagerank")
+
+}
 

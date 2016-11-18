@@ -4,17 +4,28 @@
 \name{input.sample}
 \alias{input.sample}
 \title{A randomly generated list of affected metabolites}
-\format{A \code{character} vector containing 30 KEGG IDs}
+\format{An object of class \code{character} of length 30.}
 \source{
-Generated from a mid-2014 KEGG release
+Generated from a mid-2014 KEGG release 
+(\url{http://www.genome.jp/kegg/})
 }
 \usage{
 data(input.sample)
 }
+\value{
+A \code{character} vector containing 30 KEGG IDs
+}
 \description{
-This \code{character} vector object has been generated using the 
-sample data in the object \code{FELLA.sample}. The KEGG compounds have been chosen 
-with preference for the hsa00640 pathway, so that the enrichment results choose 
+This \code{character} vector object has been 
+generated using the 
+sample data in the object \code{FELLA.sample}. 
+The KEGG compounds have been chosen 
+with preference for the hsa00640 pathway, 
+so that the enrichment results choose 
 pathway hsa00640 over hsa00010.
 }
+\examples{
+data(input.sample)
+}
+\keyword{datasets}
 

@@ -5,30 +5,33 @@
 \title{Generate graph objects from the enrichment results}
 \usage{
 generateResultsGraph(method = "diffusion", threshold = 0.05, plimit = 15,
-  nlimit = 250, splitByConnectedComponent = F,
+  nlimit = 250, splitByConnectedComponent = FALSE,
   thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
-  GONamesAsLabels = T, LabelLengthAtPlot = 22, object = NULL,
+  GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, object = NULL,
   data = NULL)
 }
 \arguments{
-\item{method}{Character, one of: "hypergeom", "diffusion" or "pagerank"}
+\item{method}{Character, one of: 
+"hypergeom", "diffusion" or "pagerank"}
 
-\item{threshold}{Numeric value between 0 and 1. Applied when filtering KEGG nodes}
+\item{threshold}{Numeric value between 0 and 1. 
+Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
 \item{nlimit}{Node limit, must be a numeric value between 1 and 1000. This limits
 the order of the solution graph}
 
-\item{splitByConnectedComponent}{Logical, should the solution be split by CC?}
+\item{splitByConnectedComponent}{Logical, 
+should the solution be split by CC?}
 
 \item{thresholdConnectedComponent}{Numeric value between 0 and 1. Connected components that are below the threshold are kept, while the ones exceeding it (because they are too small) are discarded.}
 
 \item{GO.CellularComponent}{Character, GO entry to draw semantic similarity 
 in the solution graph. If no similarity is desired, leave it as NULL}
 
-\item{GONamesAsLabels}{Logical, should GO names be displayed as labels instead 
-of GO identifiers?}
+\item{GONamesAsLabels}{Logical, should GO names be displayed as labels 
+instead of GO identifiers?}
 
 \item{LabelLengthAtPlot}{Numeric value between 10 and 50. Maximum length that
 a label can reach when plotting the graph. The remaining characters will be 
@@ -39,13 +42,29 @@ truncated using "..."}
 \item{data}{FELLA.DATA object}
 }
 \value{
-An \code{\link{igraph}} object if \code{splitByConnectedComponent = F}; 
+An \code{\link{igraph}} object if 
+\code{splitByConnectedComponent = F}; 
 a list of \code{\link{igraph}} objects otherwise.
 }
 \description{
 Function \code{generateResultsGraph} returns a graph object with class 
 \code{\link[igraph]{igraph}} or a list of graphs of the same class. 
-according to the specified threshold. A \code{\link[FELLA]{FELLA.USER}} object 
-with a successful enrichment analysis must be supplied.
+according to the specified threshold. A \code{\link[FELLA]{FELLA.USER}} 
+object with a successful enrichment analysis must be supplied.
+}
+\examples{
+data(FELLA.sample)
+data(input.sample)
+## Enrich input
+obj <- enrich(
+compounds = input.sample, 
+data = FELLA.sample)
+## Generate graph
+g <- generateResultsGraph(
+threshold = 0.1, 
+object = obj, 
+data = FELLA.sample)
+g
+
 }
 

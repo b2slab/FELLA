@@ -1,6 +1,7 @@
 #' Pathway enrichment through PageRank
 #' 
-#' Function \code{runPagerank} performs the random walk based enrichment on a 
+#' Function \code{runPagerank} performs the random walk 
+#' based enrichment on a 
 #' \code{\link[FELLA]{FELLA.USER}} object, making use of igraph function 
 #' \code{\link[igraph]{page.rank}}. 
 #' If a custom background was specified, it will be used. 
@@ -14,7 +15,28 @@
 #' @inheritParams .niter
 #' @inheritParams .p.adjust
 #'
-#' @return The \code{\link[FELLA]{FELLA.USER}} object with the PageRank enrichment results
+#' @return The \code{\link[FELLA]{FELLA.USER}} object 
+#' with the PageRank enrichment results
+#' 
+#' @examples 
+#' data(FELLA.sample)
+#' ## Load a list of compounds to enrich
+#' data(input.sample)
+#' obj.empty <- defineCompounds(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' obj.diff <- runPagerank(
+#' object = obj.empty, 
+#' approx = "normality", 
+#' data = FELLA.sample)
+#' obj.diff
+#' 
+#' ## Note that the enrich wrapper can do this in a compact way
+#' obj.diff <- enrich(
+#' compounds = input.sample, 
+#' method = "pagerank", 
+#' data = FELLA.sample)
+#' obj.diff
 #' 
 #' @import Matrix
 #' @import igraph
@@ -22,7 +44,7 @@
 runPagerank <- function(
   object = NULL, 
   data = NULL, 
-  approx = "simulation", 
+  approx = "normality", 
   t.df = 10, 
   niter = 1000, 
   p.adjust = "fdr") {
@@ -110,7 +132,8 @@ runPagerank <- function(
     }
     
     if (prod(dim(getMatrix(data, "pagerank"))) == 1) {
-      message("PageRank matrix not loaded. Simulations may be a bit slower...")
+      message("PageRank matrix not loaded. ", 
+              "Simulations may be a bit slower...")
       
       # Load the graph 
       graph <- getGraph(data)
@@ -142,15 +165,16 @@ runPagerank <- function(
       
       n.nodes <- length(current.score)
       pvalues <- sapply(1:n.nodes, function(row) {
-        ((1 - ecdf(null.score[row, ])(current.score[row]))*
+        ((1 - stats::ecdf(null.score[row, ])(current.score[row]))*
            n.nodes + 1)/(n.nodes + 1)
       })
       names(pvalues) <- V(graph)$name
       
     } else {
       # Calculate current scores.
-      # Warning: each score vector should be divided by n.input. It won't, as
-      # it just rescales all the scores and becomes irrelevant for the test.
+      # Warning: each score vector should be divided by n.input. 
+      # It won't, as it just rescales all the scores 
+      # and becomes irrelevant for the test.
       pagerank.matrix <- getMatrix(data, "pagerank")
       
       if (n.input == 1) {
@@ -167,7 +191,7 @@ runPagerank <- function(
       
       n.nodes <- length(current.score)
       pvalues <- sapply(1:n.nodes, function(row) {
-        ((1 - ecdf(null.score[row, ])(current.score[row]))*
+        ((1 - stats::ecdf(null.score[row, ])(current.score[row]))*
            n.nodes + 1)/(n.nodes + 1)
       })
       names(pvalues) <- rownames(pagerank.matrix)
@@ -239,21 +263,21 @@ runPagerank <- function(
       (squaredRowSums - (RowSums^2)/n.comp)
     
     if (approx == "normality") {
-      pvalues <- pnorm(
+      pvalues <- stats::pnorm(
         q = current.score, 
         mean = score.means, 
         sd = sqrt(score.vars), 
         lower.tail = FALSE)
     }
     if (approx == "gamma") {
-      pvalues <- pgamma(
+      pvalues <- stats::pgamma(
         q = current.score, 
         shape = score.means^2/score.vars, 
         scale = score.vars/score.means, 
         lower.tail = FALSE)
     }
     if (approx == "t") {
-      pvalues <- pt(
+      pvalues <- stats::pt(
         q = (current.score - score.means)/sqrt(score.vars), 
         df = t.df, 
         lower.tail = FALSE)
@@ -263,7 +287,7 @@ runPagerank <- function(
     
   } 
 
-  pvalues <- p.adjust(p = pvalues, method = p.adjust)
+  pvalues <- stats::p.adjust(p = pvalues, method = p.adjust)
   
   object@pagerank@pvalues <- pvalues
   object@pagerank@approx <- approx

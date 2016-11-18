@@ -4,8 +4,8 @@
 \alias{runPagerank}
 \title{Pathway enrichment through PageRank}
 \usage{
-runPagerank(object = NULL, data = NULL, approx = "simulation",
-  t.df = 10, niter = 1000, p.adjust = "fdr")
+runPagerank(object = NULL, data = NULL, approx = "normality", t.df = 10,
+  niter = 1000, p.adjust = "fdr")
 }
 \arguments{
 \item{object}{FELLA.USER object}
@@ -18,20 +18,44 @@ runPagerank(object = NULL, data = NULL, approx = "simulation",
 \item{t.df}{Numeric value; number of degrees of freedom of the t distribution 
 if the approximation \code{approx = "t"} is used}
 
-\item{niter}{Number of iterations (permutations) for Monte Carlo ("simulation"), 
+\item{niter}{Number of iterations (permutations) 
+for Monte Carlo ("simulation"), 
 must be a numeric value between 1e2 and 1e5}
 
 \item{p.adjust}{Character passed to the \code{\link[stats]{p.adjust}} method}
 }
 \value{
-The \code{\link[FELLA]{FELLA.USER}} object with the PageRank enrichment results
+The \code{\link[FELLA]{FELLA.USER}} object 
+with the PageRank enrichment results
 }
 \description{
-Function \code{runPagerank} performs the random walk based enrichment on a 
+Function \code{runPagerank} performs the random walk 
+based enrichment on a 
 \code{\link[FELLA]{FELLA.USER}} object, making use of igraph function 
 \code{\link[igraph]{page.rank}}. 
 If a custom background was specified, it will be used. 
 This procedure gives statistical significance measures for each node 
 and allows the extraction of a subgraph according to a fixed threshold.
+}
+\examples{
+data(FELLA.sample)
+## Load a list of compounds to enrich
+data(input.sample)
+obj.empty <- defineCompounds(
+compounds = input.sample, 
+data = FELLA.sample)
+obj.diff <- runPagerank(
+object = obj.empty, 
+approx = "normality", 
+data = FELLA.sample)
+obj.diff
+
+## Note that the enrich wrapper can do this in a compact way
+obj.diff <- enrich(
+compounds = input.sample, 
+method = "pagerank", 
+data = FELLA.sample)
+obj.diff
+
 }
 

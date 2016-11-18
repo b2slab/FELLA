@@ -4,8 +4,8 @@
 \alias{runDiffusion}
 \title{Pathway enrichment through heat diffusion}
 \usage{
-runDiffusion(object = NULL, data = NULL, approx = "simulation",
-  t.df = 10, niter = 1000, p.adjust = "fdr", BIMODAL = F)
+runDiffusion(object = NULL, data = NULL, approx = "normality",
+  t.df = 10, niter = 1000, p.adjust = "fdr", BIMODAL = FALSE)
 }
 \arguments{
 \item{object}{FELLA.USER object}
@@ -18,7 +18,8 @@ runDiffusion(object = NULL, data = NULL, approx = "simulation",
 \item{t.df}{Numeric value; number of degrees of freedom of the t distribution 
 if the approximation \code{approx = "t"} is used}
 
-\item{niter}{Number of iterations (permutations) for Monte Carlo ("simulation"), 
+\item{niter}{Number of iterations (permutations) 
+for Monte Carlo ("simulation"), 
 must be a numeric value between 1e2 and 1e5}
 
 \item{p.adjust}{Character passed to the \code{\link[stats]{p.adjust}} method}
@@ -26,13 +27,38 @@ must be a numeric value between 1e2 and 1e5}
 \item{BIMODAL}{Logical value, should the bimodal test for compounds be used?}
 }
 \value{
-The \code{\link[FELLA]{FELLA.USER}} object with the diffusion enrichment results
+The \code{\link[FELLA]{FELLA.USER}} object 
+with the diffusion enrichment results
 }
 \description{
-Function \code{runDiffusion} performs the diffusion-based enrichment on a 
-\code{\link[FELLA]{FELLA.USER}} object. If a custom background was specified, 
+Function \code{runDiffusion} performs 
+the diffusion-based enrichment on a 
+\code{\link[FELLA]{FELLA.USER}} object. 
+If a custom background was specified, 
 it will be used. 
-This procedure gives statistical significance measures for each node and allows 
+This procedure gives statistical significance measures 
+for each node and allows 
 the extraction of a subgraph according to a fixed threshold.
+}
+\examples{
+data(FELLA.sample)
+## Load a list of compounds to enrich
+data(input.sample)
+obj.empty <- defineCompounds(
+compounds = input.sample, 
+data = FELLA.sample)
+obj.diff <- runDiffusion(
+object = obj.empty, 
+approx = "normality", 
+data = FELLA.sample)
+obj.diff
+
+## Note that the enrich wrapper can do this in a compact way
+obj.diff <- enrich(
+compounds = input.sample, 
+method = "diffusion", 
+data = FELLA.sample)
+obj.diff
+
 }
 

@@ -10,10 +10,12 @@
 #' @param level Desired level, can be coded as a number or a character: 1 or "pathway"; 2 or "module"; 3 or "enzyme"; 4 or "reaction"; 5 or "compound".
 .level <- function() NULL
 
-#' @param method Character, one of: "hypergeom", "diffusion", "pagerank" or "all"
+#' @param method Character, one of: 
+#' "hypergeom", "diffusion", "pagerank" or "all"
 .method <- function() NULL
 
-#' @param method Character, one of: "hypergeom", "diffusion" or "pagerank"
+#' @param method Character, one of: 
+#' "hypergeom", "diffusion" or "pagerank"
 .methodSingle <- function() NULL
 
 #' @param approx Character: "simulation" for Monte Carlo, "normality", 
@@ -24,7 +26,8 @@
 #' One of: "diffusion", "pagerank", "all" or NULL
 .loadMatrix <- function() NULL
 
-#' @param threshold Numeric value between 0 and 1. Applied when filtering KEGG nodes
+#' @param threshold Numeric value between 0 and 1. 
+#' Applied when filtering KEGG nodes
 .threshold <- function() NULL
 
 #' @param thresholdConnectedComponent Numeric value between 0 and 1. Connected components that are below the threshold are kept, while the ones exceeding it (because they are too small) are discarded. 
@@ -37,29 +40,31 @@
 #' the order of the solution graph
 .nlimit <- function() NULL
 
-#' @param niter Number of iterations (permutations) for Monte Carlo ("simulation"), 
+#' @param niter Number of iterations (permutations) 
+#' for Monte Carlo ("simulation"), 
 #' must be a numeric value between 1e2 and 1e5
 .niter <- function() NULL
 
 #' @param layout Logical, should the plot be returned as a layout?
 .layout <- function() NULL
 
-#' @param splitByConnectedComponent Logical, should the solution be split by CC?
+#' @param splitByConnectedComponent Logical, 
+#' should the solution be split by CC?
 .splitByConnectedComponent <- function() NULL
 
 #' @param askPlots Logical, should R ask for the next plots using hit<ENTER>?
 .askPlots <- function() NULL
 
-#' @param thresholdConnectedComponent Numeric value between 0 and 1, refers to the 
-#' threshold to keep a CC regarding its size
+#' @param thresholdConnectedComponent Numeric value between 0 and 1, 
+#' refers to the threshold to keep a CC regarding its size
 .thresholdConnectedComponent <- function() NULL
 
 #' @param GO.CellularComponent Character, GO entry to draw semantic similarity 
 #' in the solution graph. If no similarity is desired, leave it as NULL
 .GO.CellularComponent <- function() NULL
 
-#' @param GONamesAsLabels Logical, should GO names be displayed as labels instead 
-#' of GO identifiers?
+#' @param GONamesAsLabels Logical, should GO names be displayed as labels 
+#' instead of GO identifiers?
 .GONamesAsLabels <- function() NULL
 
 #' @param LabelLengthAtPlot Numeric value between 10 and 50. Maximum length that
@@ -87,8 +92,8 @@
 #' default background (all compounds)
 .compoundsBackground <- function() NULL
 
-#' @param NamesAsLabels Logical, should KEGG names be displayed as labels instead 
-#' of KEGG identifiers?
+#' @param NamesAsLabels Logical, should KEGG names be displayed 
+#' as labels instead of KEGG identifiers?
 .NamesAsLabels <- function() NULL
 
 # Dev options

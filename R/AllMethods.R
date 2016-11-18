@@ -44,7 +44,8 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
     output$diffusion <- data.frame(out.names, out.pvalues, 
                                    row.names = NULL)[out.order, ]
     row.names(output$diffusion) <- NULL
-    # names(output$diffusion) <- c("KEGG id", "p.value", "Description", "Guess?")
+    # names(output$diffusion) <- c("KEGG id", "p.value", 
+    # "Description", "Guess?")
     names(output$diffusion) <- c("KEGG id", "p.value")
   }
   

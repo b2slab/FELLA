@@ -6,13 +6,15 @@
 \usage{
 checkArguments(method = "diffusion", approx = "normality",
   loadMatrix = NULL, threshold = 0.05, plimit = 15, nlimit = 250,
-  niter = 1000, layout = F, splitByConnectedComponent = F, askPlots = T,
-  thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
-  GONamesAsLabels = T, LabelLengthAtPlot = 22, object = new("FELLA.USER"),
+  niter = 1000, layout = FALSE, splitByConnectedComponent = FALSE,
+  askPlots = TRUE, thresholdConnectedComponent = 0.05,
+  GO.CellularComponent = NULL, GONamesAsLabels = TRUE,
+  LabelLengthAtPlot = 22, object = new("FELLA.USER"),
   data = new("FELLA.DATA"))
 }
 \arguments{
-\item{method}{Character, one of: "hypergeom", "diffusion", "pagerank" or "all"}
+\item{method}{Character, one of: 
+"hypergeom", "diffusion", "pagerank" or "all"}
 
 \item{approx}{Character: "simulation" for Monte Carlo, "normality", 
 "gamma" or "t" for parametric approaches}
@@ -20,19 +22,22 @@ checkArguments(method = "diffusion", approx = "normality",
 \item{loadMatrix}{Character to choose if heavy matrices should be loaded. 
 One of: "diffusion", "pagerank", "all" or NULL}
 
-\item{threshold}{Numeric value between 0 and 1. Applied when filtering KEGG nodes}
+\item{threshold}{Numeric value between 0 and 1. 
+Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
 \item{nlimit}{Node limit, must be a numeric value between 1 and 1000. This limits
 the order of the solution graph}
 
-\item{niter}{Number of iterations (permutations) for Monte Carlo ("simulation"), 
+\item{niter}{Number of iterations (permutations) 
+for Monte Carlo ("simulation"), 
 must be a numeric value between 1e2 and 1e5}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 
-\item{splitByConnectedComponent}{Logical, should the solution be split by CC?}
+\item{splitByConnectedComponent}{Logical, 
+should the solution be split by CC?}
 
 \item{askPlots}{Logical, should R ask for the next plots using hit<ENTER>?}
 
@@ -41,8 +46,8 @@ must be a numeric value between 1e2 and 1e5}
 \item{GO.CellularComponent}{Character, GO entry to draw semantic similarity 
 in the solution graph. If no similarity is desired, leave it as NULL}
 
-\item{GONamesAsLabels}{Logical, should GO names be displayed as labels instead 
-of GO identifiers?}
+\item{GONamesAsLabels}{Logical, should GO names be displayed as labels 
+instead of GO identifiers?}
 
 \item{LabelLengthAtPlot}{Numeric value between 10 and 50. Maximum length that
 a label can reach when plotting the graph. The remaining characters will be 
@@ -53,14 +58,25 @@ truncated using "..."}
 \item{data}{FELLA.DATA object}
 }
 \value{
-A list with values. Currently only a logical value named \code{valid} 
-if the process runs smoothly. If the checking fails, it also returns an 
-object called \code{ans}, which depends on the situation (can be the original object, 
+A list with values. Currently only a 
+logical value named \code{valid} 
+if the process runs smoothly. If the checking fails, 
+it also returns an 
+object called \code{ans}, which depends on 
+the situation (can be the original object, 
 \code{NULL}, et cetera).
 }
 \description{
 This function checks if the arguments are of the desired type, length 
 and range. If it fails, it gives an error explaining why the argument 
 is invalid.
+}
+\examples{
+## This function is internal
+attach(environment(FELLA:::checkArguments))
+arg1 <- checkArguments(method = "hello")
+arg1$valid
+arg2 <- checkArguments(method = "diffusion")
+arg2$valid
 }
 

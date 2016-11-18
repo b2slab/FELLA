@@ -1,7 +1,7 @@
 Package: FELLA
 Type: Package
 Title: FELLA, an interpretation and enrichment tool for metabolomics data
-Version: 0.992.1
+Version: 0.0.999
 Date: 28-04-2015
 Authors@R: c(person("Sergio", "Picart-Armada", role = c("aut", "cre"),
                      email = "sergi.picart@upc.edu"), 

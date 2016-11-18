@@ -4,20 +4,49 @@
 \alias{loadKEGGdata}
 \title{Load KEGG data}
 \usage{
-loadKEGGdata(path = "", loadMatrix = NULL)
+loadKEGGdata(databaseDir = "myDatabase", internalDir = TRUE,
+  loadMatrix = NULL)
 }
 \arguments{
-\item{path}{Path for the KEGG RData files}
+\item{databaseDir}{Path for the KEGG RData files}
+
+\item{internalDir}{Logical, is the directory located 
+in the package directory?}
 
 \item{loadMatrix}{Character to choose if heavy matrices should be loaded. 
 One of: "diffusion", "pagerank", "all" or NULL}
 }
 \value{
-The \code{\link[FELLA]{FELLA.DATA}} object that contains the KEGG representation
+The \code{\link[FELLA]{FELLA.DATA}} object 
+that contains the KEGG representation
 }
 \description{
 This function loads all necessary contextual data from KEGG as a 
-\code{\link[FELLA]{FELLA.DATA}} object. This object is necessary to perform any 
-kind of enrichment using \code{\link[FELLA]{FELLA}}.
+\code{\link[FELLA]{FELLA.DATA}} object. This object is necessary 
+to perform any kind of enrichment using \code{\link[FELLA]{FELLA}}.
+}
+\examples{
+\dontrun{
+## Toy example
+data("FELLA.sample")
+## Graph to build the database
+g.sample <- FELLA:::getGraph(FELLA.sample)
+dir.tmp <- tempdir()
+## Save it in a temporary directory
+buildDataFromGraph(
+keggdata.graph = g.sample, 
+databaseDir = dir.tmp, 
+internalDir = FALSE, 
+matrices = c("hypergeom", "diffusion", "pagerank"), 
+normality = c("diffusion", "pagerank"), 
+dampingFactor = 0.7,
+niter = 10)
+## Load database
+myFELLA.DATA <- loadKEGGdata(
+dir.tmp, 
+internalDir = FALSE)
+myFELLA.DATA
+}
+
 }
 

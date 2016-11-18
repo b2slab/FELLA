@@ -1,9 +1,12 @@
 #' Pathway enrichment through heat diffusion
 #' 
-#' Function \code{runDiffusion} performs the diffusion-based enrichment on a 
-#' \code{\link[FELLA]{FELLA.USER}} object. If a custom background was specified, 
+#' Function \code{runDiffusion} performs 
+#' the diffusion-based enrichment on a 
+#' \code{\link[FELLA]{FELLA.USER}} object. 
+#' If a custom background was specified, 
 #' it will be used. 
-#' This procedure gives statistical significance measures for each node and allows 
+#' This procedure gives statistical significance measures 
+#' for each node and allows 
 #' the extraction of a subgraph according to a fixed threshold.
 #'
 #' @inheritParams .object
@@ -14,7 +17,28 @@
 #' @inheritParams .p.adjust
 #' @inheritParams .BIMODAL
 #'
-#' @return The \code{\link[FELLA]{FELLA.USER}} object with the diffusion enrichment results
+#' @return The \code{\link[FELLA]{FELLA.USER}} object 
+#' with the diffusion enrichment results
+#' 
+#' @examples
+#' data(FELLA.sample)
+#' ## Load a list of compounds to enrich
+#' data(input.sample)
+#' obj.empty <- defineCompounds(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' obj.diff <- runDiffusion(
+#' object = obj.empty, 
+#' approx = "normality", 
+#' data = FELLA.sample)
+#' obj.diff
+#' 
+#' ## Note that the enrich wrapper can do this in a compact way
+#' obj.diff <- enrich(
+#' compounds = input.sample, 
+#' method = "diffusion", 
+#' data = FELLA.sample)
+#' obj.diff
 #' 
 #' @import Matrix
 #' @import igraph
@@ -22,7 +46,7 @@
 runDiffusion <- function(
   object = NULL, 
   data = NULL, 
-  approx = "simulation", 
+  approx = "normality", 
   t.df = 10, 
   niter = 1000, 
   p.adjust = "fdr", 
@@ -139,7 +163,7 @@ runDiffusion <- function(
       
       n.nodes <- length(current.temp)
       pvalues <- sapply(1:n.nodes, function(row) {
-        ((1 - ecdf(null.temp[row, ])(current.temp[row]))*
+        ((1 - stats::ecdf(null.temp[row, ])(current.temp[row]))*
            n.nodes + 1)/(n.nodes + 1)
       })
       names(pvalues) <- V(graph)$name
@@ -164,7 +188,7 @@ runDiffusion <- function(
 
       n.nodes <- length(current.temp)
       pvalues <- sapply(1:n.nodes, function(row) {
-        ((1 - ecdf(null.temp[row, ])(current.temp[row]))*
+        ((1 - stats::ecdf(null.temp[row, ])(current.temp[row]))*
            n.nodes + 1)/(n.nodes + 1)
       })
       names(pvalues) <- rownames(diffusion.matrix)
@@ -270,21 +294,21 @@ runDiffusion <- function(
     }
     
     if (approx == "normality") {
-      pvalues <- pnorm(
+      pvalues <- stats::pnorm(
         q = current.temp, 
         mean = temp.means, 
         sd = sqrt(temp.vars), 
         lower.tail = FALSE)
     }
     if (approx == "gamma") {
-      pvalues <- pgamma(
+      pvalues <- stats::pgamma(
         q = current.temp, 
         shape = temp.means^2/temp.vars, 
         scale = temp.vars/temp.means, 
         lower.tail = FALSE)
     }
     if (approx == "t") {
-      pvalues <- pt(
+      pvalues <- stats::pt(
         q = (current.temp - temp.means)/sqrt(temp.vars), 
         df = t.df, 
         lower.tail = FALSE)
@@ -297,7 +321,7 @@ runDiffusion <- function(
          "Please choose between 'simulation' and 'normality'")
   }
 
-  pvalues <- p.adjust(p = pvalues, method = p.adjust)
+  pvalues <- stats::p.adjust(p = pvalues, method = p.adjust)
 
   object@diffusion@pvalues <- pvalues
   object@diffusion@approx <- approx

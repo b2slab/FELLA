@@ -10,9 +10,23 @@ is.FELLA.USER(x = NULL)
 \item{x}{Object to check}
 }
 \value{
-Logical value stating if \code{x} is a \code{\link[FELLA]{FELLA.USER}} object
+Logical value stating if \code{x} 
+is a \code{\link[FELLA]{FELLA.USER}} object
 }
 \description{
 Is \code{x} a \code{\link[FELLA]{FELLA.USER}} object?
+}
+\examples{
+is.FELLA.USER(new("FELLA.USER"))
+is.FELLA.USER(42)
+
+data(FELLA.sample)
+data(input.sample)
+obj <- enrich(
+compounds = input.sample, 
+method = "diffusion", 
+data = FELLA.sample)
+is.FELLA.USER(obj)
+
 }
 

@@ -1,6 +1,7 @@
 #' Generate readable tables from the enrichment results
 #' 
-#' Function \code{generateResultsTable} returns a table that contains the results 
+#' Function \code{generateResultsTable} returns a table 
+#' that contains the results 
 #' of a \code{\link[FELLA]{FELLA.USER}} object 
 #' with a successful enrichment analysis.
 #' 
@@ -10,13 +11,27 @@
 #' @inheritParams .plimit
 #' @inheritParams .nlimit
 #' @inheritParams .LabelLengthAtPlot
-#' @param capPvalues Numeric value, minimum p-value admitted for the readable 
-#' formatting. Smaller p-values will be displayed as \code{< capPvalues} in the 
+#' @param capPvalues Numeric value, minimum p-value 
+#' admitted for the readable 
+#' formatting. Smaller p-values will be displayed 
+#' as \code{< capPvalues} in the 
 #' table.
 #' @inheritParams .object
 #' @inheritParams .data
 #'
 #' @return A table that contains the KEGG graph nodes with their p-value
+#' 
+#' @examples 
+#' data(FELLA.sample)
+#' data(input.sample)
+#' obj <- enrich(
+#' compounds = input.sample, 
+#' data = FELLA.sample)
+#' tab <- generateResultsTable(
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' head(tab)
 #' 
 #' @import igraph
 #' @export

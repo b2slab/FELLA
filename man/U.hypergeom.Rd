@@ -3,10 +3,12 @@
 \docType{class}
 \name{U.hypergeom-class}
 \alias{U.hypergeom-class}
-\title{An internal S4 class for the user data of the hypergeometric over representation 
+\title{An internal S4 class for the user data 
+of the hypergeometric over representation 
 analysis}
 \description{
-An internal S4 class for the user data of the hypergeometric over representation 
+An internal S4 class for the user data 
+of the hypergeometric over representation 
 analysis
 }
 \section{Slots}{

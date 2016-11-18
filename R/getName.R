@@ -1,12 +1,17 @@
 #' Map KEGG identifiers to KEGG names
 #' 
-#' Map KEGG identifiers to KEGG names, multiple names for an ID are reported if annotated. 
+#' Map KEGG identifiers to KEGG names, multiple names 
+#' for an ID are reported if annotated. 
 #' The KEGG identifiers may have mixed levels.
 #'
 #' @inheritParams .data
 #' @param id KEGG IDs whose name is desired
 #'
-#' @return List whose names are KEGG IDs and whose entries are the vectors of matches
+#' @return List whose names are KEGG IDs and 
+#' whose entries are the vectors of matches
+#' @examples 
+#' data(FELLA.sample)
+#' getName(FELLA.sample, c("C00002", "C00040"))
 #' 
 #' @export
 getName <- function(data, id) {

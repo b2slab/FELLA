@@ -24,11 +24,11 @@ Package `FELLA`, on the other hand, introduces a comprehensive output that encom
 
 This vignette makes use of sample data that contains small subgraph of `FELLA`'s KEGG graph. All the necessary contextual data is stored in an S4 data structure with class `FELLA.DATA`. Several functions need access to the contextual data, passed as an argument called `data`, being the enrichment itself among them.
 
-```{r, echo=F, warning=F, message=F}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(FELLA)
 ```
 
-```{r, warning=F, message=F}
+```{r, warning=FALSE, message=FALSE}
 data("FELLA.sample")
 
 class(FELLA.sample)
@@ -40,7 +40,7 @@ show(FELLA.sample)
 
 The second block of necessary data is a list of affected metabolites, which shoud be specified as KEGG compound IDs. Provided is a list of hypothetical affected metabolites belonging to the graph, to which some decoys that do not map to the graph are added. 
 
-```{r, warning=F, message=F}
+```{r, warning=FALSE, message=FALSE}
 data("input.sample")
 
 input.full <- c(input.sample, paste0("intruder", 1:10))
@@ -50,7 +50,7 @@ show(input.full)
 
 Compounds are introduced through the `defineCompounds` function and provide the first `FELLA.USER` user data object containing the mapped compounds and empty analyses slots. 
 
-```{r, warning=T, message=T}
+```{r, warning=TRUE, message=TRUE}
 myAnalysis <- defineCompounds(compounds = input.full, 
                               data = FELLA.sample)
 
@@ -58,19 +58,19 @@ myAnalysis <- defineCompounds(compounds = input.full,
 
 Note that a warning message informs the user that some compounds did not map to the KEGG compound collection. Compounds that successfully mapped can be obtained through `getInput`,
 
-```{r, warning=T, message=T}
+```{r, warning=TRUE, message=TRUE}
 getInput(myAnalysis)
 ```
 
 while compounds that were excluded because of mismatch can be accessed through `getExcluded`:
 
-```{r, warning=T, message=T}
+```{r, warning=TRUE, message=TRUE}
 getExcluded(myAnalysis)
 ```
 
 Keep in mind that exact matching is sought, so be extremely careful with __whitespaces__, tabs or similar characters that might create mismatches. For example:
 
-```{r, warning=F, message=F, error=T}
+```{r, warning=FALSE, message=FALSE, error=TRUE}
 input.fail <- paste0(" ", input.full)
 defineCompounds(compounds = input.fail, 
                 data = FELLA.sample)
@@ -102,7 +102,7 @@ Vignettes are long form documentation commonly included in packages. Because the
 The function `enrich` wraps the functions `defineCompounds`, `runHypergeom`, `runDiffusion` and `runPagerank` 
 in an easily usable manner, returning a `FELLA.USER` object with complete analyses. 
 
-```{r, warning=T, message=T}
+```{r, warning=TRUE, message=TRUE}
 myAnalysis <- enrich(compounds = input.full, 
                      method = "diffusion", 
                      approx = "normality", 
@@ -111,21 +111,21 @@ myAnalysis <- enrich(compounds = input.full,
 
 The output is quite informative and aggregates all the warnings. Let's compare an empty `FELLA.USER` object
 
-```{r, warning=T, message=T}
+```{r, warning=TRUE, message=TRUE}
 show(new("FELLA.USER"))
 summary(new("FELLA.USER"))
 ```
 
 to the output of a processed one:
 
-```{r, warning=T, message=T}
+```{r, warning=TRUE, message=TRUE}
 show(myAnalysis)
 summary(myAnalysis)
 ```
 
 The wrapper function `enrich` can run the three analysis at once with the option `method = "all"`:
 
-```{r, warning=F, message=F}
+```{r, warning=FALSE, message=FALSE}
 myAnalysis <- enrich(compounds = input.full, 
                      method = "all", 
                      approx = "normality", 
@@ -136,7 +136,7 @@ show(myAnalysis)
 
 The wrapped functions work in a similar way, here is an example with `runDiffusion`:
 
-```{r, warning=F, message=T}
+```{r, warning=FALSE, message=TRUE}
 myAnalysis_bis <- runDiffusion(object = myAnalysis, 
                                approx = "normality", 
                                p.adjust = "fdr", 
@@ -152,7 +152,7 @@ The method `plot` for data from the package `FELLA` allows a friendly visualisat
 
 In the case `method = "hypergeom"` the plot encompasses a bipartite graph that contains top pathways and affected compounds. In that case, `threshold = 1` allows the visualisation of both pathways; otherwise a plot with only one pathway would be quite uninformative. 
 
-```{r, warning=F, message=T, fig.width=8, fig.height=8}
+```{r, warning=FALSE, message=TRUE, fig.width=8, fig.height=8}
 FELLA::plot(x = myAnalysis, 
             method = "hypergeom", 
             main = "My first enrichment using the hypergeometric test in FELLA", 
@@ -164,7 +164,7 @@ FELLA::plot(x = myAnalysis,
 
 For `method = "diffusion"` the graph contains a richer representations involving __modules, enzymes and reactions__ that link affected pathways and compounds.
 
-```{r, warning=F, message=T, fig.width=8, fig.height=8}
+```{r, warning=FALSE, message=TRUE, fig.width=8, fig.height=8}
 FELLA::plot(x = myAnalysis, 
             method = "diffusion", 
             main = "My first enrichment using the diffusion analysis in FELLA", 
@@ -176,7 +176,7 @@ FELLA::plot(x = myAnalysis,
 
 For `method = "pagerank"` the concept is analogous to diffusion:
 
-```{r, warning=F, message=T, fig.width=8, fig.height=8}
+```{r, warning=FALSE, message=TRUE, fig.width=8, fig.height=8}
 FELLA::plot(x = myAnalysis, 
             method = "pagerank", 
             main = "My first enrichment using the PageRank analysis in FELLA", 
@@ -192,7 +192,7 @@ FELLA::plot(x = myAnalysis,
 
 The appropriate functions to export the results inside R are `generateResultsTable` for a __data.frame__ object:
 
-```{r, warning=F, message=T, results='asis'}
+```{r, warning=FALSE, message=TRUE, results='asis'}
 myTable <- generateResultsTable(object = myAnalysis, 
                                 method = "diffusion", 
                                 threshold = 0.1, 
@@ -203,7 +203,7 @@ knitr::kable(head(myTable, 20))
 
 ...and `generateResultsGraph` for a __graph__ in [igraph](http://igraph.org/r/) format:
 
-```{r, warning=F, message=T}
+```{r, warning=FALSE, message=TRUE}
 myGraph <- generateResultsGraph(object = myAnalysis, 
                                 method = "diffusion", 
                                 threshold = 0.1, 
@@ -216,7 +216,7 @@ show(myGraph)
 
 Results can be saved as permanent files. The __data.frame__ data format can be saved as a `.csv` file:
 
-```{r, warning=F, message=T, results='asis'}
+```{r, warning=FALSE, message=TRUE, results='asis'}
 myTempDir <- tempdir()
 myExp_csv <- paste0(myTempDir, "/table.csv")
 exportResults(format = "csv", 
@@ -232,7 +232,7 @@ knitr::kable(head(test))
 
 In the same line, the __graph__ can be saved in `RData`:
 
-```{r, warning=F, message=T, results='asis'}
+```{r, warning=FALSE, message=TRUE, results='asis'}
 myExp_graph <- paste0(myTempDir, "/graph.RData")
 exportResults(format = "igraph", 
               file = myExp_graph, 
@@ -246,7 +246,7 @@ stopifnot("graph.RData" %in% list.files(myTempDir))
 
 Other formats exported by [igraph](http://igraph.org/r/) are also available, internally using their function `igraph::write.graph`. Check the __format__ argument of `?igraph::write.graph` for a list of the supported formats. For example, using `"pajek"` format:
 
-```{r, warning=F, message=T, results='asis'}
+```{r, warning=FALSE, message=TRUE, results='asis'}
 myExp_pajek <- paste0(myTempDir, "/graph.pajek")
 exportResults(format = "pajek", 
               file = myExp_pajek, 

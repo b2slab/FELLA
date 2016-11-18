@@ -8,7 +8,11 @@ data("input.sample", package = "FELLA", envir = test.env)
 
 test_that("getCom extractor", {
   categories <- c(as.list(1:5), 
-                  list("pathway", "module", "enzyme", "reaction", "compound"))
+                  list("pathway", 
+                       "module", 
+                       "enzyme", 
+                       "reaction", 
+                       "compound"))
   lapply(categories, function(categ) {
     
     temporary <- try(FELLA:::getCom(data = FELLA.sample, 
@@ -52,10 +56,10 @@ test_that("getName extractor", {
 
 test_that("getSums extractor", {
   for (method in c("diffusion", "pagerank")) {
-    for (squared in c(T, F)) {
+    for (squared in c(TRUE, FALSE)) {
       sums <- FELLA:::getSums(data = FELLA.sample, 
                              type = "diffusion", 
-                             squared = F)
+                             squared = FALSE)
   
       expect_named(sums)
       expect_is(sums, "numeric")

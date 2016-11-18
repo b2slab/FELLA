@@ -1,21 +1,32 @@
 #' Internal function to add a legend to a graph plot
 #' 
-#' This function adds a legend to a solution plot. It can include the CC 
-#' similarity.
+#' This function adds a legend to a solution plot. 
+#' It can include the CC similarity.
 #'
 #' @inheritParams .GO.CellularComponent
 #' @param cex Numeric value, \code{cex} parameter for the function 
 #' \code{\link[graphics]{legend}}
 #' 
-#' @return This function is only used for its effect, so it returns \code{invisible()}
+#' @return This function is only used for its effect, 
+#' so it returns \code{invisible()}
 #' 
+#' @examples 
+#' ## This function is internal
+#' attach(environment(FELLA:::showLegend))
+#' 
+#' library(igraph)
+#' g <- barabasi.game(20)
+#' plot(g)
+#' showLegend()
+#' plot(g)
+#' showLegend(GO.CellularComponent = TRUE)
 showLegend <- function(
   GO.CellularComponent = FALSE, 
   cex = 0.75) {
   # In the left side, legend for node categories
-  legend(
+  graphics::legend(
 #       x = -1.5, y = -1, 
-      text.width = .2, 
+    text.width = .2, 
     "bottomleft", 
     title = "Categories for each node", 
     title.col = "black", 
@@ -60,7 +71,7 @@ showLegend <- function(
   
   # In the right side, enzyme for cellular component
   if (GO.CellularComponent) {
-    legend(
+    graphics::legend(
 #         x = 0.5, y = -1,
         text.width = .2, 
       "bottomright", 
