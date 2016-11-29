@@ -1,0 +1,35 @@
+{
+  "nodes":[
+    {"name":"C01152","group":"Compound"},
+    {"name":"C00986","group":"Compound"},
+    {"name":"C00109","group":"Compound"},
+    {"name":"C05984","group":"Compound"},
+    {"name":"C05299","group":"Compound"},
+    {"name":"C01089","group":"Compound"},
+    {"name":"C00058","group":"Compound"},
+    {"name":"C00175","group":"Compound"},
+    {"name":"C00440","group":"Compound"},
+    {"name":"C00246","group":"Compound"},
+    {"name":"C00181","group":"Compound"},
+    {"name":"C00392","group":"Compound"},
+    {"name":"C05926","group":"Compound"},
+    {"name":"C03722","group":"Compound"},
+    {"name":"C00956","group":"Compound"}
+  ],
+  "links":[
+    {"source":0,"target":2,"value":1},
+    {"source":0,"target":3,"value":1},
+    {"source":1,"target":4,"value":1},
+    {"source":1,"target":5,"value":1},
+    {"source":1,"target":6,"value":1},
+    {"source":1,"target":7,"value":1},
+    {"source":3,"target":1,"value":1},
+    {"source":8,"target":2,"value":1},
+    {"source":8,"target":9,"value":1},
+    {"source":8,"target":10,"value":1},
+    {"source":8,"target":11,"value":1},
+    {"source":8,"target":12,"value":1},
+    {"source":8,"target":13,"value":1},
+    {"source":8,"target":14,"value":1}
+  ]
+}

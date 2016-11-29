@@ -1,8 +1,8 @@
 Package: FELLA
 Type: Package
-Title: FELLA, an interpretation and enrichment tool for metabolomics data
-Version: 0.0.999
-Date: 28-04-2015
+Title: Interpretation and Enrichment for Metabolomics Data
+Version: 0.2.0
+Date: 2016-11-25
 Authors@R: c(person("Sergio", "Picart-Armada", role = c("aut", "cre"),
                      email = "sergi.picart@upc.edu"), 
             person("Alexandre", "Perera-Lluna", role = c("aut"),
@@ -10,10 +10,11 @@ Authors@R: c(person("Sergio", "Picart-Armada", role = c("aut", "cre"),
 Author: Sergio Picart-Armada [aut, cre],
     Alexandre Perera-Lluna [aut]
 Maintainer: Sergio Picart-Armada <sergi.picart@upc.edu>
-Description: This package performs the enrichment of metabolites data
-    using KEGG entries. Given a set of affected compounds, it suggests affected
-    reactions, enzymes, modules and pathways. It also performs the classical over-
-    representation analysis.
+Description: Enrichment of metabolomics data using KEGG entries. 
+    Given a set of affected compounds, FELLA suggests affected
+    reactions, enzymes, modules and pathways using label propagation 
+    in a knowledge model network. The resulting subnetwork 
+    can be visualised and exported. 
 License: GPL-3
 LazyLoad: yes
 Imports:
@@ -26,6 +27,7 @@ Enhances:
 Depends:
     R (>= 3.2)
 Suggests:
+    shiny,
     knitr,
     rmarkdown,
     org.Hs.eg.db,
@@ -33,4 +35,10 @@ Suggests:
     GOSemSim
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-biocViews: Software, Metabolomics, GraphAndNetwork, KEGG, Pathways
+biocViews: 
+    Software, 
+    Metabolomics, 
+    GraphAndNetwork, 
+    KEGG, 
+    Pathways, 
+    NetworkEnrichment

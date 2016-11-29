@@ -110,7 +110,7 @@ plotGraph <- function(
       graph.com[y], 
       "1" = "#CD0000",
       "2" = "#CD96CD",
-      "3" = "#FFD500",
+      "3" = "#FFA200",
       "4" = "#8DB6CD",
       "5" = "#548B54"
     )

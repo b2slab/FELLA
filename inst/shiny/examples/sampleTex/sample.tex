@@ -1,0 +1,380 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage{caption}
+\usepackage[sc]{mathpazo}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[textwidth=17cm,textheight=25cm]{geometry}
+
+\setlength\parindent{0pt}
+
+\makeatletter
+\def\strippt{\strip@pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{rotating}
+\makeatother
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+% \captionsetup{labelformat=empty}
+
+
+
+\title{FELLA v0.3 report}
+\author{Sergio Picart-Armada \qquad Alexandre Perera-Lluna \\ B2SLab at UPC}
+\maketitle
+% 
+% <<tableTest, results='asis', echo=FALSE>>=
+% test <- data.frame(x = 1:3, y = 1:3)
+% print(xtable(test, caption = '\\textbf{Test Table}', label = ''), 
+%   caption.placement = getOption("xtable.caption.placement", "top"), size = 'tiny')
+% @
+
+\section{Metabolites enrichment using KEGG entries}
+
+\subsection{Original idea}
+
+The user of this tool has completed a case-control experiment. This gives him
+data about the \textbf{affected compounds} between control and case populations.
+Given the \textbf{KEGG id} of these compounds, FELLA performs an enrichment 
+procedure resulting in a straightforward interpretation.
+
+The enrichment method heats up the affected compounds that live in the bottom of
+a hierarchical structure. The final temperatures of every entry are compared to the null 
+hypothesis, which states that the compounds are chosen at random. The relevant 
+subgraph is then extracted and analysed.
+
+\subsection{Generalized enrichment}
+
+The heating technique is strongly oriented to bottom-to-top heat flow. Thus, if 
+the user disposes of \textbf{affected enzymes} instead of affected compounds and tries to heat them up, the result loses its clean interpretation. 
+
+To address this, FELLA attempts to solve the reverse problem: \textit{given some affected enzymes, which compounds should be heated up so that the enzymes become 
+significant again?} This procedure consists of two steps.
+
+\subsubsection{Solution approximation}
+
+Let $q = q_1, \ldots, q_{nc}$ be the heat generation vector, where $q_i = 1W$ 
+if and only if compound $i$ is affected. Otherwise, $q_i = 0$.
+Let $e_1, \ldots, e_{ne} \in V(G)$ be the affected enzymes. Let $p_i = p_i(q)$ 
+be the p-value for node $i \in V(G)$ given the generation $q$.
+
+We define a cost function that should be minimized:
+
+$$f(q) = \sum_{i \in e_1, \ldots, e_{ne}} p_i$$
+
+We have to find an appropiate logical vector $q$, which is equivalent to determine
+whether each compound should generate or not. Notice that adding too many compounds 
+will increase $f(q)$ as the significance will eventually drop for all the nodes.
+
+To estimate this minimum, we have computed whether switching bit $q_k$ in $q$ 
+improves the cost function. 
+
+$$
+J_k f(q) = \sum_{i \in e_1, \ldots, e_{ne}} \Delta _k (p_i) = \sum_{i \in e_1, \ldots, e_{ne}} p'_i(q'_k = ! q_k) - p_i(q)
+$$
+
+$$
+J f(q) = (J_1 f(q), \ldots, J_{nc} f(q) )
+$$
+
+In order to find a first approximation, we start with $q = q^0 = 0$ and take a 
+predefined number of steps, say $50$, to catch the most promising compounds. 
+Each step can also remove a compound if this implies the largest descent for the 
+objective function. Having $q^{50}$, we refine this solution in the second part.
+
+\subsubsection{Solution refinement}
+
+In this step we want a more accurate input. We obtain that by penalizing even more 
+the objective function by the number of compounds that are generating. We expect noisy compounds to be removed and only the strongest evidence remains. We define a fitness 
+function which evaluates the goodness of a solution $q$:
+
+$$ g(q) = -\log{  \sum_{i = 1}^{nc} q_i }  -  \sum_{i \in e_1, \ldots, e_{ne}} p_i  $$
+
+We maximize this function using a genetic algorithm via \textbf{GA} R package. 
+The starting population contains the individual $q^{50}$ and also mutations $\hat{q}$, where 
+each bit $\hat{q}_k$ had a $5\%$ chance to negate his value.
+Once the algorithm has finished we obtain $q_{final}$. Applying our original method 
+on it we obtain a whole subgraph, whose plot may explain the relationships 
+between the affected enzymes and the predicted compounds.
+
+
+
+\section{Report}
+
+\subsection{Input}
+
+Table \ref{tableInput} contains the items in the input.
+
+% latex table generated in R 3.1.3 by xtable 1.7-4 package
+% Tue Mar 17 17:07:29 2015
+\begin{table}[ht]
+\centering
+{\small
+\begin{tabular}{ll}
+  \hline
+Enzyme & Description \\ 
+  \hline
+3.2.1.24 & alpha-mannosidase; alpha-D-mannosidase; p-nitrophe... \\ 
+  2.4.1.1 & glycogen phosphorylase; muscle phosphorylase a and... \\ 
+  1.11.1.9 & glutathione peroxidase; GSH peroxidase; selenium-g... \\ 
+  5.3.4.1 & protein disulfide-isomerase; S-S rearrangase \\ 
+  2.4.1.11 & glycogen(starch) synthase; UDP-glucose---glycogen ... \\ 
+  4.2.1.3 & aconitate hydratase; cis-aconitase; aconitase; Acn... \\ 
+  3.1.3.5 & 5'-nucleotidase; uridine 5'-nucleotidase; 5'-adeny... \\ 
+  5.2.1.8 & peptidylprolyl isomerase; PPIase; cyclophilin (mis... \\ 
+  1.1.1.37 & malate dehydrogenase; malic dehydrogenase; L-malat... \\ 
+  3.4.16.2 & lysosomal Pro-Xaa carboxypeptidase; angiotensinase... \\ 
+  4.1.1.32 & phosphoenolpyruvate carboxykinase (GTP); phosphoen... \\ 
+  3.1.1.5 & lysophospholipase; lecithinase B; lysolecithinase;... \\ 
+  1.1.1.184 & carbonyl reductase (NADPH); aldehyde reductase 1; ... \\ 
+  2.5.1.18 & glutathione transferase; glutathione S-transferase... \\ 
+   \hline
+\end{tabular}
+}
+\caption{Enzymes in the input} 
+\label{tableInput}
+\end{table}
+% latex table generated in R 3.1.3 by xtable 1.7-4 package
+% Tue Mar 17 17:07:29 2015
+\begin{table}[ht]
+\centering
+{\small
+\begin{tabular}{ll}
+  \hline
+Predicted compound & Description \\ 
+  \hline
+C00036 & Oxaloacetate; Oxalacetic acid; Oxaloacetic acid; 2... \\ 
+  C00417 & cis-Aconitate; cis-Aconitic acid \\ 
+  C00127 & Glutathione disulfide; GSSG; Oxiglutatione; Oxidiz... \\ 
+  C20237 & alpha-Maltose 1-phosphate \\ 
+  C00670 & sn-Glycero-3-phosphocholine; Glycerophosphocholine \\ 
+  C14868 & S-(1,2-Dichlorovinyl)glutathione; DCVG \\ 
+  C11310 & 1-Methyl-4-phenylpyridinium; N-Methyl-4-phenylpyri... \\ 
+  C07593 & Rotenone \\ 
+  C01612 & Secondary alcohol; R-CHOH-R' \\ 
+  C04540 & N4-(Acetyl-beta-D-glucosaminyl)asparagine; N4-(bet... \\ 
+  C02611 & (E,E)-Piperoyl-CoA \\ 
+  C03899 & S-(2-Hydroxyacyl)glutathione \\ 
+  C03356 & 3-Phospho-D-erythronate \\ 
+  C03706 & Lysosomal-enzyme D-mannose \\ 
+  C15541 & NDP-glucose; NDP-D-glucose; NDP-alpha-D-glucose \\ 
+  C20183 & 7-Methylguanosine 5'-diphosphate \\ 
+   \hline
+\end{tabular}
+}
+\caption{Compounds predicted from the input. These compounds are the \textbf{new heat source}} 
+\label{tableGuess}
+\end{table}
+
+
+
+\clearpage
+
+\subsection{Relevant subgraph}
+
+% \noindent\makebox(\strippt\textwidth,1.6\strippt\textwidth){
+\noindent\makebox[\textwidth]{
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+\includegraphics[width=\textwidth]{figure/plotGraph-1} \hfill{}
+
+
+
+\end{knitrout}
+
+}
+
+All the relevant nodes are plotted in the graph.
+Pathways are red, modules are violet, enzymes are orange, reactions are blue and compounds are green. Generally nodes are circular. If compounds were specified, they appear as a green square. Otherwise, if enzymes were entered, both the \textbf{enzymes at the input} and the \textbf{predicted compounds} are squares.
+
+The following table contains a brief description for each node and its p-value in the solution. Furthermore, in the case where the solution was built from significant enzymes, a \textit{Guess} column highlights if a significant enzyme was already in the original input. 
+
+\subsection{Nodes in the relevant subgraph}
+
+
+
+
+\resizebox{\textwidth}{!}{
+% latex table generated in R 3.1.3 by xtable 1.7-4 package
+% Tue Mar 17 17:07:29 2015
+{\tiny
+\begin{tabular}{llllllll}
+  \hline
+KEGG id & p.value & Description & Guess? & KEGG id & p.value & Description & Guess? \\ 
+  \hline
+1.10.2.2 & $<$2e-16 & quinol---cytochrome-c reductase; ubiquinol---cytoc... & FALSE & hsa04612 &  4.72e-08 & Antigen processing and presentation - Homo sapiens... & FALSE \\ 
+  1.11.1.9 &  2.47e-02 & glutathione peroxidase; GSH peroxidase; selenium-g... & TRUE & hsa04932 &  1.05e-13 & Non-alcoholic fatty liver disease (NAFLD) - Homo s... & FALSE \\ 
+  1.1.3.18 & $<$2e-16 & secondary-alcohol oxidase; polyvinyl alcohol oxida... & FALSE & hsa05012 & $<$2e-16 & Parkinson's disease - Homo sapiens (human) & FALSE \\ 
+  1.14.13.52 &  2.20e-09 & isoflavone 3'-hydroxylase; isoflavone 3'-monooxyge... & FALSE & hsa05016 &  3.85e-02 & Huntington's disease - Homo sapiens (human) & FALSE \\ 
+  1.14.16.2 &  8.00e-07 & tyrosine 3-monooxygenase; L-tyrosine hydroxylase; ... & FALSE & hsa05416 &  1.08e-03 & Viral myocarditis - Homo sapiens (human) & FALSE \\ 
+  1.14.21.8 &  9.56e-04 & pseudobaptigenin synthase & FALSE & M00001 &  2.97e-03 & Glycolysis (Embden-Meyerhof pathway), glucose =$>$ p... & FALSE \\ 
+  1.1.98.5 & $<$2e-16 & secondary-alcohol dehydrogenase (coenzyme-F420); F... & FALSE & M00002 &  7.05e-08 & Glycolysis, core module involving three-carbon com... & FALSE \\ 
+  1.3.5.1 & $<$2e-16 & succinate dehydrogenase (ubiquinone); succinic deh... & FALSE & M00003 &  4.42e-10 & Gluconeogenesis, oxaloacetate =$>$ fructose-6P & FALSE \\ 
+  1.6.5.3 & $<$2e-16 & NADH:ubiquinone reductase (H+-translocating); ubiq... & FALSE & M00010 &  1.58e-02 & Citrate cycle, first carbon oxidation, oxaloacetat... & FALSE \\ 
+  1.6.99.3 & $<$2e-16 & NADH dehydrogenase; cytochrome c reductase; type 1... & FALSE & M00012 &  9.27e-05 & Glyoxylate cycle & FALSE \\ 
+  1.8.1.7 &  1.18e-06 & glutathione-disulfide reductase; glutathione reduc... & FALSE & M00142 &  2.23e-10 & NADH:ubiquinone oxidoreductase, mitochondria & FALSE \\ 
+  1.8.3.3 &  1.80e-07 & glutathione oxidase & FALSE & M00143 & $<$2e-16 & NADH dehydrogenase (ubiquinone) Fe-S protein/flavo... & FALSE \\ 
+  1.8.4.9 &  2.03e-03 & adenylyl-sulfate reductase (glutathione); 5'-adeny... & FALSE & M00144 &  2.23e-10 & NADH:quinone oxidoreductase, prokaryotes & FALSE \\ 
+  1.8.5.1 &  4.50e-02 & glutathione dehydrogenase (ascorbate); dehydroasco... & FALSE & M00145 &  2.23e-10 & NAD(P)H:quinone oxidoreductase, chloroplasts and c... & FALSE \\ 
+  1.9.3.1 &  2.42e-14 & cytochrome-c oxidase; cytochrome oxidase; cytochro... & FALSE & M00146 & $<$2e-16 & NADH dehydrogenase (ubiquinone) 1 alpha subcomplex & FALSE \\ 
+  2.3.1.145 & $<$2e-16 & piperidine N-piperoyltransferase; piperidine piper... & FALSE & M00147 & $<$2e-16 & NADH dehydrogenase (ubiquinone) 1 beta subcomplex & FALSE \\ 
+  2.3.3.1 &  6.72e-03 & citrate (Si)-synthase; (R)-citric synthase; citrat... & FALSE & M00148 &  8.75e-13 & Succinate dehydrogenase (ubiquinone) & FALSE \\ 
+  2.3.3.3 &  1.94e-03 & citrate (Re)-synthase; (R)-citrate synthase; Re-ci... & FALSE & M00151 &  6.17e-16 & Cytochrome bc1 complex respiratory unit & FALSE \\ 
+  2.4.1.13 &  4.08e-13 & sucrose synthase; UDPglucose-fructose glucosyltran... & FALSE & M00152 &  6.17e-16 & Cytochrome bc1 complex & FALSE \\ 
+  2.4.1.18 &  4.26e-02 & 1,4-alpha-glucan branching enzyme; branching enzym... & FALSE & M00153 &  9.25e-04 & Cytochrome d ubiquinol oxidase & FALSE \\ 
+  2.4.1.242 & $<$2e-16 & NDP-glucose---starch glucosyltransferase; granule-... & FALSE & M00154 &  7.57e-10 & Cytochrome c oxidase & FALSE \\ 
+  2.4.1.245 & $<$2e-16 & alpha,alpha-trehalose synthase; trehalose synthase... & FALSE & M00155 &  7.57e-10 & Cytochrome c oxidase, prokaryotes & FALSE \\ 
+  2.4.1.25 &  1.28e-02 & 4-alpha-glucanotransferase; disproportionating enz... & FALSE & M00156 &  7.57e-10 & Cytochrome c oxidase, cbb3-type & FALSE \\ 
+  2.4.1.266 & $<$2e-16 & glucosyl-3-phosphoglycerate synthase; GpgS protein... & FALSE & M00157 &  5.42e-07 & F-type ATPase, prokaryotes and chloroplasts & FALSE \\ 
+  2.4.1.4 &  4.18e-02 & amylosucrase; sucrose---glucan glucosyltransferase... & FALSE & M00158 &  5.42e-07 & F-type ATPase, eukaryotes & FALSE \\ 
+  2.4.99.16 & $<$2e-16 & starch synthase (maltosyl-transferring); alpha1,4-... & FALSE & M00159 &  5.42e-07 & V-type ATPase, prokaryotes & FALSE \\ 
+  2.5.1.18 &  2.92e-02 & glutathione transferase; glutathione S-transferase... & TRUE & M00160 &  5.42e-07 & V-type ATPase, eukaryotes & FALSE \\ 
+  2.6.1.35 &  1.88e-03 & glycine---oxaloacetate transaminase; glycine-oxala... & FALSE & M00332 &  2.18e-05 & Type III secretion system & FALSE \\ 
+  2.7.1.175 & $<$2e-16 & maltokinase & FALSE & M00346 &  4.78e-07 & Formaldehyde assimilation, serine pathway & FALSE \\ 
+  2.7.8.17 & $<$2e-16 & UDP-N-acetylglucosamine---lysosomal-enzyme N-acety... & FALSE & M00390 &  3.56e-06 & Exosome, archaea & FALSE \\ 
+  2.8.1.3 &  1.88e-03 & thiosulfate---thiol sulfurtransferase; glutathione... & FALSE & M00391 &  3.56e-06 & Exosome, eukaryotes & FALSE \\ 
+  3.1.13.4 &  3.56e-06 & poly(A)-specific ribonuclease; 3'-exoribonuclease;... & FALSE & M00392 &  3.56e-06 & Ski complex & FALSE \\ 
+  3.1.1.5 &  2.60e-08 & lysophospholipase; lecithinase B; lysolecithinase;... & TRUE & M00394 & $<$2e-16 & RNA degradosome & FALSE \\ 
+  3.1.22.1 &  1.05e-12 & deoxyribonuclease II; DNase II; pancreatic DNase I... & FALSE & M00395 &  6.43e-03 & Decapping complex & FALSE \\ 
+  3.1.2.6 & $<$2e-16 & hydroxyacylglutathione hydrolase; glyoxalase II; S... & FALSE & M00397 &  3.56e-06 & Lsm 1-7 complex & FALSE \\ 
+  3.1.26.12 & $<$2e-16 & ribonuclease E; endoribonuclease E; RNase E; Rne p... & FALSE & M00417 &  9.25e-04 & Cytochrome o ubiquinol oxidase & FALSE \\ 
+  3.1.3.5 &  2.12e-02 & 5'-nucleotidase; uridine 5'-nucleotidase; 5'-adeny... & TRUE & M00542 &  9.96e-04 & EHEC/EPEC pathogenicity signature, T3SS and effect... & FALSE \\ 
+  3.1.3.91 & $<$2e-16 & 7-methylguanosine nucleotidase; cytosolic nucleoti... & FALSE & R00094 &  9.15e-09 & glutathione:NAD+ oxidoreductase & FALSE \\ 
+  3.1.4.2 &  2.76e-06 & glycerophosphocholine phosphodiesterase; glyceroph... & FALSE & R00115 &  9.15e-09 & glutathione:NADP+ oxidoreductase & FALSE \\ 
+  3.1.4.38 & $<$2e-16 & glycerophosphocholine cholinephosphodiesterase; L-... & FALSE & R00120 &  1.26e-11 & glutathione:oxygen oxidoreductase & FALSE \\ 
+  3.2.1.96 &  1.38e-07 & mannosyl-glycoprotein endo-beta-N-acetylglucosamin... & FALSE & R00274 &  6.86e-12 & glutathione:hydrogen-peroxide oxidoreductase & FALSE \\ 
+  3.2.2.11 & $<$2e-16 & beta-aspartyl-N-acetylglucosaminidase; beta-aspart... & FALSE & R00351 &  1.94e-03 & acetyl-CoA:oxaloacetate C-acetyltransferase (thioe... & FALSE \\ 
+  3.3.2.2 &  1.45e-09 & alkenylglycerophosphocholine hydrolase; lysoplasma... & FALSE & R00352 &  3.46e-02 & acetyl-CoA:oxaloacetate C-acetyltransferase ((pro-... & FALSE \\ 
+  3.4.14.1 &  1.05e-12 & dipeptidyl-peptidase I; cathepsin C; dipeptidyl am... & FALSE & R00360 &  4.80e-02 & (S)-Malate:oxygen oxidoreductase & FALSE \\ 
+  3.4.14.9 &  1.05e-12 & tripeptidyl-peptidase I; tripeptidyl aminopeptidas... & FALSE & R00362 &  1.58e-05 & citrate oxaloacetate-lyase (forming acetate from t... & FALSE \\ 
+  3.4.18.1 &  1.05e-12 & cathepsin X; cathepsin B2; cysteine-type carboxype... & FALSE & R00373 &  1.88e-03 & Glycine:oxaloacetate aminotransferase & FALSE \\ 
+  3.4.19.12 & $<$2e-16 & ubiquitinyl hydrolase 1; ubiquitin C-terminal hydr... & FALSE & R00400 &  1.09e-02 & L-alanine:oxaloacetate aminotransferase & FALSE \\ 
+  3.4.21.108 & $<$2e-16 & HtrA2 peptidase; high temperature requirement prot... & FALSE & R00511 & $<$2e-16 & cytidine-5'-monophosphate phosphohydrolase & FALSE \\ 
+  3.4.22.1 &  7.52e-13 & cathepsin B; cathepsin B1 (obsolete); cathepsin II & FALSE & R00624 & $<$2e-16 & Secondary\_alcohol:NAD+ oxidoreductase & FALSE \\ 
+  3.4.22.16 &  1.05e-12 & cathepsin H; cathepsin B3; benzoylarginine-naphthy... & FALSE & R00658 &  5.19e-07 & 2-phospho-D-glycerate hydro-lyase (phosphoenolpyru... & FALSE \\ 
+  3.4.22.34 &  7.52e-13 & legumain; asparaginyl endopeptidase; citvac; prote... & FALSE & R01030 & $<$2e-16 & sn-Glycero-3-phosphocholine glycerophosphohydrolas... & FALSE \\ 
+  3.4.22.41 &  1.05e-12 & cathepsin F & FALSE & R01108 &  2.51e-07 & glutathione:dehydroascorbate oxidoreductase & FALSE \\ 
+  3.4.22.42 &  1.05e-12 & cathepsin O & FALSE & R01113 &  4.08e-04 & Glutathione:L-cystine oxidoreductase & FALSE \\ 
+  3.4.22.43 &  1.05e-12 & cathepsin V; Cathepsin L2; cathepsin U & FALSE & R01266 & $<$2e-16 & 1-beta-Aspartyl-N-acetyl-D-glucosaminylamine L-asp... & FALSE \\ 
+  3.4.22.56 &  2.63e-05 & caspase-3; CPP32; apopain; yama protein & FALSE & R01309 & $<$2e-16 & phosphatidylcholine acylhydrolase & FALSE \\ 
+  3.4.22.62 &  2.96e-10 & caspase-9; CASP-9; ICE-like apoptotic protease 6; ... & FALSE & R01324 &  7.70e-06 & citrate hydroxymutase & FALSE \\ 
+  3.4.23.34 &  1.05e-12 & cathepsin E; slow-moving proteinase; erythrocyte m... & FALSE & R01325 & $<$2e-16 & citrate hydro-lyase (cis-aconitate-forming) & FALSE \\ 
+  3.5.1.26 & $<$2e-16 & N4-(beta-N-acetylglucosaminyl)-L-asparaginase; asp... & FALSE & R01736 &  8.20e-12 & (R)-S-Lactoylglutathione hydrolase & FALSE \\ 
+  3.6.3.14 &  2.18e-05 & H+-transporting two-sector ATPase; ATP synthase; F... & FALSE & R01821 &  2.29e-03 & 1,4-alpha-D-Glucan:orthophosphate alpha-D-glucosyl... & FALSE \\ 
+  4.1.1.6 & $<$2e-16 & aconitate decarboxylase; cis-aconitic decarboxylas... & FALSE & R01823 &  7.98e-03 & Sucrose:1,4-alpha-D-glucan 4-alpha-D-glucosyltrans... & FALSE \\ 
+  4.1.3.6 &  2.19e-05 & citrate (pro-3S)-lyase; citrase; citratase; citrit... & FALSE & R01875 &  2.02e-04 & Thiosulfate:thiol sulfurtransferase & FALSE \\ 
+  4.2.1.11 & $<$2e-16 & phosphopyruvate hydratase; enolase; 2-phosphoglyce... & FALSE & R01900 & $<$2e-16 & isocitrate hydro-lyase (cis-aconitate-forming) & FALSE \\ 
+  4.2.1.3 & $<$2e-16 & aconitate hydratase; cis-aconitase; aconitase; Acn... & TRUE & R02110 &  2.72e-02 & 1,4-alpha-D-Glucan:1,4-alpha-D-glucan 6-alpha-D-(1... & FALSE \\ 
+  5.3.3.7 & $<$2e-16 & aconitate Delta-isomerase; aconitate isomerase & FALSE & R02243 & $<$2e-16 & cis-Aconitate carboxy-lyase & FALSE \\ 
+  5.4.2.11 &  2.39e-02 & phosphoglycerate mutase (2,3-diphosphoglycerate-de... & FALSE & R02244 & $<$2e-16 & trans-Aconitate delta2-delta3-isomerase & FALSE \\ 
+  C00036 & $<$2e-16 & Oxaloacetate; Oxalacetic acid; Oxaloacetic acid; 2... & FALSE & R02277 & $<$2e-16 & Secondary-alcohol:oxygen oxidoreductase & FALSE \\ 
+  C00051 &  1.60e-06 & Glutathione; 5-L-Glutamyl-L-cysteinylglycine; N-(N... & FALSE & R02421 &  2.05e-02 & ADP-glucose:1,4-alpha-D-glucan 4-alpha-D-glucosylt... & FALSE \\ 
+  C00105 &  8.24e-03 & UMP; Uridylic acid; Uridine monophosphate; Uridine... & FALSE & R02591 & $<$2e-16 & sn-Glycero-3-phosphocholine cholinephosphohydrolas... & FALSE \\ 
+  C00127 & $<$2e-16 & Glutathione disulfide; GSSG; Oxiglutatione; Oxidiz... & FALSE & R02744 & $<$2e-16 &  & FALSE \\ 
+  C00417 & $<$2e-16 & cis-Aconitate; cis-Aconitic acid & FALSE & R02745 &  3.80e-11 & 1-(1-Alkenyl)-sn-glycero-3-phosphocholine aldehydo... & FALSE \\ 
+  C00454 &  2.52e-07 & NDP; Nucleoside diphosphate; Nucleoside 5'-diphosp... & FALSE & R02746 & $<$2e-16 & 1-Acyl-sn-glycero-3-phosphocholine acylhydrolase & FALSE \\ 
+  C00670 & $<$2e-16 & sn-Glycero-3-phosphocholine; Glycerophosphocholine & FALSE & R02747 & $<$2e-16 & 2-Acyl-sn-glycero-3-phosphocholine acylhydrolase & FALSE \\ 
+  C00718 &  1.18e-04 & Amylose; Amylose chain; (1,4-alpha-D-Glucosyl)n; (... & FALSE & R03006 & $<$2e-16 & formononetin,NADPH:oxygen oxidoreductase (3'-hydro... & FALSE \\ 
+  C01450 &  2.85e-04 & Ketone; R-CO-R' & FALSE & R03421 & $<$2e-16 & N4-(beta-N-Acetyl-D-glucosaminyl)-L-asparagine ami... & FALSE \\ 
+  C01562 & $<$2e-16 & Calycosin & FALSE & R03557 & $<$2e-16 & Secondary alcohol:NADP+ oxidoreductase & FALSE \\ 
+  C01612 & $<$2e-16 & Secondary alcohol; R-CHOH-R' & FALSE & R03994 & $<$2e-16 & (E,E)-Piperoyl-CoA:piperidine N-piperoyltransferas... & FALSE \\ 
+  C01746 &  3.93e-16 & Piperidine; Azacyclohexane; Hexahydropyridine & FALSE & R04090 & $<$2e-16 & S-(2-Hydroxyacyl)glutathione hydrolase & FALSE \\ 
+  C02341 &  2.39e-02 & trans-Aconitate; trans-Aconitic acid & FALSE & R04206 & $<$2e-16 & 3-Phospho-D-erythronate hydro-lyase & FALSE \\ 
+  C02611 & $<$2e-16 & (E,E)-Piperoyl-CoA & FALSE & R04291 & $<$2e-16 & UDP-N-acetyl-D-glucosamine:lysosomal-enzyme N-acet... & FALSE \\ 
+  C02929 &  1.91e-07 & 2-Hydroxy carboxylate & FALSE & R05196 &  6.95e-05 & 1,4-alpha-D-Glucan:1,4-alpha-D-glucan 4-alpha-D-gl... & FALSE \\ 
+  C03356 & $<$2e-16 & 3-Phospho-D-erythronate & FALSE & R05717 &  1.18e-06 & AMP,sulfite:glutathione-disulfide oxidoreductase (... & FALSE \\ 
+  C03706 & $<$2e-16 & Lysosomal-enzyme D-mannose & FALSE & R06036 &  6.04e-05 & UDP-glucose:D-fructose 2-alpha-D-glucosyltransfera... & FALSE \\ 
+  C03882 &  6.76e-14 & Piperine; N-((E,E)-Piperoyl)piperidine; 1-Piperoyl... & FALSE & R06186 &  4.26e-02 &  & FALSE \\ 
+  C03899 & $<$2e-16 & S-(2-Hydroxyacyl)glutathione & FALSE & R07100 & $<$2e-16 & trichloroethene:glutathione S-(1,2-dichlorovinyl)t... & FALSE \\ 
+  C04309 &  7.16e-11 & Phosphoenol-4-deoxy-3-tetrulosonate & FALSE & R07256 & $<$2e-16 & NDP-glucose:D-fructose 2-alpha-D-glucosyltransfera... & FALSE \\ 
+  C04540 & $<$2e-16 & N4-(Acetyl-beta-D-glucosaminyl)asparagine; N4-(bet... & FALSE & R07261 & $<$2e-16 & NDP-glucose:1,4-alpha-D-glucan 4-alpha-D-glucosylt... & FALSE \\ 
+  C04789 &  1.96e-08 & Lysosomal-enzyme N-acetyl-D-glucosaminyl-phospho-D... & FALSE & R07282 &  2.56e-02 & polyribonucleotide:phosphate nucleotidyltransferas... & FALSE \\ 
+  C06790 &  4.22e-04 & Trichloroethene; Trichloroethylene; TCE & FALSE & R07291 & $<$2e-16 & 2-lysophosphatidylcholine acylhydrolase & FALSE \\ 
+  C07593 & $<$2e-16 & Rotenone & FALSE & R07744 & $<$2e-16 &  & FALSE \\ 
+  C11310 & $<$2e-16 & 1-Methyl-4-phenylpyridinium; N-Methyl-4-phenylpyri... & FALSE & R07745 &  1.01e-14 & calycosin,NADPH:oxygen oxidoreductase (methylenedi... & FALSE \\ 
+  C14868 & $<$2e-16 & S-(1,2-Dichlorovinyl)glutathione; DCVG & FALSE & R09052 &  4.27e-13 &  & FALSE \\ 
+  C15541 & $<$2e-16 & NDP-glucose; NDP-D-glucose; NDP-alpha-D-glucose & FALSE & R09467 & $<$2e-16 &  & FALSE \\ 
+  C20183 & $<$2e-16 & 7-Methylguanosine 5'-diphosphate & FALSE & R09468 & $<$2e-16 &  & FALSE \\ 
+  C20237 & $<$2e-16 & alpha-Maltose 1-phosphate & FALSE & R09663 & $<$2e-16 & NDP-glucose:3-phospho-D-glycerate 2-alpha-D-glucos... & FALSE \\ 
+  hsa00190 &  9.25e-04 & Oxidative phosphorylation - Homo sapiens (human) & FALSE & R09945 & $<$2e-16 & ATP:alpha-maltose 1-phosphotransferase & FALSE \\ 
+  hsa00511 &  1.38e-07 & Other glycan degradation - Homo sapiens (human) & FALSE & R09994 & $<$2e-16 & alpha-maltose 1-phosphate:(1-$>$4)-alpha-D-glucan 4-... & FALSE \\ 
+  hsa03018 &  3.56e-06 & RNA degradation - Homo sapiens (human) & FALSE & R10525 & $<$2e-16 & NDP-alpha-D-glucose:D-glucose 1-alpha-D-glucosyltr... & FALSE \\ 
+  hsa04066 &  1.79e-02 & HIF-1 signaling pathway - Homo sapiens (human) & FALSE & R10546 &  5.90e-15 & N7-methyl-GMP phosphohydrolase & FALSE \\ 
+  hsa04142 &  1.05e-12 & Lysosome - Homo sapiens (human) & FALSE &  &  &  &  \\ 
+  hsa04260 &  4.80e-03 & Cardiac muscle contraction - Homo sapiens (human) & FALSE &  &  &  &  \\ 
+   \hline
+\end{tabular}
+}
+
+}
+
+\resizebox{\textwidth}{!}{
+% latex table generated in R 3.1.3 by xtable 1.7-4 package
+% Tue Mar 17 17:07:29 2015
+{\tiny
+\begin{tabular}{llllllll}
+  \hline
+KEGG id & p.value & Description & Guess? & KEGG id & p.value & Description & Guess? \\ 
+  \hline
+ &  &  &  &  &  &  &  \\ 
+   &  &  &  & R10546 &  5.90e-15 & N7-methyl-GMP phosphohydrolase & FALSE \\ 
+   \hline
+\end{tabular}
+}
+
+}
+
+\end{document}

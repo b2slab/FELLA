@@ -1,0 +1,209 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage{caption}
+\usepackage[sc]{mathpazo}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[textwidth=17cm,textheight=25cm]{geometry}
+
+\setlength\parindent{0pt}
+
+\makeatletter
+\def\strippt{\strip@pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{rotating}
+\makeatother
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+% \captionsetup{labelformat=empty}
+
+
+
+\title{FELLA v0.3 report}
+\author{Sergio Picart-Armada \qquad Alexandre Perera-Lluna \\ B2SLab at UPC}
+\maketitle
+% 
+% <<tableTest, results='asis', echo=FALSE>>=
+% test <- data.frame(x = 1:3, y = 1:3)
+% print(xtable(test, caption = '\\textbf{Test Table}', label = ''), 
+%   caption.placement = getOption("xtable.caption.placement", "top"), size = 'tiny')
+% @
+
+\section{Metabolites enrichment using KEGG entries}
+
+\subsection{Original idea}
+
+The user of this tool has completed a case-control experiment. This gives him
+data about the \textbf{affected compounds} between control and case populations.
+Given the \textbf{KEGG id} of these compounds, FELLA performs an enrichment 
+procedure resulting in a straightforward interpretation.
+
+The enrichment method heats up the affected compounds that live in the bottom of
+a hierarchical structure. The final temperatures of every entry are compared to the null 
+hypothesis, which states that the compounds are chosen at random. The relevant 
+subgraph is then extracted and analysed.
+
+\subsection{Generalized enrichment}
+
+The heating technique is strongly oriented to bottom-to-top heat flow. Thus, if 
+the user disposes of \textbf{affected enzymes} instead of affected compounds and tries to heat them up, the result loses its clean interpretation. 
+
+To address this, FELLA attempts to solve the reverse problem: \textit{given some affected enzymes, which compounds should be heated up so that the enzymes become 
+significant again?} This procedure consists of two steps.
+
+\subsubsection{Solution approximation}
+
+Let $q = q_1, \ldots, q_{nc}$ be the heat generation vector, where $q_i = 1W$ 
+if and only if compound $i$ is affected. Otherwise, $q_i = 0$.
+Let $e_1, \ldots, e_{ne} \in V(G)$ be the affected enzymes. Let $p_i = p_i(q)$ 
+be the p-value for node $i \in V(G)$ given the generation $q$.
+
+We define a cost function that should be minimized:
+
+$$f(q) = \sum_{i \in e_1, \ldots, e_{ne}} p_i$$
+
+We have to find an appropiate logical vector $q$, which is equivalent to determine
+whether each compound should generate or not. Notice that adding too many compounds 
+will increase $f(q)$ as the significance will eventually drop for all the nodes.
+
+To estimate this minimum, we have computed whether switching bit $q_k$ in $q$ 
+improves the cost function. 
+
+$$
+J_k f(q) = \sum_{i \in e_1, \ldots, e_{ne}} \Delta _k (p_i) = \sum_{i \in e_1, \ldots, e_{ne}} p'_i(q'_k = ! q_k) - p_i(q)
+$$
+
+$$
+J f(q) = (J_1 f(q), \ldots, J_{nc} f(q) )
+$$
+
+In order to find a first approximation, we start with $q = q^0 = 0$ and take a 
+predefined number of steps, say $50$, to catch the most promising compounds. 
+Each step can also remove a compound if this implies the largest descent for the 
+objective function. Having $q^{50}$, we refine this solution in the second part.
+
+\subsubsection{Solution refinement}
+
+In this step we want a more accurate input. We obtain that by penalizing even more 
+the objective function by the number of compounds that are generating. We expect noisy compounds to be removed and only the strongest evidence remains. We define a fitness 
+function which evaluates the goodness of a solution $q$:
+
+$$ g(q) = -\log{  \sum_{i = 1}^{nc} q_i }  -  \sum_{i \in e_1, \ldots, e_{ne}} p_i  $$
+
+We maximize this function using a genetic algorithm via \textbf{GA} R package. 
+The starting population contains the individual $q^{50}$ and also mutations $\hat{q}$, where 
+each bit $\hat{q}_k$ had a $5\%$ chance to negate his value.
+Once the algorithm has finished we obtain $q_{final}$. Applying our original method 
+on it we obtain a whole subgraph, whose plot may explain the relationships 
+between the affected enzymes and the predicted compounds.
+
+
+
+\section{Report}
+
+\subsection{Input}
+
+Table \ref{tableInput} contains the items in the input.
+
+\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): no slot of name "{}highlight"{} for this object of class "{}U.diffusion"{}}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'enz' not found}}\end{kframe}
+
+
+\clearpage
+
+\subsection{Relevant subgraph}
+
+% \noindent\makebox(\strippt\textwidth,1.6\strippt\textwidth){
+\noindent\makebox[\textwidth]{
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): could not find function "{}plot2"{}}}\end{kframe}
+\end{knitrout}
+
+}
+
+All the relevant nodes are plotted in the graph.
+Pathways are red, modules are violet, enzymes are orange, reactions are blue and compounds are green. Generally nodes are circular. If compounds were specified, they appear as a green square. Otherwise, if enzymes were entered, both the \textbf{enzymes at the input} and the \textbf{predicted compounds} are squares.
+
+The following table contains a brief description for each node and its p-value in the solution. Furthermore, in the case where the solution was built from significant enzymes, a \textit{Guess} column highlights if a significant enzyme was already in the original input. 
+
+\subsection{Nodes in the relevant subgraph}
+
+
+
+
+\resizebox{\textwidth}{!}{
+\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): could not find function "{}createSummary"{}}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'tabRaw' not found}}\end{kframe}
+}
+
+\resizebox{\textwidth}{!}{
+\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'tabRaw' not found}}\end{kframe}
+}
+
+\end{document}
