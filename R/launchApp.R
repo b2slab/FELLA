@@ -13,7 +13,7 @@
 #' 
 launchApp <- function(
   port = 8888, 
-  host = "sp-upc", 
+  host = "localhost", 
   launch.browser = FALSE, 
   ...
 ) {
@@ -26,7 +26,7 @@ launchApp <- function(
   dir.app <- system.file("shiny", package = "FELLA")
   
   if (host == "eko") host <- "147.83.71.87"
-  if (host == "sp-upc") host <- "147.83.71.219"
+  if (host == "localhost") host <- "127.0.0.1"
   
   if (dir.app == "") {
     warning("Something went wrong and the shiny app is not in the ", 

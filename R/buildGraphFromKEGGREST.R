@@ -315,7 +315,12 @@ buildGraphFromKEGGREST <- function(
   V(g.curated)$NAME <- lapply(
     strsplit(tmp[V(g.curated)$name], split = "; "), 
     function(names) {
-      names[order(nchar(names))]
+      # Tried sorting according to number of characters 
+      # (take shortest names). This is weird, as some names 
+      # are not very known. I will leave the original order
+      # 
+      # names[order(nchar(names))]
+      names
   })
   V(g.curated)$GENE <- m.enzyme_gene[V(g.curated)$name]
   

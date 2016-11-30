@@ -174,7 +174,7 @@ shinyUI(fluidPage(
               min = 10, 
               max = 100, 
               step = 1, 
-              value = 22)
+              value = 50)
             #################################
           ), 
           column(

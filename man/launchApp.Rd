@@ -4,7 +4,7 @@
 \alias{launchApp}
 \title{Launch a shiny app with FELLA}
 \usage{
-launchApp(port = 8888, host = "sp-upc", launch.browser = FALSE, ...)
+launchApp(port = 8888, host = "localhost", launch.browser = FALSE, ...)
 }
 \arguments{
 \item{port, host, launch.browser}{Port and host to launch the app, 
