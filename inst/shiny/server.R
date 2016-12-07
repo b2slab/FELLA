@@ -446,7 +446,7 @@ shinyServer(function(input, output, session) {
   })
   ###########################################################
   
-  output$exportcsv <- downloadHandler(
+  output$exportResults_csv <- downloadHandler(
     filename = function() {
       "resultsTable.csv"
     }, 
@@ -466,6 +466,52 @@ shinyServer(function(input, output, session) {
       
     }, 
     contentType = "text/csv"
+  )
+  
+  tableEnzymes <- reactive({
+    user <- createUser()
+    data <- FELLA.DATA()
+    if (!is.null(user) & !is.null(data)) {
+      generateEnzymesTable(
+        object = user, 
+        method = input$method, 
+        threshold = input$threshold,
+        nlimit = input$nlimit, 
+        data = data)
+    }
+  })
+  output$exportEnzymes_csv <- downloadHandler(
+    filename = function() {
+      "enzymesTable.csv"
+    }, 
+    content = function(file) {
+      tab <- tableEnzymes()
+      if (!is.null(tab)) {
+        write.csv(
+          x = tab, 
+          file = file, 
+          row.names = FALSE
+        )
+      }
+    }, 
+    contentType = "text/csv"
+  )
+  
+  output$exportEnzymes_genelist <- downloadHandler(
+    filename = function() {
+      "genesFromEnzymes.txt"
+    }, 
+    content = function(file) {
+      # browser()
+      tab <- tableEnzymes()
+      if (!is.null(tab)) {
+        writeLines(
+          text = unique(unlist(strsplit(tab$Genes, split = ";"))), 
+          con = file
+        )
+      }
+    }, 
+    contentType = "text"
   )
   
   output$exportigraph <- downloadHandler(

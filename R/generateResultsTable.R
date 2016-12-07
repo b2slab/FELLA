@@ -88,16 +88,19 @@ generateResultsTable <- function(
       pathbackground <- object@hypergeom@pathbackground[paths]
     
       # Build the dataframe
-      out.hypergeom <- data.frame(paths, 
-                                  pathnames, 
-                                  pathhits, 
-                                  pathbackground, 
-                                  pvalues)
-      names(out.hypergeom) <- c("KEGG id", 
-                                "KEGG name", 
-                                "CompoundHits", 
-                                "CompoundsInPathway", 
-                                "p.value")
+      out.hypergeom <- data.frame(
+        paths, 
+        pathnames, 
+        pathhits, 
+        pathbackground, 
+        pvalues, 
+        stringsAsFactors = FALSE)
+      names(out.hypergeom) <- c(
+        "KEGG id", 
+        "KEGG name", 
+        "CompoundHits", 
+        "CompoundsInPathway", 
+        "p.value")
       rownames(out.hypergeom) <- NULL
       
       message("Done.")
@@ -115,7 +118,7 @@ generateResultsTable <- function(
     pvalues[pvalues < capPvalues] <- capPvalues
     
     if (pvalues[1] >= threshold) {
-      message("No pathway is below the p-value threshold.")
+      message("No node is below the p-value threshold.")
     } else {
     last <- min(nlimit, tail(which(pvalues < threshold), 1))
     pvalues <- pvalues[1:last]
@@ -132,21 +135,26 @@ generateResultsTable <- function(
       return(ans)
     }))
     nodeCom <- V(getGraph(data))[nodeIds]$com
-    nodeTypes <- sapply(nodeCom, function(x) switch(x, 
-                                                   "1" = "Pathway", 
-                                                   "2" = "Module", 
-                                                   "3" = "Enzyme", 
-                                                   "4" = "Reaction", 
-                                                   "5" = "Compound"))
+    nodeTypes <- sapply(
+      nodeCom, function(x) 
+        switch(x, 
+               "1" = "Pathway", 
+               "2" = "Module", 
+               "3" = "Enzyme", 
+               "4" = "Reaction", 
+               "5" = "Compound"))
 
-    out.diffusion <- data.frame(nodeIds,
-                                nodeTypes,
-                                nodeNames, 
-                                pvalues)[order(nodeCom), ]
-    names(out.diffusion) <- c("KEGG id", 
-                              "Entry type", 
-                              "KEGG name", 
-                              "p.value")
+    out.diffusion <- data.frame(
+      nodeIds,
+      nodeTypes,
+      nodeNames, 
+      pvalues, 
+      stringsAsFactors = FALSE)[order(nodeCom), ]
+    names(out.diffusion) <- c(
+      "KEGG id", 
+      "Entry type", 
+      "KEGG name", 
+      "p.value")
     rownames(out.diffusion) <- NULL
    
     message("Done.")
@@ -163,7 +171,7 @@ generateResultsTable <- function(
     pvalues[pvalues < capPvalues] <- capPvalues
     
     if (pvalues[1] >= threshold) {
-      message("No pathway is below the p-value threshold.")
+      message("No node is below the p-value threshold.")
     } else {
       last <- min(nlimit, tail(which(pvalues < threshold), 1))
       pvalues <- pvalues[1:last]
@@ -179,21 +187,27 @@ generateResultsTable <- function(
         return(ans)
       }))
       nodeCom <- V(getGraph(data))[nodeIds]$com
-      nodeTypes <- sapply(nodeCom, function(x) switch(x, 
-                                                      "1" = "Pathway", 
-                                                      "2" = "Module", 
-                                                      "3" = "Enzyme", 
-                                                      "4" = "Reaction", 
-                                                      "5" = "Compound"))
+      nodeTypes <- sapply(
+        nodeCom, function(x) 
+          switch(
+            x, 
+            "1" = "Pathway", 
+            "2" = "Module", 
+            "3" = "Enzyme", 
+            "4" = "Reaction", 
+            "5" = "Compound"))
       
-      out.pagerank <- data.frame(nodeIds,
-                                  nodeTypes,
-                                  nodeNames, 
-                                  pvalues)[order(nodeCom), ]
-      names(out.pagerank) <- c("KEGG id", 
-                                "Entry type", 
-                                "KEGG name", 
-                                "p.value")
+      out.pagerank <- data.frame(
+        nodeIds,
+        nodeTypes,
+        nodeNames, 
+        pvalues, 
+        stringsAsFactors = FALSE)[order(nodeCom), ]
+      names(out.pagerank) <- c(
+        "KEGG id", 
+        "Entry type", 
+        "KEGG name", 
+        "p.value")
       rownames(out.pagerank) <- NULL
       
       message("Done.")

@@ -2,6 +2,16 @@
 
 ---
 
+### Version 0.2.2
+
+* Fixed table export (```stringsAsFactors``` was not disabled when creating the 
+data.frame).
+* Added the function ```generateEnzymesTable``` to build a table with the 
+EC numbers, along with the genes (entrez) within them and the associated 
+[GO labels](http://www.geneontology.org/).
+* The shiny app exports tables with the full enzyme data and 
+simply as a text gene list as well. 
+
 ### Version 0.2.1
 
 The shiny app has been updated. 

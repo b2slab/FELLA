@@ -249,8 +249,16 @@ shinyUI(fluidPage(
       #################################
       tabPanel(
         "6. Export your results", 
-        h2("Export table as csv"), 
-        downloadButton("exportcsv", "Download table with results"), 
+        h2("Export tables"),
+        h4("Export the whole results table as csv"),
+        downloadButton(
+          "exportResults_csv", "Download table with results"), 
+        h4("Export the enzymes in the solution with related genes and GO terms as csv"), 
+        downloadButton(
+          "exportEnzymes_csv", "Download table with enzymes"),
+        h4("Export the genes (entrez) that belong to the enzyme EC numbers as a text file"), 
+        downloadButton(
+          "exportEnzymes_genelist", "Download text file with genes"),
         h2("Export graph solution to R igraph"), 
         downloadButton("exportigraph", "Download R igraph solution")
         # plotOutput(

@@ -103,6 +103,27 @@ exportResults <- function(
     message("Done")
     return(invisible())
   }
+  # Option to export enzymes with genes and GO annotations
+  if (format == "enzyme") {
+    if (method %in% c("diffusion", "pagerank")) {
+      df <- generateEnzymesTable(
+        method = method, 
+        threshold = threshold, 
+        nlimit = nlimit, 
+        object = object, 
+        data = data)
+      utils::write.table(
+        df, 
+        file = file, 
+        sep = ",", 
+        row.names = FALSE)
+    } else {
+      stop(
+        "Enzymes are only reported in diffusion and pagerank, but not ", 
+        "in method ", 
+        method)
+    }
+  }
   
   # Exporting to igraph objects in RData format
   if (format == "igraph") {
