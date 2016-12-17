@@ -6,7 +6,7 @@
 \usage{
 buildDataFromGraph(keggdata.graph = NULL, databaseDir = "myDatabase",
   internalDir = TRUE, matrices = c("hypergeom", "diffusion", "pagerank"),
-  normality = c("diffusion", "pagerank"), dampingFactor = 0.7,
+  normality = c("diffusion", "pagerank"), dampingFactor = 0.85,
   niter = 1000)
 }
 \arguments{
@@ -26,7 +26,9 @@ in the package directory?}
 \item{normality}{A character vector, containing any of these: 
 \code{"diffusion"}, \code{"pagerank"}}
 
-\item{dampingFactor}{Numeric value, damping factor \code{d} for PageRank}
+\item{dampingFactor}{Numeric value between 0 and 1 (none inclusive), 
+damping factor \code{d} for 
+PageRank (\code{\link[igraph]{page_rank}})}
 
 \item{niter}{Numeric value, number of iterations to estimate the p-values 
 for the CC size. Between 10 and 1e4.}
@@ -58,7 +60,7 @@ databaseDir = dir.tmp,
 internalDir = FALSE, 
 matrices = c("hypergeom", "diffusion", "pagerank"), 
 normality = c("diffusion", "pagerank"), 
-dampingFactor = 0.7,
+dampingFactor = 0.85,
 niter = 10)}
 
 \dontrun{
@@ -72,7 +74,7 @@ outputDir = "myFirstDb",
 internalDir = TRUE, 
 matrices = c("hypergeom", "diffusion", "pagerank"), 
 normality = c("diffusion", "pagerank"), 
-dampingFactor = 0.7,
+dampingFactor = 0.85,
 niter = 1e3)}
 
 }

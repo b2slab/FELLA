@@ -4,8 +4,8 @@
 \alias{runPagerank}
 \title{Pathway enrichment through PageRank}
 \usage{
-runPagerank(object = NULL, data = NULL, approx = "normality", t.df = 10,
-  niter = 1000, p.adjust = "fdr")
+runPagerank(object = NULL, data = NULL, approx = "normality",
+  dampingFactor = 0.85, t.df = 10, niter = 1000, p.adjust = "fdr")
 }
 \arguments{
 \item{object}{FELLA.USER object}
@@ -14,6 +14,10 @@ runPagerank(object = NULL, data = NULL, approx = "normality", t.df = 10,
 
 \item{approx}{Character: "simulation" for Monte Carlo, "normality", 
 "gamma" or "t" for parametric approaches}
+
+\item{dampingFactor}{Numeric value between 0 and 1 (none inclusive), 
+damping factor \code{d} for 
+PageRank (\code{\link[igraph]{page_rank}})}
 
 \item{t.df}{Numeric value; number of degrees of freedom of the t distribution 
 if the approximation \code{approx = "t"} is used}

@@ -19,7 +19,9 @@
 #' \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}
 #' @param normality A character vector, containing any of these: 
 #' \code{"diffusion"}, \code{"pagerank"}
-#' @param dampingFactor Numeric value, damping factor \code{d} for PageRank
+#' @param dampingFactor Numeric value between 0 and 1 (none inclusive), 
+#' damping factor \code{d} for 
+#' PageRank (\code{\link[igraph]{page_rank}})
 #' @param niter Numeric value, number of iterations to estimate the p-values 
 #' for the CC size. Between 10 and 1e4.
 #'
@@ -41,7 +43,7 @@
 #' internalDir = FALSE, 
 #' matrices = c("hypergeom", "diffusion", "pagerank"), 
 #' normality = c("diffusion", "pagerank"), 
-#' dampingFactor = 0.7,
+#' dampingFactor = 0.85,
 #' niter = 10)}
 #' 
 #' \dontrun{
@@ -55,7 +57,7 @@
 #' internalDir = TRUE, 
 #' matrices = c("hypergeom", "diffusion", "pagerank"), 
 #' normality = c("diffusion", "pagerank"), 
-#' dampingFactor = 0.7,
+#' dampingFactor = 0.85,
 #' niter = 1e3)}
 #' 
 #' @import igraph
@@ -67,7 +69,7 @@ buildDataFromGraph <- function(
   internalDir = TRUE, 
   matrices = c("hypergeom", "diffusion", "pagerank"), 
   normality = c("diffusion", "pagerank"), 
-  dampingFactor = 0.7, 
+  dampingFactor = 0.85, 
   niter = 1e3) {
 
   # Checking the input

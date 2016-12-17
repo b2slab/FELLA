@@ -2,6 +2,13 @@
 
 ---
 
+### Version 0.2.3
+
+* Fixed CREB website link
+* Added the option to specify the damping factor in pagerank
+* Changed default damping factor to 0.85
+
+
 ### Version 0.2.2
 
 * Fixed table export (```stringsAsFactors``` was not disabled when creating the 

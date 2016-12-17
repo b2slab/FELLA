@@ -11,6 +11,9 @@
 #' @inheritParams .object
 #' @inheritParams .data
 #' @inheritParams .approx
+#' @param dampingFactor Numeric value between 0 and 1 (none inclusive), 
+#' damping factor \code{d} for 
+#' PageRank (\code{\link[igraph]{page_rank}})
 #' @inheritParams .t.df
 #' @inheritParams .niter
 #' @inheritParams .p.adjust
@@ -45,6 +48,7 @@ runPagerank <- function(
   object = NULL, 
   data = NULL, 
   approx = "normality", 
+  dampingFactor = 0.85, 
   t.df = 10, 
   niter = 1000, 
   p.adjust = "fdr") {
@@ -110,7 +114,12 @@ runPagerank <- function(
   message("Running PageRank...")
   
   # Damping factor
-  d <- 0.7
+  if (!is.numeric(dampingFactor)) 
+    stop("'dampingFactor' must be a number between 0 and 1, both excluded.")
+  
+  if (dampingFactor <= 0 | dampingFactor >= 1) 
+    stop("'dampingFactor' must be a number between 0 and 1, both excluded.")
+  d <- dampingFactor
   
   # The metabolites in the input
   comp.input <- getInput(object)
@@ -133,7 +142,8 @@ runPagerank <- function(
     
     if (prod(dim(getMatrix(data, "pagerank"))) == 1) {
       message("PageRank matrix not loaded. ", 
-              "Simulations may be a bit slower...")
+              "Simulations may be a bit slower...", 
+              "Using provided damping factor")
       
       # Load the graph 
       graph <- getGraph(data)
@@ -175,6 +185,10 @@ runPagerank <- function(
       # Warning: each score vector should be divided by n.input. 
       # It won't, as it just rescales all the scores 
       # and becomes irrelevant for the test.
+      message("Using pagerank matrix. ", 
+              "Damping factor will be the one with which the database ",
+              "was built")
+      
       pagerank.matrix <- getMatrix(data, "pagerank")
       
       if (n.input == 1) {
@@ -248,6 +262,8 @@ runPagerank <- function(
     # Prior for personalized PageRank
     prior <- numeric(vcount(graph))
     names(prior) <- V(graph)$name
+    
+    message("Using provided damping factor...")
     
     # Current scores
     prior[comp.input] <- 1

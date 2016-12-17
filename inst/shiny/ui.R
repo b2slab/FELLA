@@ -6,7 +6,7 @@ shinyUI(fluidPage(
       a(href = "http://b2slab.upc.edu/", 
         img(src='b2slab_small.png', align = "center")), 
       "Pathway enrichment from KEGG compounds", 
-      a(href = "http://www.creb.upc.es/", 
+      a(href = "http://www.creb.upc.edu/", 
         img(src='creb_upc.png', align = "center"), 
         align = "center")),  
     windowTitle = "SHELLA: enrichment tool for Metabolomics"
