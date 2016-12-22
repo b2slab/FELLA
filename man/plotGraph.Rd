@@ -5,7 +5,8 @@
 \title{Internal function to plot a solution graph}
 \usage{
 plotGraph(graph = NULL, input = NULL, layout = FALSE,
-  NamesAsLabels = TRUE, ...)
+  graph.layout = NULL, transparency = FALSE, showLegend = TRUE,
+  plot.fun = "plot.igraph", NamesAsLabels = TRUE, options = list())
 }
 \arguments{
 \item{graph}{Graph result that must come 
@@ -15,11 +16,20 @@ from diffusion or pagerank analysis}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 
+\item{graph.layout}{Two-column numeric matrix, if this argument is not null 
+then it is used as graph layout}
+
+\item{transparency}{Logical, should nodes have transparency? 
+(proportional to centrality in the solution)}
+
+\item{showLegend}{Logical, should the legend be plotted as well?}
+
+\item{plot.fun}{Character, can be either \code{plot.igraph} or \code{tkplot}}
+
 \item{NamesAsLabels}{Logical, should KEGG names be displayed 
 as labels instead of KEGG identifiers?}
 
-\item{...}{Additional parameters passed to 
-\code{\link[igraph]{plot.igraph}}}
+\item{options}{List of optional further arguments for the plotting function}
 }
 \value{
 If \code{layout = F} then the value 

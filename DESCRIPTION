@@ -1,8 +1,8 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and Enrichment for Metabolomics Data
-Version: 0.2.3
-Date: 2016-12-17
+Version: 0.2.4
+Date: 2016-12-22
 Authors@R: c(person("Sergio", "Picart-Armada", role = c("aut", "cre"),
                      email = "sergi.picart@upc.edu"), 
             person("Alexandre", "Perera-Lluna", role = c("aut"),
@@ -41,4 +41,5 @@ biocViews:
     GraphAndNetwork, 
     KEGG, 
     Pathways, 
+    Network, 
     NetworkEnrichment

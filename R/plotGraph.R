@@ -9,8 +9,13 @@
 #' @param input Character vector, compounds in the input to be highlighted
 #' @inheritParams .layout
 #' @inheritParams .NamesAsLabels
-#' @param ... Additional parameters passed to 
-#' \code{\link[igraph]{plot.igraph}}
+#' @param graph.layout Two-column numeric matrix, if this argument is not null 
+#' then it is used as graph layout
+#' @param transparency Logical, should nodes have transparency? 
+#' (proportional to centrality in the solution)
+#' @param showLegend Logical, should the legend be plotted as well?
+#' @param plot.fun Character, can be either \code{plot.igraph} or \code{tkplot}
+#' @param options List of optional further arguments for the plotting function
 #' 
 #' @return If \code{layout = F} then the value 
 #' returned is \code{invisible()}. 
@@ -40,8 +45,12 @@ plotGraph <- function(
   graph = NULL, 
   input = NULL, 
   layout = FALSE,
+  graph.layout = NULL, 
+  transparency = FALSE, 
+  showLegend = TRUE, 
+  plot.fun = "plot.igraph", 
   NamesAsLabels = TRUE, 
-                      ...) {
+  options = list()) {
   
   if (vcount(graph) == 0) {
     warning("The graph is empty and won't be plotted.")
@@ -97,7 +106,8 @@ plotGraph <- function(
   graph.alpha[is.nan(graph.alpha)] <- 0
   
   graph.asp <- 1
-  graph.layout <- layout.auto(graph)
+  if (is.null(graph.layout)) graph.layout <- layout.auto(graph)
+  
   graph.layout <- layout.norm(
     graph.layout, 
     xmin = -1, 
@@ -123,11 +133,15 @@ plotGraph <- function(
     }
 # browser()
 
-    transpa <- max(round(10*vertex.number*graph.alpha[y]), 80)
-    if (transpa > 150) transpa <- 150
-    
-    transpaColor <- format(as.hexmode(transpa), upper.case = TRUE)
-    if (transpa < 16) transpaColor <- paste0("0", transpaColor)
+    if (transparency) {
+      transpa <- max(round(10*vertex.number*graph.alpha[y]), 80)
+      if (transpa > 150) transpa <- 150
+      
+      transpaColor <- format(as.hexmode(transpa), upper.case = TRUE)
+      if (transpa < 16) transpaColor <- paste0("0", transpaColor)
+    } else {
+      transpaColor <- "FF"
+    }
     
     return(c(paste0(solidColor, "FF"), paste0(solidColor, transpaColor)))
   })
@@ -168,25 +182,52 @@ plotGraph <- function(
     vertex.label <- V(graph)$name
   }
 
-  plot.igraph(
-    x = graph, 
-    layout = graph.layout, 
-    vertex.size = vertex.size, 
-    vertex.label = vertex.label, 
-    vertex.label.dist = vertex.label.dist, 
-    vertex.label.color = vertex.color["label", ], 
-    vertex.label.degree = vertex.label.degree, 
-    vertex.frame.color = vertex.frame.color, 
-    vertex.color = vertex.color["node", ], 
-    vertex.shape = vertex.shape,
-    edge.curved = FALSE, 
-    edge.color = "#000000AA", 
-    edge.arrow.size = 0.25,
-    asp = graph.asp, 
-    ...)
-
+  if (plot.fun == "plot.igraph") {
+    do.call(
+      plot.fun, 
+      c(
+        list(
+          x = graph, 
+          layout = graph.layout, 
+          vertex.size = vertex.size, 
+          vertex.label = vertex.label, 
+          vertex.label.dist = vertex.label.dist, 
+          vertex.label.color = vertex.color["label", ], 
+          vertex.label.degree = vertex.label.degree, 
+          vertex.frame.color = vertex.frame.color, 
+          vertex.color = vertex.color["node", ], 
+          vertex.shape = vertex.shape,
+          edge.curved = FALSE, 
+          edge.color = "#000000AA", 
+          edge.arrow.size = 0.25,
+          asp = graph.asp), 
+        options)
+    )
+  } 
+  if (plot.fun == "tkplot") {
+    do.call(
+      plot.fun, 
+      c(
+        list(
+          graph = graph, # works if we use tkplot
+          layout = graph.layout, 
+          vertex.size = vertex.size, 
+          vertex.label = vertex.label, 
+          vertex.label.dist = vertex.label.dist, 
+          vertex.label.color = vertex.color["label", ], 
+          vertex.label.degree = vertex.label.degree, 
+          vertex.frame.color = vertex.frame.color, 
+          vertex.color = vertex.color["node", ], 
+          vertex.shape = vertex.shape,
+          edge.color = "#000000AA", 
+          edge.arrow.size = 0.25,
+          asp = graph.asp), 
+        options)
+    )
+  }
+  
   # Plot the legend
-  showLegend(GO.CellularComponent)
+  if (showLegend) showLegend(GO.CellularComponent)
   
   if (!layout) {
     return(invisible(NULL))

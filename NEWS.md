@@ -2,6 +2,12 @@
 
 ---
 
+### Version 0.2.4
+
+Minor tweaks in the plotting function. Has more flexibility and can use 
+tkplot as well (for image generation purposes), or force layout. This 
+function should be really improved, it's not that hard...
+
 ### Version 0.2.3
 
 * Fixed CREB website link
