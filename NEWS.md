@@ -2,6 +2,32 @@
 
 ---
 
+### Version 0.2.5
+
+Some minor changes to accomodate Bioconductor's standards:
+
+* Update `R` version
+* Add `R` file to the `testthat` folder
+* Add GO biocView
+
+To do from Bioconductor:
+
+* **Vignette breaks**
+* Add NEWS file
+* Fix indentation
+* Fix long lines (<80)
+* Add runnable examples: 
+  - buildDataFromGraph
+  - buildGraphFromKEGGREST
+  - loadKEGGdata
+
+To do:
+
+* Quantitative input?
+* Improve function documentation (use templates) to supress warnings
+* Change `rcytoscapejs` dependency to `visNetwork` (in CRAN)
+
+
 ### Version 0.2.4
 
 Minor tweaks in the plotting function. Has more flexibility and can use 
