@@ -5,12 +5,12 @@
 \title{Wrapper function for enrichment analysis}
 \usage{
 enrich(compounds = NULL, compoundsBackground = NULL, method = "all",
-  loadMatrix = "none", approx = "normality", t.df = 10, niter = 1000,
-  databaseDir = "myDatabase", internalDir = TRUE, data = NULL, ...)
+    loadMatrix = "none", approx = "normality", t.df = 10, niter = 1000,
+    databaseDir = "myDatabase", internalDir = TRUE, data = NULL, ...)
 }
 \arguments{
-\item{compounds}{Character vector containing the KEGG IDs of the compounds
-considered as affected}
+\item{compounds}{Character vector containing the 
+KEGG IDs of the compounds considered as affected}
 
 \item{compoundsBackground}{Character vector containing the KEGG IDs of 
 the compounds that belong to the background. Can be \code{NULL} for the 
@@ -25,7 +25,8 @@ One of: "diffusion", "pagerank", "all" or NULL}
 \item{approx}{Character: "simulation" for Monte Carlo, "normality", 
 "gamma" or "t" for parametric approaches}
 
-\item{t.df}{Numeric value; number of degrees of freedom of the t distribution 
+\item{t.df}{Numeric value; number of degrees of freedom 
+of the t distribution 
 if the approximation \code{approx = "t"} is used}
 
 \item{niter}{Number of iterations (permutations) 
@@ -50,8 +51,9 @@ and the \code{\link[FELLA]{FELLA.DATA}} objects
 in a list.
 }
 \description{
-The function \code{\link[FELLA]{enrich}} is a big wrapper to perform the enrichment 
-analysis. It loads affected compounds, KEGG data and return a list containing 
+The function \code{\link[FELLA]{enrich}} is a big wrapper 
+to perform the enrichment analysis. It loads affected compounds, 
+KEGG data and return a list containing 
 the \code{\link[FELLA]{FELLA.DATA}} context data and the 
 \code{\link[FELLA]{FELLA.USER}} 
 object with the enrichment results available.
@@ -69,4 +71,3 @@ data = FELLA.sample)
 obj
 
 }
-

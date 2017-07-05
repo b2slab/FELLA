@@ -5,8 +5,8 @@
 \title{Generate readable tables from the enrichment results}
 \usage{
 generateResultsTable(method = "diffusion", threshold = 0.005, plimit = 15,
-  nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
-  object = NULL, data = NULL)
+    nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
+    object = NULL, data = NULL)
 }
 \arguments{
 \item{method}{Character, one of: 
@@ -17,12 +17,12 @@ Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
-\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. This limits
-the order of the solution graph}
+\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
+This limits the order of the solution graph}
 
-\item{LabelLengthAtPlot}{Numeric value between 10 and 50. Maximum length that
-a label can reach when plotting the graph. The remaining characters will be 
-truncated using "..."}
+\item{LabelLengthAtPlot}{Numeric value between 10 and 50. 
+Maximum length that a label can reach when plotting the graph. 
+The remaining characters will be truncated using "..."}
 
 \item{capPvalues}{Numeric value, minimum p-value 
 admitted for the readable 
@@ -56,4 +56,3 @@ data = FELLA.sample)
 head(tab)
 
 }
-

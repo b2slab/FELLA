@@ -25,4 +25,3 @@ data(FELLA.sample)
 getName(FELLA.sample, c("C00002", "C00040"))
 
 }
-

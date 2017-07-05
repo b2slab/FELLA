@@ -7,8 +7,8 @@
 defineCompounds(compounds = NULL, compoundsBackground = NULL, data = NULL)
 }
 \arguments{
-\item{compounds}{Character vector containing the KEGG IDs of the compounds
-considered as affected}
+\item{compounds}{Character vector containing the 
+KEGG IDs of the compounds considered as affected}
 
 \item{compoundsBackground}{Character vector containing the KEGG IDs of 
 the compounds that belong to the background. Can be \code{NULL} for the 
@@ -43,4 +43,3 @@ compounds = c("C00049", "C00050"),
 data = FELLA.sample)}
 
 }
-

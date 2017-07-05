@@ -2,11 +2,11 @@
 % Please edit documentation in R/AllClasses.R, R/AllMethods.R
 \docType{class}
 \name{FELLA.USER-class}
-\alias{FELLA.USER}
 \alias{FELLA.USER-class}
-\alias{plot,FELLA.USER,missing-method}
-\alias{show,FELLA.USER-method}
+\alias{FELLA.USER}
 \alias{summary,FELLA.USER-method}
+\alias{show,FELLA.USER-method}
+\alias{plot,FELLA.USER,missing-method}
 \title{An S4 class to save all the user analysis data}
 \usage{
 \S4method{summary}{FELLA.USER}(object)
@@ -14,11 +14,11 @@
 \S4method{show}{FELLA.USER}(object)
 
 \S4method{plot}{FELLA.USER,missing}(x = 1, method = "hypergeom",
-  main = "Affected subgraph", threshold = 0.005, plimit = 15,
-  nlimit = 250, layout = FALSE, filename = NULL,
-  splitByConnectedComponent = FALSE, askPlots = TRUE,
-  thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
-  GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, data = NULL, ...)
+    main = "Affected subgraph", threshold = 0.005, plimit = 15,
+    nlimit = 250, layout = FALSE, filename = NULL,
+    splitByConnectedComponent = FALSE, askPlots = TRUE,
+    thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
+    GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, data = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{FELLA.USER}} object}
@@ -35,8 +35,8 @@ Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
-\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. This limits
-the order of the solution graph}
+\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
+This limits the order of the solution graph}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 
@@ -45,19 +45,23 @@ the order of the solution graph}
 \item{splitByConnectedComponent}{Logical, 
 should the solution be split by CC?}
 
-\item{askPlots}{Logical, should R ask for the next plots using hit<ENTER>?}
+\item{askPlots}{Logical, should R ask 
+for the next plots using hit<ENTER>?}
 
-\item{thresholdConnectedComponent}{Numeric value between 0 and 1. Connected components that are below the threshold are kept, while the ones exceeding it (because they are too small) are discarded.}
+\item{thresholdConnectedComponent}{Numeric value between 0 and 1. 
+Connected components that are below the threshold are kept, 
+while the ones exceeding it (because they are too small) are discarded.}
 
-\item{GO.CellularComponent}{Character, GO entry to draw semantic similarity 
-in the solution graph. If no similarity is desired, leave it as NULL}
+\item{GO.CellularComponent}{Character, GO entry to draw 
+semantic similarity in the solution graph. 
+If no similarity is desired, leave it as NULL}
 
-\item{GONamesAsLabels}{Logical, should GO names be displayed as labels 
-instead of GO identifiers?}
+\item{GONamesAsLabels}{Logical, should GO names 
+be displayed as labels instead of GO identifiers?}
 
-\item{LabelLengthAtPlot}{Numeric value between 10 and 50. Maximum length that
-a label can reach when plotting the graph. The remaining characters will be 
-truncated using "..."}
+\item{LabelLengthAtPlot}{Numeric value between 10 and 50. 
+Maximum length that a label can reach when plotting the graph. 
+The remaining characters will be truncated using "..."}
 
 \item{data}{FELLA.DATA object}
 
@@ -74,11 +78,13 @@ otherwise \code{invisible()}
 \description{
 An S4 class to save all the user analysis data
 
-\code{"summary"} is an S4 method to show a summary of the FELLA.USER object
+\code{"summary"} is an S4 method to show a summary 
+of the FELLA.USER object
 
 \code{"show"} is an S4 method to show a FELLA.USER object
 
-\code{"plot"} is an S4 method to plot the results from a FELLA.USER object
+\code{"plot"} is an S4 method to plot the results 
+from a FELLA.USER object
 }
 \section{Slots}{
 

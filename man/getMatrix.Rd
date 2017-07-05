@@ -30,4 +30,3 @@ y <- getMatrix(FELLA.sample, "diffusion")
 dim(y)
 y
 }
-

@@ -27,5 +27,5 @@
 #' getValid(obj, "pagerank")
 #' 
 getValid <- function(object, type) {
-  return(slot(object, type)@valid)
+    return(slot(object, type)@valid)
 }

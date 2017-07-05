@@ -5,7 +5,7 @@
 \title{Pathway enrichment through heat diffusion}
 \usage{
 runDiffusion(object = NULL, data = NULL, approx = "normality",
-  t.df = 10, niter = 1000, p.adjust = "fdr", BIMODAL = FALSE)
+    t.df = 10, niter = 1000, p.adjust = "fdr", BIMODAL = FALSE)
 }
 \arguments{
 \item{object}{FELLA.USER object}
@@ -15,16 +15,19 @@ runDiffusion(object = NULL, data = NULL, approx = "normality",
 \item{approx}{Character: "simulation" for Monte Carlo, "normality", 
 "gamma" or "t" for parametric approaches}
 
-\item{t.df}{Numeric value; number of degrees of freedom of the t distribution 
+\item{t.df}{Numeric value; number of degrees of freedom 
+of the t distribution 
 if the approximation \code{approx = "t"} is used}
 
 \item{niter}{Number of iterations (permutations) 
 for Monte Carlo ("simulation"), 
 must be a numeric value between 1e2 and 1e5}
 
-\item{p.adjust}{Character passed to the \code{\link[stats]{p.adjust}} method}
+\item{p.adjust}{Character passed to the 
+\code{\link[stats]{p.adjust}} method}
 
-\item{BIMODAL}{Logical value, should the bimodal test for compounds be used?}
+\item{BIMODAL}{Logical value, should the bimodal test 
+for compounds be used?}
 }
 \value{
 The \code{\link[FELLA]{FELLA.USER}} object 
@@ -61,4 +64,3 @@ data = FELLA.sample)
 obj.diff
 
 }
-

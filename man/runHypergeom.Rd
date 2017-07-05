@@ -11,7 +11,8 @@ runHypergeom(object = NULL, data = NULL, p.adjust = "fdr")
 
 \item{data}{FELLA.DATA object}
 
-\item{p.adjust}{Character passed to the \code{\link[stats]{p.adjust}} method}
+\item{p.adjust}{Character passed to the 
+\code{\link[stats]{p.adjust}} method}
 }
 \value{
 The \code{\link[FELLA]{FELLA.USER}} object 
@@ -46,4 +47,3 @@ data = FELLA.sample)
 obj.diff
 
 }
-

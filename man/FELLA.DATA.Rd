@@ -2,8 +2,8 @@
 % Please edit documentation in R/AllClasses.R, R/AllMethods.R
 \docType{class}
 \name{FELLA.DATA-class}
-\alias{FELLA.DATA}
 \alias{FELLA.DATA-class}
+\alias{FELLA.DATA}
 \alias{show,FELLA.DATA-method}
 \title{An S4 class to represent all the necessary KEGG data}
 \usage{

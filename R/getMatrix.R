@@ -19,5 +19,5 @@
 #' dim(y)
 #' y
 getMatrix <- function(data, type) {
-  return(slot(data, type)@matrix)
+    return(slot(data, type)@matrix)
 }

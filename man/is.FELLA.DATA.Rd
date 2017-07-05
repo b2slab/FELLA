@@ -21,4 +21,3 @@ data(FELLA.sample)
 is.FELLA.DATA(FELLA.sample)
 is.FELLA.DATA(42)
 }
-

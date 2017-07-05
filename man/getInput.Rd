@@ -34,4 +34,3 @@ i2 <- getInput(obj)
 
 identical(sort(i1), sort(i2))
 }
-

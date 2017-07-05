@@ -13,5 +13,5 @@
 #' is.FELLA.DATA(FELLA.sample)
 #' is.FELLA.DATA(42)
 is.FELLA.DATA <- function(x = NULL) {
-  return(is(x, "FELLA.DATA"))
+    return(is(x, "FELLA.DATA"))
 }

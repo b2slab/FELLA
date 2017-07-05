@@ -27,4 +27,3 @@ data(FELLA.sample)
 rowsums <- getSums(FELLA.sample, "diffusion", squared = FALSE)
 hist(rowsums)
 }
-

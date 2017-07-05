@@ -46,62 +46,61 @@
 #' @import igraph
 # @importFrom GOSemSim goSim
 addCellularComponentToGraph <- function(
-  graph = NULL, 
-  GO.CellularComponent = NULL, 
-  GONamesAsLabels = TRUE, 
-  organism = "human") {
-  
-  # check if GOSemSim is available
-  if (!requireNamespace("GOSemSim", quietly = TRUE)) {
-    stop("Package GOSemSim must be installed to add the CC ontology", 
-         call. = FALSE)
-  }
-  
-  if ((length(GO.CellularComponent) == 0) | (GO.CellularComponent == ""))
-    return(graph)
-  
-  similarity.CC <- lapply(V(graph)$GO, FUN = function(x) {
-    if (!is.na(x)) {
-      ids <- names(x)
-      #     browser()
-      
-      sim <- GOSemSim::goSim(
-        GOID1 = GO.CellularComponent, 
-        GOID2 = ids, 
-        # ont = "CC", 
-        organism = organism)
-      
-      # Pick best similarity
-      val <- max(sim, na.rm = TRUE)
-      
-      # Infinity if all the similarities are NA... 
-      # so we treat is as missing (-1)
-      if (val == -Inf) {
-        warning("Semantic similarity returned NA. ", 
-                "Is the GO term properly typed?")
+    graph = NULL, 
+    GO.CellularComponent = NULL, 
+    GONamesAsLabels = TRUE, 
+    organism = "human") {
+    
+    # check if GOSemSim is available
+    if (!requireNamespace("GOSemSim", quietly = TRUE)) {
+        stop(
+            "Package GOSemSim must be installed to add the CC ontology", 
+            call. = FALSE)
+    }
+    
+    if ((length(GO.CellularComponent) == 0) | (GO.CellularComponent == ""))
+        return(graph)
+    
+    similarity.CC <- lapply(V(graph)$GO, FUN = function(x) {
+        if (!is.na(x)) {
+            ids <- names(x)
+            #     browser()
+            
+            sim <- GOSemSim::goSim(
+                GOID1 = GO.CellularComponent, 
+                GOID2 = ids, 
+                # ont = "CC", 
+                organism = organism)
+            
+            # Pick best similarity
+            val <- max(sim, na.rm = TRUE)
+            
+            # Infinity if all the similarities are NA... 
+            # so we treat is as missing (-1)
+            if (val == -Inf) {
+                warning("Semantic similarity returned NA. ", 
+                        "Is the GO term properly typed?")
+                val <- -1
+                names(val) <- "NONE"
+            } else {
+                if (GONamesAsLabels) names(val) <- x[which.max(sim)]
+                else names(val) <- ids[which.max(sim)]
+            }
+            
+            return(val)
+        }
+        # If it is NA... place -1
         val <- -1
         names(val) <- "NONE"
-      } else {
-        if (GONamesAsLabels) names(val) <- x[which.max(sim)]
-        else names(val) <- ids[which.max(sim)]
-      }
-      
-      return(val)
-    }
-    # If it is NA... place -1
-    val <- -1
-    names(val) <- "NONE"
-    #   show(val)
-    return(val)
-  })
-  
-  #detach("package:GOSemSim", unload = T)
-  
-  # Careful! We add it as a list!
-  graph <- set.vertex.attribute(
-    graph = graph, 
-    name = "GO.CC", 
-    value = similarity.CC)
-  
-  return(graph)
+        #   show(val)
+        return(val)
+    })
+    
+    # Careful! We add it as a list!
+    graph <- set.vertex.attribute(
+        graph = graph, 
+        name = "GO.CC", 
+        value = similarity.CC)
+    
+    return(graph)
 }

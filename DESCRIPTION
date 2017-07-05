@@ -1,12 +1,15 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and Enrichment for Metabolomics Data
-Version: 0.2.5
-Date: 2017-7-4
-Authors@R: c(person("Sergio", "Picart-Armada", role = c("aut", "cre"),
-                     email = "sergi.picart@upc.edu"), 
-            person("Alexandre", "Perera-Lluna", role = c("aut"),
-                     email = "alexandre.perera@upc.edu"))
+Version: 0.2.6
+Date: 2017-7-5
+Authors@R: c(
+    person(
+        "Sergio", "Picart-Armada", role = c("aut", "cre"),
+        email = "sergi.picart@upc.edu"), 
+    person(
+        "Alexandre", "Perera-Lluna", role = c("aut"),
+        email = "alexandre.perera@upc.edu"))
 Author: Sergio Picart-Armada [aut, cre],
     Alexandre Perera-Lluna [aut]
 Maintainer: Sergio Picart-Armada <sergi.picart@upc.edu>

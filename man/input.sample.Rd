@@ -28,4 +28,3 @@ pathway hsa00640 over hsa00010.
 data(input.sample)
 }
 \keyword{datasets}
-

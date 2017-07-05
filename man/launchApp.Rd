@@ -22,4 +22,3 @@ Launch a shiny application to perform the metabolomics data enrichment.
 r <- try(launchApp())
 
 }
-

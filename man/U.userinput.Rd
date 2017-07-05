@@ -10,13 +10,15 @@ An internal S4 class for the user input data
 \section{Slots}{
 
 \describe{
-\item{\code{metabolites}}{Character vector containing the affected compounds}
+\item{\code{metabolites}}{Character vector containing 
+the affected compounds}
 
-\item{\code{metabolitesbackground}}{Character vector containing the compounds 
-for the personalised background. Optionally, can be \code{NULL} for default 
-background}
+\item{\code{metabolitesbackground}}{Character vector containing 
+the compounds for the personalised background. 
+Optionally, can be \code{NULL} for default background}
 
-\item{\code{excluded}}{Character vector containing the compounds that have been 
+\item{\code{excluded}}{Character vector containing 
+the compounds that have been 
 excluded because they cannot be mapped to KEGG graph compounds}
 }}
 

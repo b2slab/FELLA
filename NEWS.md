@@ -2,6 +2,21 @@
 
 ---
 
+### Version 0.2.6
+
+* Fixed indentation
+* Fixed long lines
+* Added NEWS file
+* Fixed examples
+
+To do:
+
+* **Vignette breaks**
+* Quantitative input?
+* Improve function documentation (use templates) to supress warnings
+* Change `rcytoscapejs` dependency to `visNetwork` (in CRAN)
+* What to do about the p-values?
+
 ### Version 0.2.5
 
 Some minor changes to accomodate Bioconductor's standards:

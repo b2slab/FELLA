@@ -36,5 +36,5 @@
 #' 
 #' @export
 getBackground <- function(object) {
-  return(object@userinput@metabolitesbackground)
+    return(object@userinput@metabolitesbackground)
 }

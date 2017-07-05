@@ -12,5 +12,5 @@
 #' g <- getGraph(FELLA.sample)
 #' class(g)
 getGraph <- function(data) {
-  return(data@keggdata@graph)
+    return(data@keggdata@graph)
 }

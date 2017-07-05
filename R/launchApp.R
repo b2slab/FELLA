@@ -12,34 +12,36 @@
 #' r <- try(launchApp())
 #' 
 launchApp <- function(
-  port = 8888, 
-  host = "localhost", 
-  launch.browser = FALSE, 
-  ...
+    port = 8888, 
+    host = "localhost", 
+    launch.browser = FALSE, 
+    ...
 ) {
-  if (!requireNamespace("shiny", quietly = TRUE)) {
-    stop(
-      "The 'shiny' package must be installed to run the interactive app", 
-      call. = FALSE)
-  }
-  
-  dir.app <- system.file("shiny", package = "FELLA")
-  
-  if (host == "eko") host <- "147.83.71.87"
-  if (host == "localhost") host <- "127.0.0.1"
-  
-  if (dir.app == "") {
-    warning("Something went wrong and the shiny app is not in the ", 
+    if (!requireNamespace("shiny", quietly = TRUE)) {
+        stop(
+            "The 'shiny' package must be installed ", 
+            "to run the interactive app", 
+            call. = FALSE)
+    }
+    
+    dir.app <- system.file("shiny", package = "FELLA")
+    
+    if (host == "eko") host <- "147.83.71.87"
+    if (host == "localhost") host <- "127.0.0.1"
+    
+    if (dir.app == "") {
+        warning(
+            "Something went wrong and the shiny app is not in the ", 
             "application directory. Try reinstalling FELLA...")
-    return(invisible())
-  }
-  
-  shiny::runApp(
-    appDir = dir.app, 
-    launch.browser = launch.browser, 
-    port = port, 
-    host = host, 
-    ...)
-  
-  invisible()
+        return(invisible())
+    }
+    
+    shiny::runApp(
+        appDir = dir.app, 
+        launch.browser = launch.browser, 
+        port = port, 
+        host = host, 
+        ...)
+    
+    invisible()
 }

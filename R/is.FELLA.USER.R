@@ -21,5 +21,5 @@
 #' 
 #' @export
 is.FELLA.USER <- function(x = NULL) {
-  return(is(x, "FELLA.USER"))
+    return(is(x, "FELLA.USER"))
 }

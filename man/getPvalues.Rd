@@ -27,4 +27,3 @@ p <- getPvalues(obj, "diffusion")
 sum(p < 0.1)
 
 }
-

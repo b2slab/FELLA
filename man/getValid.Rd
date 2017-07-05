@@ -37,4 +37,3 @@ getValid(new("FELLA.USER"), "diffusion")
 getValid(obj, "pagerank")
 
 }
-

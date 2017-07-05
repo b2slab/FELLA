@@ -18,5 +18,5 @@
 #' 
 #' @export
 getPvalues <- function(object, type) {
-  return(slot(object, type)@pvalues)
+    return(slot(object, type)@pvalues)
 }

@@ -5,12 +5,12 @@
 \title{Internal function to check arguments and give personalised errors}
 \usage{
 checkArguments(method = "diffusion", approx = "normality",
-  loadMatrix = NULL, threshold = 0.05, plimit = 15, nlimit = 250,
-  niter = 1000, layout = FALSE, splitByConnectedComponent = FALSE,
-  askPlots = TRUE, thresholdConnectedComponent = 0.05,
-  GO.CellularComponent = NULL, GONamesAsLabels = TRUE,
-  LabelLengthAtPlot = 22, object = new("FELLA.USER"),
-  data = new("FELLA.DATA"))
+    loadMatrix = NULL, threshold = 0.05, plimit = 15, nlimit = 250,
+    niter = 1000, layout = FALSE, splitByConnectedComponent = FALSE,
+    askPlots = TRUE, thresholdConnectedComponent = 0.05,
+    GO.CellularComponent = NULL, GONamesAsLabels = TRUE,
+    LabelLengthAtPlot = 22, object = new("FELLA.USER"),
+    data = new("FELLA.DATA"))
 }
 \arguments{
 \item{method}{Character, one of: 
@@ -27,8 +27,8 @@ Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
-\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. This limits
-the order of the solution graph}
+\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
+This limits the order of the solution graph}
 
 \item{niter}{Number of iterations (permutations) 
 for Monte Carlo ("simulation"), 
@@ -39,19 +39,23 @@ must be a numeric value between 1e2 and 1e5}
 \item{splitByConnectedComponent}{Logical, 
 should the solution be split by CC?}
 
-\item{askPlots}{Logical, should R ask for the next plots using hit<ENTER>?}
+\item{askPlots}{Logical, should R ask 
+for the next plots using hit<ENTER>?}
 
-\item{thresholdConnectedComponent}{Numeric value between 0 and 1. Connected components that are below the threshold are kept, while the ones exceeding it (because they are too small) are discarded.}
+\item{thresholdConnectedComponent}{Numeric value between 0 and 1. 
+Connected components that are below the threshold are kept, 
+while the ones exceeding it (because they are too small) are discarded.}
 
-\item{GO.CellularComponent}{Character, GO entry to draw semantic similarity 
-in the solution graph. If no similarity is desired, leave it as NULL}
+\item{GO.CellularComponent}{Character, GO entry to draw 
+semantic similarity in the solution graph. 
+If no similarity is desired, leave it as NULL}
 
-\item{GONamesAsLabels}{Logical, should GO names be displayed as labels 
-instead of GO identifiers?}
+\item{GONamesAsLabels}{Logical, should GO names 
+be displayed as labels instead of GO identifiers?}
 
-\item{LabelLengthAtPlot}{Numeric value between 10 and 50. Maximum length that
-a label can reach when plotting the graph. The remaining characters will be 
-truncated using "..."}
+\item{LabelLengthAtPlot}{Numeric value between 10 and 50. 
+Maximum length that a label can reach when plotting the graph. 
+The remaining characters will be truncated using "..."}
 
 \item{object}{FELLA.USER object}
 
@@ -79,4 +83,3 @@ arg1$valid
 arg2 <- checkArguments(method = "diffusion")
 arg2$valid
 }
-

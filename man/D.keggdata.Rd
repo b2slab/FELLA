@@ -12,12 +12,15 @@ An internal S4 class to represent the KEGG graph and related files
 \describe{
 \item{\code{graph}}{KEGG graph}
 
-\item{\code{id2name}}{Mapping list: KEGG ID to KEGG name (can contain multiple hits)}
+\item{\code{id2name}}{Mapping list: KEGG ID to KEGG name 
+(can contain multiple hits)}
 
-\item{\code{pvalues.size}}{Numeric matrix for the evaluation of CC through their size}
+\item{\code{pvalues.size}}{Numeric matrix for the 
+evaluation of CC through their size}
 
 \item{\code{id}}{List with character vectors for KEGG categories}
 
-\item{\code{status}}{Character that specifies the current status of this S4 class}
+\item{\code{status}}{Character that specifies the 
+current status of this S4 class}
 }}
 

@@ -25,5 +25,5 @@
 #' getExcluded(obj)
 #' @export
 getExcluded <- function(object) {
-  return(object@userinput@excluded)
+    return(object@userinput@excluded)
 }

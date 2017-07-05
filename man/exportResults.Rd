@@ -5,14 +5,15 @@
 \title{Export the enrichment results in several file formats}
 \usage{
 exportResults(format = "csv", file = "myOutput", method = "diffusion",
-  threshold = 0.05, plimit = 15, nlimit = 250, object = NULL,
-  data = NULL, ...)
+    threshold = 0.05, plimit = 15, nlimit = 250, object = NULL,
+    data = NULL, ...)
 }
 \arguments{
 \item{format}{Character, one of: \code{"csv"}, \code{"igraph"}, 
 \code{"png"}, [\code{"pdf"} soon]}
 
-\item{file}{Character specifying the output directory for the exported files}
+\item{file}{Character specifying the output 
+directory for the exported files}
 
 \item{method}{Character, one of: 
 "hypergeom", "diffusion", "pagerank" or "all"}
@@ -22,8 +23,8 @@ Applied when filtering KEGG nodes}
 
 \item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
 
-\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. This limits
-the order of the solution graph}
+\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
+This limits the order of the solution graph}
 
 \item{object}{FELLA.USER object}
 
@@ -32,13 +33,16 @@ the order of the solution graph}
 \item{...}{Developer parameter, currently ignored}
 }
 \value{
-Return value is \code{invisible()}, but as a permanent action the 
+Return value is \code{invisible()}, 
+but as a permanent action the 
 specified \code{file} is created.
 }
 \description{
 Function \code{exportResults} writes the enrichment results in a 
-proper layout and filetype. It can be a plot image (png), a table (csv), 
-an \code{\link[igraph]{igraph}} object or a pdf report [under construction]
+proper layout and filetype. 
+It can be a plot image (png), a table (csv), 
+an \code{\link[igraph]{igraph}} object 
+or a pdf report [under construction]
 }
 \examples{
 data(FELLA.sample)
@@ -57,4 +61,3 @@ df <- read.csv(out.file)
 head(df)
 
 }
-

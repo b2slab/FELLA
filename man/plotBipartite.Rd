@@ -45,4 +45,3 @@ data = FELLA.sample)
 plotBipartite(g)
 
 }
-

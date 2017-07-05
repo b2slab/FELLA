@@ -5,9 +5,9 @@
 \title{Generate RData KEGG files from the curated KEGG graph}
 \usage{
 buildDataFromGraph(keggdata.graph = NULL, databaseDir = "myDatabase",
-  internalDir = TRUE, matrices = c("hypergeom", "diffusion", "pagerank"),
-  normality = c("diffusion", "pagerank"), dampingFactor = 0.85,
-  niter = 1000)
+    internalDir = TRUE, matrices = c("hypergeom", "diffusion", "pagerank"),
+    normality = c("diffusion", "pagerank"), dampingFactor = 0.85,
+    niter = 1000)
 }
 \arguments{
 \item{keggdata.graph}{An \code{\link[igraph]{igraph}} 
@@ -35,7 +35,7 @@ for the CC size. Between 10 and 1e4.}
 }
 \value{
 Return value is \code{invisible(TRUE)} if successful,
- and as a permanent action the 
+and as a permanent action the 
 directory \code{outdir} is created and the RData KEGG files are saved.
 }
 \description{
@@ -47,7 +47,6 @@ KEGG graph must provide from the function
 \code{\link[FELLA]{buildGraphFromKEGGREST}}.
 }
 \examples{
-\dontrun{
 ## Toy example
 data("FELLA.sample")
 ## Graph to build the database
@@ -61,7 +60,7 @@ internalDir = FALSE,
 matrices = c("hypergeom", "diffusion", "pagerank"), 
 normality = c("diffusion", "pagerank"), 
 dampingFactor = 0.85,
-niter = 10)}
+niter = 10)
 
 \dontrun{
 ## Build your local database
@@ -78,4 +77,3 @@ dampingFactor = 0.85,
 niter = 1e3)}
 
 }
-

@@ -44,4 +44,3 @@ data = FELLA.sample)
 getBackground(obj)
 
 }
-

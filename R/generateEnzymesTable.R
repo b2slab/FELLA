@@ -18,7 +18,8 @@
 #' @inheritParams .object
 #' @inheritParams .data
 #'
-#' @return A table that contains the enzymes along with genes and GO labels
+#' @return A table that contains the enzymes 
+#' along with genes and GO labels
 #' 
 #' @examples 
 #' data(FELLA.sample)
@@ -35,110 +36,105 @@
 #' @import igraph
 #' @export
 generateEnzymesTable <- function(
-  method = "diffusion", 
-  threshold = 0.005, 
-  nlimit = 250, 
-  LabelLengthAtPlot = 45, 
-  capPvalues = 1e-10, 
-  object = NULL, 
-  data = NULL) {
-  
-  if (!is.FELLA.DATA(data)) {
-    stop("'data' is not a FELLA.DATA object")
-  } else if (data@keggdata@status != "loaded"){
-    stop("'data' points to an empty FELLA.DATA object")
-  }
-  
-  checkArgs <- checkArguments(
-    method = method, 
-    threshold = threshold, 
-    nlimit = nlimit, 
-    LabelLengthAtPlot = LabelLengthAtPlot, 
-    object = object, 
-    data = data)
-  
-  if (!checkArgs$valid)
-    stop("Bad argument when calling function 'generateEnzymesGraph'.")
-  
-  if (!(method %in% c("diffusion", "pagerank"))) {
-    warning(
-      "Method should be one of: 'diffusion', 'pagerank'", 
-      " but it is ", 
-      method, 
-      ". Returning NULL...")
-    return(NULL)
-  }
+    method = "diffusion", 
+    threshold = 0.005, 
+    nlimit = 250, 
+    LabelLengthAtPlot = 45, 
+    capPvalues = 1e-10, 
+    object = NULL, 
+    data = NULL) {
     
-  
-  if (is.na(getValid(object, method)) || !getValid(object, method)) {
-    warning(paste0("Mehod ", method, " has not been executed yet. "),  
-            "Returning NULL...")
-    return(invisible())
-  } 
-  
-  message("Writing ", 
-          method, 
-          "enzymes...")
-
-  pvalues.ec <- sort(
-    getPvalues(
-      object, method)[getCom(data, level = 3, format = "id")])
-  pvalues.ec[pvalues.ec < capPvalues] <- capPvalues
+    if (!is.FELLA.DATA(data)) {
+        stop("'data' is not a FELLA.DATA object")
+    } else if (data@keggdata@status != "loaded"){
+        stop("'data' points to an empty FELLA.DATA object")
+    }
     
-  if (pvalues.ec[1] >= threshold) {
-    message("No enzyme is below the p-value threshold.")
-    return(NULL)
-  } 
-  nodePvalues <- head(
-    pvalues.ec[pvalues.ec < threshold], 
-    nlimit)
-  
-  nodeIds <- names(nodePvalues)
-  nodeNames <- sapply(
-    getName(data, id = nodeIds), 
-    function(id) {
-      ans <- id[1]
-      if (is.null(ans)) 
+    checkArgs <- checkArguments(
+        method = method, 
+        threshold = threshold, 
+        nlimit = nlimit, 
+        LabelLengthAtPlot = LabelLengthAtPlot, 
+        object = object, 
+        data = data)
+    
+    if (!checkArgs$valid)
+        stop("Bad argument when calling function 'generateEnzymesGraph'.")
+    
+    if (!(method %in% c("diffusion", "pagerank"))) {
+        warning(
+            "Method should be one of: 'diffusion', 'pagerank'", 
+            " but it is ", method, ". Returning NULL...")
         return(NULL)
-      
-      if (nchar(ans) > LabelLengthAtPlot) 
-        ans <- paste0(substr(ans, 1, LabelLengthAtPlot), "...")
-      return(ans)
-  })
-  
-  g <- getGraph(data)
-  nodeGenes <- sapply(
-    V(g)[nodeIds]$GENE, 
-    function(genes) paste(genes, collapse = ";")
-  )
-  nodeGO <- sapply(
-    V(g)[nodeIds]$GO, 
-    function(goterms) paste(names(goterms), collapse = ";")
-  )
-  nodeGOname <- sapply(
-    V(g)[nodeIds]$GO, 
-    function(goterms) paste(goterms, collapse = ";")
-  )
-  
-  out.df <- data.frame(
-    nodeIds,
-    nodePvalues, 
-    nodeNames, 
-    nodeGenes, 
-    nodeGO, 
-    nodeGOname, 
-    stringsAsFactors = FALSE)
-  names(out.df) <- c(
-    "EC_number", 
-    "p.value", 
-    "EC_name", 
-    "Genes", 
-    "GO_id", 
-    "GO_name")
-  rownames(out.df) <- NULL
- 
-  message("Done.")
-  
-  return(out.df)
-  
+    }
+    
+    
+    if (is.na(getValid(object, method)) || !getValid(object, method)) {
+        warning(
+            paste0("Mehod ", method, " has not been executed yet. "),  
+            "Returning NULL...")
+        return(invisible())
+    } 
+    
+    message("Writing ", method, "enzymes...")
+    
+    pvalues.ec <- sort(
+        getPvalues(object, method)[getCom(data, level = 3, format = "id")])
+    pvalues.ec[pvalues.ec < capPvalues] <- capPvalues
+    
+    if (pvalues.ec[1] >= threshold) {
+        message("No enzyme is below the p-value threshold.")
+        return(NULL)
+    } 
+    nodePvalues <- head(
+        pvalues.ec[pvalues.ec < threshold], 
+        nlimit)
+    
+    nodeIds <- names(nodePvalues)
+    nodeNames <- sapply(
+        getName(data, id = nodeIds), 
+        function(id) {
+            ans <- id[1]
+            if (is.null(ans)) return(NULL)
+            
+            if (nchar(ans) > LabelLengthAtPlot) 
+                ans <- paste0(substr(ans, 1, LabelLengthAtPlot), "...")
+            return(ans)
+        })
+    
+    g <- getGraph(data)
+    nodeGenes <- sapply(
+        V(g)[nodeIds]$GENE, 
+        function(genes) paste(genes, collapse = ";")
+    )
+    nodeGO <- sapply(
+        V(g)[nodeIds]$GO, 
+        function(goterms) paste(names(goterms), collapse = ";")
+    )
+    nodeGOname <- sapply(
+        V(g)[nodeIds]$GO, 
+        function(goterms) paste(goterms, collapse = ";")
+    )
+    
+    out.df <- data.frame(
+        nodeIds,
+        nodePvalues, 
+        nodeNames, 
+        nodeGenes, 
+        nodeGO, 
+        nodeGOname, 
+        stringsAsFactors = FALSE)
+    names(out.df) <- c(
+        "EC_number", 
+        "p.value", 
+        "EC_name", 
+        "Genes", 
+        "GO_id", 
+        "GO_name")
+    rownames(out.df) <- NULL
+    
+    message("Done.")
+    
+    return(out.df)
+    
 }

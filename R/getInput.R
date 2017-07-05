@@ -26,5 +26,5 @@
 #' identical(sort(i1), sort(i2))
 #' @export
 getInput <- function(object) {
-  return(object@userinput@metabolites)
+    return(object@userinput@metabolites)
 }

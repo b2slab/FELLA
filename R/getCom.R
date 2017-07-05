@@ -5,7 +5,7 @@
 #' @inheritParams .data
 #' @inheritParams .level
 #' @param format Format of the output, "name" returns KEGG IDs whereas 
-#'  "id" returns vertices IDs
+#' "id" returns vertices IDs
 #'
 #' @return Vector of the names/ids of the desired KEGG graph community
 #' 
@@ -25,11 +25,11 @@
 #' ## Compounds
 #' head(getCom(FELLA.sample, 5))
 getCom <- function(data, level, format = "name") {
-  if (format == "name")
-    return(names(data@keggdata@id[[level]]))
-  
-  if (format == "id")
-    return(data@keggdata@id[[level]]) 
-  
-  stop("'format' must be 'name' or 'id'.")
+    if (format == "name")
+        return(names(data@keggdata@id[[level]]))
+    
+    if (format == "id")
+        return(data@keggdata@id[[level]]) 
+    
+    stop("'format' must be 'name' or 'id'.")
 }

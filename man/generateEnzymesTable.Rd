@@ -5,8 +5,8 @@
 \title{Generate enzyme tables with genes and GO annotations}
 \usage{
 generateEnzymesTable(method = "diffusion", threshold = 0.005,
-  nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
-  object = NULL, data = NULL)
+    nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
+    object = NULL, data = NULL)
 }
 \arguments{
 \item{method}{Character, either 'diffusion' or 'pagerank'}
@@ -14,12 +14,12 @@ generateEnzymesTable(method = "diffusion", threshold = 0.005,
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}
 
-\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. This limits
-the order of the solution graph}
+\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
+This limits the order of the solution graph}
 
-\item{LabelLengthAtPlot}{Numeric value between 10 and 50. Maximum length that
-a label can reach when plotting the graph. The remaining characters will be 
-truncated using "..."}
+\item{LabelLengthAtPlot}{Numeric value between 10 and 50. 
+Maximum length that a label can reach when plotting the graph. 
+The remaining characters will be truncated using "..."}
 
 \item{capPvalues}{Numeric value, minimum p-value 
 admitted for the readable 
@@ -32,7 +32,8 @@ table.}
 \item{data}{FELLA.DATA object}
 }
 \value{
-A table that contains the enzymes along with genes and GO labels
+A table that contains the enzymes 
+along with genes and GO labels
 }
 \description{
 Function \code{generateEnzymesTable} returns a table 
@@ -53,4 +54,3 @@ data = FELLA.sample)
 head(tab)
 
 }
-

@@ -5,7 +5,7 @@
 \title{Generate the KEGG graph}
 \usage{
 buildGraphFromKEGGREST(organism = "hsa", filter.path = NULL,
-  GOterms_hsa = TRUE)
+    GOterms_hsa = TRUE)
 }
 \arguments{
 \item{organism}{Character, KEGG code for the organism of interest}
@@ -49,4 +49,3 @@ filter.path = "mmu01100",
 GOterms_hsa = FALSE)}
 
 }
-

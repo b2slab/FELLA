@@ -3,9 +3,11 @@
 \docType{class}
 \name{U.pagerank-class}
 \alias{U.pagerank-class}
-\title{An internal S4 class for the user data of the PageRank enrichment analysis}
+\title{An internal S4 class for the user data 
+of the PageRank enrichment analysis}
 \description{
-An internal S4 class for the user data of the PageRank enrichment analysis
+An internal S4 class for the user data 
+of the PageRank enrichment analysis
 }
 \section{Slots}{
 
@@ -14,9 +16,11 @@ An internal S4 class for the user data of the PageRank enrichment analysis
 
 \item{\code{pvalues}}{Named numeric vector with p-values}
 
-\item{\code{approx}}{Character; which approximation was used? Can be "simulation" 
-for Monte Carlo; "normality", "gamma" or "t" for parametric approaches}
+\item{\code{approx}}{Character; which approximation was used? 
+Can be "simulation" for Monte Carlo; 
+"normality", "gamma" or "t" for parametric approaches}
 
-\item{\code{niter}}{Numeric value, number of iterations for the simulated approach}
+\item{\code{niter}}{Numeric value, number of iterations 
+for the simulated approach}
 }}
 

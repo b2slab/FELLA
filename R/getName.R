@@ -15,10 +15,10 @@
 #' 
 #' @export
 getName <- function(data, id) {
-  ans <- id
-  names(ans) <- id
-  
-  names.intersect <- id %in% names(data@keggdata@id2name)
-  ans[names.intersect] <- data@keggdata@id2name[ans[names.intersect]]
-  return(ans)
+    ans <- id
+    names(ans) <- id
+    
+    names.intersect <- id %in% names(data@keggdata@id2name)
+    ans[names.intersect] <- data@keggdata@id2name[ans[names.intersect]]
+    return(ans)
 }

@@ -1,7 +1,8 @@
 #' Wrapper function for enrichment analysis
 #' 
-#' The function \code{\link[FELLA]{enrich}} is a big wrapper to perform the enrichment 
-#' analysis. It loads affected compounds, KEGG data and return a list containing 
+#' The function \code{\link[FELLA]{enrich}} is a big wrapper 
+#' to perform the enrichment analysis. It loads affected compounds, 
+#' KEGG data and return a list containing 
 #' the \code{\link[FELLA]{FELLA.DATA}} context data and the 
 #' \code{\link[FELLA]{FELLA.USER}} 
 #' object with the enrichment results available.
@@ -40,65 +41,66 @@
 #' 
 #' @export
 enrich <- function(
-  compounds = NULL, 
-  compoundsBackground = NULL, 
-  method = "all", 
-  loadMatrix = "none", 
-  approx = "normality", 
-  t.df = 10, 
-  niter = 1000, 
-  databaseDir = "myDatabase", 
-  internalDir = TRUE,
-  data = NULL, 
-  ...) {
-  
-  
-  # Check if data is loaded
-  returnList <- FALSE
-  if (class(data) != "FELLA.DATA") {
-    message("No data object supplied. ", 
+    compounds = NULL, 
+    compoundsBackground = NULL, 
+    method = "all", 
+    loadMatrix = "none", 
+    approx = "normality", 
+    t.df = 10, 
+    niter = 1000, 
+    databaseDir = "myDatabase", 
+    internalDir = TRUE,
+    data = NULL, 
+    ...) {
+    
+    # Check if data is loaded
+    returnList <- FALSE
+    if (class(data) != "FELLA.DATA") {
+        message(
+            "No data object supplied. ", 
             "Loading it from the 'databaseDir' argument...")
-    returnList <- TRUE
-    data <- loadKEGGdata(
-      databaseDir = databaseDir, 
-      internalDir = internalDir, 
-      loadMatrix = loadMatrix)
-  } 
-
-  # Define custom metabolites
-  object <- defineCompounds(compounds = compounds, 
-                            compoundsBackground = compoundsBackground, 
-                            data = data)
-  
-  
-  # Run all the analyses
-  if (any(method %in% c("hypergeom", "all"))) {
-    object <- runHypergeom(object = object, 
-                           data = data)
-  }
-  
-  if (any(method %in% c("diffusion", "all"))) {
-    object <- runDiffusion(object = object, 
-                           data = data, 
-                           approx = approx, 
-                           t.df = t.df, 
-                           niter = niter, 
-                           ...)
-  }
-
-  if (any(method %in% c("pagerank", "all"))) {
-    object <- runPagerank(object = object, 
-                          data = data, 
-                          approx = approx, 
-                          t.df = t.df, 
-                          niter = niter, 
-                          ...)
-  }
-
-  
-  if (returnList) {
-    return(list(user = object, data = data))
-  }
-  
-  return(object)
+        returnList <- TRUE
+        data <- loadKEGGdata(
+            databaseDir = databaseDir, 
+            internalDir = internalDir, 
+            loadMatrix = loadMatrix)
+    } 
+    
+    # Define custom metabolites
+    object <- defineCompounds(
+        compounds = compounds, 
+        compoundsBackground = compoundsBackground, 
+        data = data)
+    
+    
+    # Run all the analyses
+    if (any(method %in% c("hypergeom", "all"))) {
+        object <- runHypergeom(object = object, data = data)
+    }
+    
+    if (any(method %in% c("diffusion", "all"))) {
+        object <- runDiffusion(
+            object = object, 
+            data = data, 
+            approx = approx, 
+            t.df = t.df, 
+            niter = niter, 
+            ...)
+    }
+    
+    if (any(method %in% c("pagerank", "all"))) {
+        object <- runPagerank(
+            object = object, 
+            data = data, 
+            approx = approx, 
+            t.df = t.df, 
+            niter = niter, 
+            ...)
+    }
+    
+    if (returnList) {
+        return(list(user = object, data = data))
+    }
+    
+    return(object)
 }

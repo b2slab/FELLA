@@ -26,11 +26,10 @@
 #' for the CC size. Between 10 and 1e4.
 #'
 #' @return Return value is \code{invisible(TRUE)} if successful,
-#'  and as a permanent action the 
+#' and as a permanent action the 
 #' directory \code{outdir} is created and the RData KEGG files are saved.
 #' 
 #' @examples 
-#' \dontrun{
 #' ## Toy example
 #' data("FELLA.sample")
 #' ## Graph to build the database
@@ -44,7 +43,7 @@
 #' matrices = c("hypergeom", "diffusion", "pagerank"), 
 #' normality = c("diffusion", "pagerank"), 
 #' dampingFactor = 0.85,
-#' niter = 10)}
+#' niter = 10)
 #' 
 #' \dontrun{
 #' ## Build your local database
@@ -64,264 +63,269 @@
 #' @import Matrix
 #' @export
 buildDataFromGraph <- function(
-  keggdata.graph = NULL, 
-  databaseDir = "myDatabase", 
-  internalDir = TRUE, 
-  matrices = c("hypergeom", "diffusion", "pagerank"), 
-  normality = c("diffusion", "pagerank"), 
-  dampingFactor = 0.85, 
-  niter = 1e3) {
-
-  # Checking the input
-  ##############################################################################
-  graph <- keggdata.graph
-  
-  if (!is.igraph(graph)) 
-    stop("'keggdata.graph' is not a valid igraph object.")
-  
-  if (!is.connected(graph)) 
-    stop("'keggdata.graph' is not connected!")
-  
-  if (!("com" %in% list.vertex.attributes(graph))) 
-    stop("'keggdata.graph' is not a valid graph: ",
-         "'com' attribute is missing.")
-  
-  if (!is.character(databaseDir))
-    stop("You must supply an 'outputDir' to save the data!")
-  
-  if (!is.logical(internalDir) | is.na(internalDir))
-    stop("'internalDir' must be a non-NA logical value")
-  
-  if (!is.null(matrices) & !is.character(matrices))
-    stop("'matrices' should be a character vector containing one or more: ", 
-         "'hypergeom', 'diffusion', 'pagerank'.")
-  
-  if (!is.null(normality) & !is.character(normality))
-    stop("'normality' should be a character vector containing one or more: ",
-         "'diffusion', 'pagerank'.")
-  
-  if (!is.numeric(dampingFactor)) 
-    stop("'dampingFactor' must be a number between 0 and 1, both excluded.")
-  
-  if (dampingFactor <= 0 | dampingFactor >= 1) 
-    stop("'dampingFactor' must be a number between 0 and 1, both excluded.")
-  
-  if (!is.numeric(niter)) 
-    stop("'niter' must be an integer greater than 10 and smaller than 1e4.")
-  niter <- round(niter)
-  
-  if (niter < 10 | niter > 1e4) 
-    stop("'niter' must be an integer between 10 and 1e4.")
-  
-  ##############################################################################
-  
-  # Directory 
-  if (internalDir) {
-    internal <- paste0(
-      system.file(package = "FELLA"), 
-      "/database/"
-    )
+    keggdata.graph = NULL, 
+    databaseDir = "myDatabase", 
+    internalDir = TRUE, 
+    matrices = c("hypergeom", "diffusion", "pagerank"), 
+    normality = c("diffusion", "pagerank"), 
+    dampingFactor = 0.85, 
+    niter = 1e3) {
     
-    if (!dir.exists(paste0(internal))) {
-      message("Creating internal databases directory: ", 
-              internal)
-      dir.create(internal)
+    # Checking the input #
+    ######################
+    graph <- keggdata.graph
+    
+    if (!is.igraph(graph)) 
+        stop("'keggdata.graph' is not a valid igraph object.")
+    
+    if (!is.connected(graph)) 
+        stop("'keggdata.graph' is not connected!")
+    
+    if (!("com" %in% list.vertex.attributes(graph))) 
+        stop(
+            "'keggdata.graph' is not a valid graph: ",
+            "'com' attribute is missing.")
+    
+    if (!is.character(databaseDir))
+        stop("You must supply an 'outputDir' to save the data!")
+    
+    if (!is.logical(internalDir) | is.na(internalDir))
+        stop("'internalDir' must be a non-NA logical value")
+    
+    if (!is.null(matrices) & !is.character(matrices))
+        stop(
+            "'matrices' should be a character vector containing one or more: ", 
+            "'hypergeom', 'diffusion', 'pagerank'.")
+    
+    if (!is.null(normality) & !is.character(normality))
+        stop(
+            "'normality' should be a character vector containing one or more: ",
+            "'diffusion', 'pagerank'.")
+    
+    if (!is.numeric(dampingFactor)) 
+        stop("'dampingFactor' must be a number between 0 and 1, both excluded.")
+    
+    if (dampingFactor <= 0 | dampingFactor >= 1) 
+        stop("'dampingFactor' must be a number between 0 and 1, both excluded.")
+    
+    if (!is.numeric(niter)) 
+        stop("'niter' must be an integer greater than 10 and smaller than 1e4.")
+    niter <- round(niter)
+    
+    if (niter < 10 | niter > 1e4) 
+        stop("'niter' must be an integer between 10 and 1e4.")
+    
+    ###################
+    # Database directory 
+    if (internalDir) {
+        # Save the database in an internal directory, given by
+        # the package installation
+        internal <- paste0(system.file(package = "FELLA"), "/database/")
+        
+        if (!dir.exists(paste0(internal))) {
+            message("Creating internal databases directory: ", internal)
+            dir.create(internal)
+        }
+        
+        outputDir <- paste0(internal, databaseDir)
+        if (dir.exists(outputDir)) {
+            message(
+                "FELLA warning: internal directory ", 
+                databaseDir, 
+                " already exists and will be renamed to ", 
+                databaseDir, 
+                "_old")
+            
+            file.rename(outputDir, paste0(outputDir, "_old"))
+        }
+    } else {
+        # User-defined directory
+        outputDir <- databaseDir
     }
     
-    outputDir <- paste0(internal, databaseDir)
-    if (dir.exists(outputDir)) {
-      message(
-        "FELLA warning: internal directory ", 
-        databaseDir, 
-        " already exists and will be renamed to ", 
-        databaseDir, 
-        "_old")
-      
-      file.rename(
-        outputDir, 
-        paste0(outputDir, "_old"))
-    }
-  } else {
-    outputDir <- databaseDir
-  }
-  
-  
-  # See the probs of getting at least a connected component with a given size
-  subgraph.size <- 1:250
-  component.size <- 1:250
-  
-  message("Computing probabilities for random subgraphs... ", 
-          "(this may take a while)")
-  keggdata.pvalues.size <- sapply(subgraph.size, function(k) {
-    if (k %% round(.1*tail(subgraph.size, 1)) == 0) 
-      message(round(k*100/tail(subgraph.size, 1)), "%")
     
-    null <- sapply(1:niter, function(dummy) {
-      select <- sample(vcount(keggdata.graph), k)
-      sel.g <- induced.subgraph(graph = keggdata.graph, vids = select)
-      sel.c <- clusters(sel.g)
-      sel.t <- table(sel.c$csize)
-      
-      sapply(component.size, function(j) {
-        sum(sel.t[as.numeric(names(sel.t)) > j])
-      })
-      
-    })
+    # See the probs of getting at least a connected component with a given size
+    subgraph.size <- 1:250
+    component.size <- 1:250
     
-    pvals <- apply(null, 1, function(row) {
-      mean(row > 0)
-    })
-    
-    pvals
-  })
-  
-  colnames(keggdata.pvalues.size) <- subgraph.size
-  rownames(keggdata.pvalues.size) <- component.size
-  
-  if (!dir.exists(outputDir)) {
     message(
-      paste0("Directory ", 
-             outputDir, 
-             " does not exist. Creating it..."))
-    dir.create(path = outputDir, recursive = TRUE)
+        "Computing probabilities for random subgraphs... ", 
+        "(this may take a while)")
+    keggdata.pvalues.size <- sapply(subgraph.size, function(k) {
+        if (k %% round(.1*tail(subgraph.size, 1)) == 0) 
+            message(round(k*100/tail(subgraph.size, 1)), "%")
+        
+        null <- sapply(1:niter, function(dummy) {
+            select <- sample(vcount(keggdata.graph), k)
+            sel.g <- induced.subgraph(graph = keggdata.graph, vids = select)
+            sel.c <- clusters(sel.g)
+            sel.t <- table(sel.c$csize)
+            
+            sapply(component.size, function(j) {
+                sum(sel.t[as.numeric(names(sel.t)) > j])
+            })
+            
+        })
+        
+        pvals <- apply(null, 1, function(row) {
+            mean(row > 0)
+        })
+        
+        pvals
+    })
+    
+    colnames(keggdata.pvalues.size) <- subgraph.size
+    rownames(keggdata.pvalues.size) <- component.size
+    
+    if (!dir.exists(outputDir)) {
+        message(
+            paste0(
+                "Directory ", 
+                outputDir, 
+                " does not exist. Creating it..."))
+        dir.create(path = outputDir, recursive = TRUE)
+        message("Done.")
+    }
+    
+    save(
+        keggdata.graph, keggdata.pvalues.size, 
+        file = paste0(outputDir, "/keggdata.graph.RData"))
+    
     message("Done.")
-  }
-  
-  save(keggdata.graph, 
-       keggdata.pvalues.size, 
-       file = paste0(outputDir, "/keggdata.graph.RData"))
-  
-  message("Done.")
-  
-  id.pathway <- which(V(graph)$com == 1)
-  id.compound <- which(V(graph)$com == 5)
     
-  
-  ####################
-  # Hypergeom matrix #
-  ####################
-  
-  if ("hypergeom" %in% matrices) {
-    message("Computing hypergeom.matrix...")
+    id.pathway <- which(V(graph)$com == 1)
+    id.compound <- which(V(graph)$com == 5)
     
-    graph <- keggdata.graph
-    E(graph)$weight <- 1/E(graph)$weight
     
-    hypergeom.matrix <- shortest.paths(graph = graph, 
-                                       v = id.compound, 
-                                       to = id.pathway, 
-                                       mode = "out") == 4
-    hypergeom.matrix <- Matrix(data = hypergeom.matrix, sparse = TRUE)
+    ####################
+    # Hypergeom matrix #
+    ####################
     
-    save(hypergeom.matrix, 
-         file = paste0(outputDir, "/hypergeom.matrix.RData"))
+    if ("hypergeom" %in% matrices) {
+        message("Computing hypergeom.matrix...")
+        
+        graph <- keggdata.graph
+        E(graph)$weight <- 1/E(graph)$weight
+        
+        hypergeom.matrix <- shortest.paths(
+            graph = graph, 
+            v = id.compound, 
+            to = id.pathway, 
+            mode = "out") == 4
+        hypergeom.matrix <- Matrix(data = hypergeom.matrix, sparse = TRUE)
+        
+        save(
+            hypergeom.matrix, 
+            file = paste0(outputDir, "/hypergeom.matrix.RData"))
+        
+        rm(hypergeom.matrix)
+        
+        message("Done.")
+    }
     
-    rm(hypergeom.matrix)
-    gc()
+    ###################
+    # Diffusion files #
+    ###################
     
-    message("Done.")
-  }
-  
-  ###################
-  # Diffusion files #
-  ###################
-  
-  if ("diffusion" %in% c(matrices, normality)) {
-    message("Computing diffusion.matrix... ", 
+    if ("diffusion" %in% c(matrices, normality)) {
+        message(
+            "Computing diffusion.matrix... ", 
             "(this may take a while and use some memory)")
-    
-    graph <- as.undirected(keggdata.graph)
-    
-    # Laplacian matrix
-    K <- graph.laplacian(graph, normalized = FALSE, sparse = TRUE)
-    
-    # Boundary conditions
-    diag(K)[id.pathway] <- diag(K)[id.pathway] + 1
-    
-    # The inverse (WARNING: it uses a large amount of memory)
-    R <- as.matrix(solve(K))
-    rownames(R) <- V(graph)$name
-    colnames(R) <- V(graph)$name
-    
-    # Row sums
-    diffusion.matrix <- R[, id.compound]
-    
-    if ("diffusion" %in% matrices) {
-      save(diffusion.matrix, 
-           file = paste0(outputDir, "/diffusion.matrix.RData"))
-      
-      message("Done")
+        
+        graph <- as.undirected(keggdata.graph)
+        
+        # Laplacian matrix
+        K <- graph.laplacian(graph, normalized = FALSE, sparse = TRUE)
+        
+        # Boundary conditions
+        diag(K)[id.pathway] <- diag(K)[id.pathway] + 1
+        
+        # The inverse (WARNING: it uses a large amount of memory)
+        R <- as.matrix(solve(K))
+        rownames(R) <- V(graph)$name
+        colnames(R) <- V(graph)$name
+        
+        # Row sums
+        diffusion.matrix <- R[, id.compound]
+        
+        if ("diffusion" %in% matrices) {
+            save(
+                diffusion.matrix, 
+                file = paste0(outputDir, "/diffusion.matrix.RData"))
+            
+            message("Done")
+        }
+        
+        if ("diffusion" %in% normality) {
+            message("Computing diffusion.rowSums...")
+            
+            diffusion.rowSums <- rowSums(diffusion.matrix)
+            diffusion.squaredRowSums <- rowSums(diffusion.matrix ^ 2)
+            
+            save(
+                diffusion.rowSums, diffusion.squaredRowSums, 
+                file = paste0(outputDir, "/diffusion.rowSums.RData"))
+            
+            message("Done.")
+        }
+        
+        rm(R, K, diffusion.matrix)
     }
     
-    if ("diffusion" %in% normality) {
-      message("Computing diffusion.rowSums...")
-      
-      diffusion.rowSums <- rowSums(diffusion.matrix)
-      diffusion.squaredRowSums <- rowSums(diffusion.matrix ^ 2)
-      
-      save(diffusion.rowSums, 
-           diffusion.squaredRowSums, 
-           file = paste0(outputDir, "/diffusion.rowSums.RData"))
-      
-      message("Done.")
-    }
     
-    rm(R, K, diffusion.matrix)
-    gc()
-  }
-  
-  
-  
-  ##################
-  # Pagerank files #
-  ##################
-  
-  if ("pagerank" %in% c(matrices, normality)) {
-    message("Computing pagerank.matrix... ", 
+    
+    ##################
+    # Pagerank files #
+    ##################
+    
+    if ("pagerank" %in% c(matrices, normality)) {
+        message(
+            "Computing pagerank.matrix... ", 
             "(this may take a while and use some memory)")
-    
-    graph <- keggdata.graph
-    
-    # Damping factor
-    d <- dampingFactor
-    
-    # Laplacian matrix
-    K <- -t(graph.laplacian(graph))
-    diag(K) <- 0
-    
-    K <- apply(K, 2, function(x) {
-      if (sum(x) != 0) return(x/sum(x))
-      else return(rep(1/dim(K)[1], dim(K)[1]))}
-    )
-    
-    # The inverse (WARNING: it uses a large amount of memory)
-    R <- (1 - d) * solve(diag(dim(K)[1]) - d * K)
-    rownames(R) <- V(graph)$name
-    colnames(R) <- V(graph)$name
-    pagerank.matrix <- R[, id.compound]
-    
-    if ("pagerank" %in% matrices) {
-      save(pagerank.matrix, 
-           file = paste0(outputDir, "/pagerank.matrix.RData"))
-      
-      message("Done.")
+        
+        graph <- keggdata.graph
+        
+        # Damping factor
+        d <- dampingFactor
+        
+        # Laplacian matrix
+        K <- -t(graph.laplacian(graph))
+        diag(K) <- 0
+        
+        K <- apply(K, 2, function(x) {
+            if (sum(x) != 0) return(x/sum(x))
+            else return(rep(1/dim(K)[1], dim(K)[1]))}
+        )
+        
+        # The inverse (WARNING: it uses a large amount of memory)
+        R <- (1 - d) * solve(diag(dim(K)[1]) - d * K)
+        rownames(R) <- V(graph)$name
+        colnames(R) <- V(graph)$name
+        pagerank.matrix <- R[, id.compound]
+        
+        if ("pagerank" %in% matrices) {
+            save(
+                pagerank.matrix, 
+                file = paste0(outputDir, "/pagerank.matrix.RData"))
+            
+            message("Done.")
+        }
+        
+        if ("pagerank" %in% normality) {
+            message("Computing pagerank.rowSums...")
+            
+            pagerank.rowSums <- rowSums(pagerank.matrix)
+            pagerank.squaredRowSums <- rowSums(pagerank.matrix ^ 2)
+            
+            save(
+                pagerank.rowSums, 
+                pagerank.squaredRowSums, 
+                file = paste0(outputDir, "/pagerank.rowSums.RData"))
+            message("Done.")
+        }
+        
+        rm(R, K, pagerank.matrix)
     }
-    
-    if ("pagerank" %in% normality) {
-      message("Computing pagerank.rowSums...")
-      
-      pagerank.rowSums <- rowSums(pagerank.matrix)
-      pagerank.squaredRowSums <- rowSums(pagerank.matrix ^ 2)
-      
-      save(pagerank.rowSums, 
-           pagerank.squaredRowSums, 
-           file = paste0(outputDir, "/pagerank.rowSums.RData"))
-      message("Done.")
-    }
-    
-    rm(R, K, pagerank.matrix)
-    gc()
-  }
-  return(invisible(TRUE))
+    return(invisible(TRUE))
 }
 

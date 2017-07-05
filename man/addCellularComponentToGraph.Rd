@@ -6,17 +6,18 @@
 results graph object}
 \usage{
 addCellularComponentToGraph(graph = NULL, GO.CellularComponent = NULL,
-  GONamesAsLabels = TRUE, organism = "human")
+    GONamesAsLabels = TRUE, organism = "human")
 }
 \arguments{
 \item{graph}{An \code{\link[igraph]{igraph}} object, typically a small one 
 coming from an enrichment procedure}
 
-\item{GO.CellularComponent}{Character, GO entry to draw semantic similarity 
-in the solution graph. If no similarity is desired, leave it as NULL}
+\item{GO.CellularComponent}{Character, GO entry to draw 
+semantic similarity in the solution graph. 
+If no similarity is desired, leave it as NULL}
 
-\item{GONamesAsLabels}{Logical, should GO names be displayed as labels 
-instead of GO identifiers?}
+\item{GONamesAsLabels}{Logical, should GO names 
+be displayed as labels instead of GO identifiers?}
 
 \item{organism}{Character, organism to pass to 
 \code{\link[GOSemSim]{goSim}}}
@@ -59,4 +60,3 @@ sum(v.cc >= 0)
 table(v.cc)
 
 }
-

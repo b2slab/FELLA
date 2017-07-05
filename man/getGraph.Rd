@@ -22,4 +22,3 @@ data(FELLA.sample)
 g <- getGraph(FELLA.sample)
 class(g)
 }
-

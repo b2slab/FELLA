@@ -33,4 +33,3 @@ compounds = c(input.sample, "intruder"),
 data = FELLA.sample)
 getExcluded(obj)
 }
-

@@ -5,7 +5,7 @@
 \title{Load KEGG data}
 \usage{
 loadKEGGdata(databaseDir = "myDatabase", internalDir = TRUE,
-  loadMatrix = NULL)
+    loadMatrix = NULL)
 }
 \arguments{
 \item{databaseDir}{Path for the KEGG RData files}
@@ -49,4 +49,3 @@ myFELLA.DATA
 }
 
 }
-

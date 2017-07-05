@@ -19,4 +19,3 @@ This function lists the directories in the local database path
 listInternalDatabases()
 
 }
-

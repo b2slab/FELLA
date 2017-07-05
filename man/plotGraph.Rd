@@ -5,8 +5,8 @@
 \title{Internal function to plot a solution graph}
 \usage{
 plotGraph(graph = NULL, input = NULL, layout = FALSE,
-  graph.layout = NULL, transparency = FALSE, showLegend = TRUE,
-  plot.fun = "plot.igraph", NamesAsLabels = TRUE, options = list())
+    graph.layout = NULL, transparency = FALSE, showLegend = TRUE,
+    plot.fun = "plot.igraph", NamesAsLabels = TRUE, options = list())
 }
 \arguments{
 \item{graph}{Graph result that must come 
@@ -61,4 +61,3 @@ data = FELLA.sample)
 plotGraph(g)
 
 }
-

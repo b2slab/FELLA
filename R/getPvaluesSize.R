@@ -15,5 +15,5 @@
 #' dim(M)
 #' summary(as.vector(M))
 getPvaluesSize <- function(data) {
-  return(data@keggdata@pvalues.size)
+    return(data@keggdata@pvalues.size)
 }

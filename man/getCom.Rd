@@ -9,7 +9,9 @@ getCom(data, level, format = "name")
 \arguments{
 \item{data}{FELLA.DATA object}
 
-\item{level}{Desired level, can be coded as a number or a character: 1 or "pathway"; 2 or "module"; 3 or "enzyme"; 4 or "reaction"; 5 or "compound".}
+\item{level}{Desired level, can be coded as a number or a character: 
+1 or "pathway"; 2 or "module"; 3 or "enzyme"; 
+4 or "reaction"; 5 or "compound".}
 
 \item{format}{Format of the output, "name" returns KEGG IDs whereas 
 "id" returns vertices IDs}
@@ -36,4 +38,3 @@ head(getCom(FELLA.sample, 4))
 ## Compounds
 head(getCom(FELLA.sample, 5))
 }
-

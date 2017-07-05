@@ -18,10 +18,12 @@ analysis
 
 \item{\code{pvalues}}{Named numeric vector with p-values}
 
-\item{\code{pathhits}}{Numeric named vector with the quantities "sample_success" 
+\item{\code{pathhits}}{Numeric named vector with 
+the quantities "sample_success" 
 for the hypergeometric distribution (#affected in path)}
 
-\item{\code{pathbackground}}{Numeric named vector with the quantities "total_success" 
+\item{\code{pathbackground}}{Numeric named vector with 
+the quantities "total_success" 
 for the hypergeometric distribution (total in path)}
 
 \item{\code{nbackground}}{Numeric value, number of compoudns in the background. 

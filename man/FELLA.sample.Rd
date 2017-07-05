@@ -29,4 +29,3 @@ functions. It is also used for internal testing of this package.
 data(FELLA.sample)
 }
 \keyword{datasets}
-
