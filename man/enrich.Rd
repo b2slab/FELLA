@@ -5,8 +5,8 @@
 \title{Wrapper function for enrichment analysis}
 \usage{
 enrich(compounds = NULL, compoundsBackground = NULL, method = "all",
-    loadMatrix = "none", approx = "normality", t.df = 10, niter = 1000,
-    databaseDir = "myDatabase", internalDir = TRUE, data = NULL, ...)
+  loadMatrix = "none", approx = "normality", t.df = 10, niter = 1000,
+  databaseDir = "myDatabase", internalDir = TRUE, data = NULL, ...)
 }
 \arguments{
 \item{compounds}{Character vector containing the 

@@ -127,10 +127,11 @@ generateResultsTable <- function(
             
             nodeIds <- names(pvalues)
             nodeNames <- as.character(sapply(nodeIds, function(id) {
-                ans <- data@keggdata@id2name[[id]][1]
-                if (is.null(ans)) 
+                ans <- data@keggdata@id2name[[id]]
+                if (length(ans) == 0) 
                     return(NULL)
                 
+                ans <- ans[1]
                 if (nchar(ans) > LabelLengthAtPlot) 
                     ans <- paste0(substr(ans, 1, LabelLengthAtPlot), "...")
                 return(ans)
@@ -182,7 +183,7 @@ generateResultsTable <- function(
             nodeIds <- names(pvalues)
             nodeNames <- as.character(sapply(nodeIds, function(id) {
                 ans <- data@keggdata@id2name[[id]][1]
-                if (is.null(ans)) return(NULL)
+                if (length(ans) == 0) return(NULL)
                 
                 if (nchar(ans) > LabelLengthAtPlot) 
                     ans <- paste0(substr(ans, 1, LabelLengthAtPlot), "...")

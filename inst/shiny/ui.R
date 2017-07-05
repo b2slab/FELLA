@@ -12,8 +12,6 @@ shinyUI(fluidPage(
     windowTitle = "SHELLA: enrichment tool for Metabolomics"
   ),
   
-  
-  
   fluidRow(
     tabsetPanel(
       tabPanel(
@@ -42,13 +40,7 @@ shinyUI(fluidPage(
                though the connected components of the solution graph. 
                In addition, a table gathers the represented nodes 
                along with additional data."), 
-            h3("4. BiMS viewer"), 
-            h5("This page contains the BiMS viewer, our self-made tool 
-               for iteractively visualising your results."), 
-            h3("5. R-cytoscape viewer"), 
-            h5("This tab integrates the r-cytoscapejs visual tool 
-               for network analysis."), 
-            h3("6. Export your results"), 
+            h3("4. Export your results"), 
             h5("A variety of output formats is available 
                for downloading your results.")
             ), 
@@ -151,13 +143,9 @@ shinyUI(fluidPage(
               step = 5, 
               value = 250), 
             #################################
-            selectInput(
+            checkboxInput(
               "splitByConnectedComponent", 
-              label = h4(
-                "Split solution graph by connected components?"),
-              choices = list("Yes" = TRUE, 
-                             "No" = FALSE),
-              selected = FALSE), 
+              label = "Split solution graph by connected components"), 
             #################################
             sliderInput(
               "thresholdConnectedComponent", 
@@ -191,9 +179,9 @@ shinyUI(fluidPage(
                be left with a circular shape."), 
             #################################
             textInput(
-              "GO.CellularComponent", 
+              "GOTermInput", 
               label = h4(
-                "Specify a GO term for Cellullar component 
+                "Specify a GO term  
                 (optional and slower)"), 
               value = NULL), 
             actionButton("exampleGOCC", label = "GO CC example"), 
@@ -201,11 +189,9 @@ shinyUI(fluidPage(
             selectInput(
               "GONamesAsLabels", 
               label = h4(
-                "Should GO names used as labels, instead of GO id's?"),
-              choices = list("Yes" = TRUE, 
-                             "No" = FALSE),
+                  "Should GO names used as labels, instead of GO id's?"),
+              choices = list("Yes" = TRUE, "No" = FALSE),
               selected = TRUE)
-            
             )
           )
         
@@ -220,35 +206,16 @@ shinyUI(fluidPage(
           label = "Select connected component to visualise:", 
           choices = list("No graph available" =  1), 
           selected = 1), 
-        plotOutput(
-          "plotSolution", 
-          click = "clickSolution",
-          hover = "hoverSolution", 
-          width = "1200px", 
-          height = "1200px"), 
-        tableOutput("tableSolution")
-        
-      ), 
-      #################################
-      tabPanel(
-        "4. BIMS Viewer", 
-        h4("Under construction")
-        # includeHTML("BiMS/index.html")
-        # includeHTML(pathBIMS)
-        
-      ), 
-      #################################
-      tabPanel(
-        "5. R-cytoscape Viewer", 
         rcytoscapejsOutput(
-          "cytoscapePlot", 
-          height = "1200px", 
-          width = "1600px")
+            "cytoscapePlot", 
+            height = "1200px", 
+            width = "1200px"), 
+        DT::dataTableOutput("tableSolution")
         
       ), 
       #################################
       tabPanel(
-        "6. Export your results", 
+        "4. Export your results", 
         h2("Export tables"),
         h4("Export the whole results table as csv"),
         downloadButton(
@@ -261,16 +228,6 @@ shinyUI(fluidPage(
           "exportEnzymes_genelist", "Download text file with genes"),
         h2("Export graph solution to R igraph"), 
         downloadButton("exportigraph", "Download R igraph solution")
-        # plotOutput(
-        # "plot.hypergeom", 
-        # clickId="ht.click", 
-        # width = "1200px", 
-        # height = "1200px"),
-        # column(12,
-        #        column(6, tableOutput("link.hypergeom")),
-        #        column(6, tableOutput("table.hypergeom"))
-        # )
-        
       )
     )
   )

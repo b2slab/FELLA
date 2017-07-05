@@ -2,6 +2,30 @@
 
 ---
 
+### Version 0.3.0
+
+* Fixed vignette 
+* Modifications to several functions, addressing:
+  - Proper handling of GO labels - now can be used in many species
+  - `addCellularComponentToGraph` is now `addGOToGraph`
+  - New dependency: biomaRt
+  - Plotting functions have been simplified, but still need work
+  - Graph building has been improved
+* Shiny app:
+  - Removed tabs, has only 4 now
+  - Left only interactive plot
+  - Table is now from `DT`
+
+To do:
+
+* Fix documentation of changed functions
+* Try to better isolate functions (e.g. `plot` and `generateResultsGraph`
+do too many things at once...)
+* Quantitative input?
+* Improve function documentation (use templates) to supress warnings
+* Change `rcytoscapejs` dependency to `visNetwork` (in CRAN)
+* What to do about the p-values?
+
 ### Version 0.2.6
 
 * Fixed indentation

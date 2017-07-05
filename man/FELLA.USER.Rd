@@ -14,11 +14,10 @@
 \S4method{show}{FELLA.USER}(object)
 
 \S4method{plot}{FELLA.USER,missing}(x = 1, method = "hypergeom",
-    main = "Affected subgraph", threshold = 0.005, plimit = 15,
-    nlimit = 250, layout = FALSE, filename = NULL,
-    splitByConnectedComponent = FALSE, askPlots = TRUE,
-    thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
-    GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, data = NULL, ...)
+  threshold = 0.005, plimit = 15, nlimit = 250, layout = FALSE,
+  filename = NULL, splitByConnectedComponent = FALSE, askPlots = TRUE,
+  thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
+  GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, data = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{FELLA.USER}} object}
@@ -27,8 +26,6 @@
 
 \item{method}{Character, one of: 
 "hypergeom", "diffusion" or "pagerank"}
-
-\item{main}{Character; plot title}
 
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}

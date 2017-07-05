@@ -12,10 +12,6 @@
 #' This is a pattern 
 #' matched using regexp. E.g: '01100' to filter 
 #' metabolic pathways in any species
-#' @param GOterms_hsa Logical value, should GO terms 
-#' be added to the KEGG enzyme 
-#' category? This is performed by default, and allows the GO 
-#' similarity analysis for the enrichment output
 #' 
 #' @return Curated KEGG graph (class \code{\link[igraph]{igraph}})
 #' 
@@ -33,8 +29,7 @@
 #' ## Graph for Mus musculus discarding the mmu01100 pathway
 #' g <- buildGraphFromKEGGREST(
 #' organism = "mmu", 
-#' filter.path = "mmu01100", 
-#' GOterms_hsa = FALSE)}
+#' filter.path = "mmu01100")}
 #' 
 #' @import igraph
 #' @import Matrix
@@ -43,15 +38,7 @@
 #' @export
 buildGraphFromKEGGREST <- function(
     organism = "hsa",  
-    filter.path = NULL, 
-    GOterms_hsa = TRUE) {
-    
-    # library(KEGGREST)
-    # library(plyr)
-    # library(dplyr)
-    # library(igraph)
-    
-    # organism <- "hsa"
+    filter.path = NULL) {
     
     categories <- c("pathway", "module", "enzyme", "reaction", "compound")
     
@@ -70,8 +57,8 @@ buildGraphFromKEGGREST <- function(
                 NA, 
                 gsub("(ec:)(\\d+\\.\\d+\\.\\d+\\.\\d+)", "\\2", x))
         }
-        if (category == "gene") {
-            ans <- gsub(paste0("(", organism, ":)(.*\\d+)"), "\\2", x)
+        if (category == "ncbi-gene") {
+            ans <- gsub("(.+:)(.*\\d+)", "\\2", x)
         }
         if (category == "reaction") {
             ans <- gsub("(rn:)(R\\d{5})", "\\2", x)
@@ -162,14 +149,23 @@ buildGraphFromKEGGREST <- function(
     m.mod_gene <- KEGGREST::keggLink(organism, "module") %>% 
         stats::setNames(., sanitise(names(.), "module", organism))
     
+    # Gene to enzyme
     m.gene_enzyme <- KEGGREST::keggLink("enzyme", organism) %>% 
         sanitise(., "enzyme", organism)
+    
+    # Enzyme to gene, but giving the entrez id rather than KEGG's
+    
+    # Map kegg to entrez
+    keggGene2entrez <- KEGGREST::keggConv("ncbi-geneid", organism) %>% 
+        gsub(pattern = "(.+:)(\\d+)", replacement = "\\2", x = .) %>% 
+        split(., names(.))
+    # Map kegg enzymes to entrez
     m.enzyme_gene <- KEGGREST::keggLink(organism, "enzyme") %>% 
         stats::setNames(., sanitise(names(.), "enzyme", organism)) %>%
-        sanitise(., "gene", organism) %>% 
+        # sanitise(., "gene", organism) %>% 
         split(., names(.), drop = TRUE) %>%
-        plyr::llply(., function(r) sort(as.character(r)))
-    
+        plyr::llply(
+            ., function(r) sort(as.character(unique(keggGene2entrez[r]))))
     
     # Inferred connections (through genes)
     con.infere <- list(
@@ -325,50 +321,12 @@ buildGraphFromKEGGREST <- function(
             # names[order(nchar(names))]
             names
         })
-    V(g.curated)$GENE <- m.enzyme_gene[V(g.curated)$name]
+    V(g.curated)$entrez <- m.enzyme_gene[V(g.curated)$name]
     
     comment(g.curated) <- KEGGREST::keggInfo(organism)
+    g.curated$organism <- organism
     
     message("Done.")
-    
-    if (GOterms_hsa) {
-        # GO terms
-        message("Adding GO terms to enzymes...")
-        
-        if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
-            stop(
-                "Package org.Hs.eg.db ", 
-                "must be installed to add GO terms", 
-                call. = FALSE)
-        }
-        if (!requireNamespace("AnnotationDbi", quietly = TRUE)) {
-            stop(
-                "Package AnnotationDbi ", 
-                "must be installed to add GO terms", 
-                call. = FALSE)
-        }
-        
-        # library(org.Hs.eg.db)
-        gene.all <- V(g.curated)$GENE
-        gene2GO <- AnnotationDbi::as.list(org.Hs.eg.db::org.Hs.egGO)
-        
-        V(g.curated)$GO <- plyr::llply(
-            V(g.curated)$GENE, 
-            function(gene) {
-                if (!is.null(gene)) {
-                    # browser()
-                    tmp <- gene2GO[gene]
-                    names(tmp) <- NULL
-                    go_terms <- names(unlist(tmp, recursive = FALSE))
-                    if (!is.null(go_terms)) {
-                        return(AnnotationDbi::Term(go_terms))
-                    }
-                    return(NA)
-                }
-                return(NA)
-            })
-        message("Done.")
-    }
     
     keggdata.graph <- g.curated
     

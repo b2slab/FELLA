@@ -19,9 +19,9 @@
 #' plot(g)
 #' showLegend()
 #' plot(g)
-#' showLegend(GO.CellularComponent = TRUE)
+#' showLegend(GO.annot = TRUE)
 showLegend <- function(
-    GO.CellularComponent = FALSE, 
+    GO.annot = FALSE, 
     cex = 0.75) {
     # In the left side, legend for node categories
     graphics::legend(
@@ -63,7 +63,7 @@ showLegend <- function(
     )
     
     # In the right side, enzyme for cellular component
-    if (GO.CellularComponent) {
+    if (GO.annot) {
         graphics::legend(
             #         x = 0.5, y = -1,
             text.width = .2, 

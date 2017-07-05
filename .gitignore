@@ -2,6 +2,8 @@
 
 # My directories
 data-raw
+inst/database
+inst/doc
 
 # History files
 .Rhistory

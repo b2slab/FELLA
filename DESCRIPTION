@@ -1,7 +1,7 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and Enrichment for Metabolomics Data
-Version: 0.2.6
+Version: 0.3.0
 Date: 2017-7-5
 Authors@R: c(
     person(
@@ -33,6 +33,8 @@ Suggests:
     shiny,
     knitr,
     rmarkdown,
+    testthat, 
+    biomaRt,
     org.Hs.eg.db,
     AnnotationDbi,
     GOSemSim

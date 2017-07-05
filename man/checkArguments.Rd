@@ -5,12 +5,12 @@
 \title{Internal function to check arguments and give personalised errors}
 \usage{
 checkArguments(method = "diffusion", approx = "normality",
-    loadMatrix = NULL, threshold = 0.05, plimit = 15, nlimit = 250,
-    niter = 1000, layout = FALSE, splitByConnectedComponent = FALSE,
-    askPlots = TRUE, thresholdConnectedComponent = 0.05,
-    GO.CellularComponent = NULL, GONamesAsLabels = TRUE,
-    LabelLengthAtPlot = 22, object = new("FELLA.USER"),
-    data = new("FELLA.DATA"))
+  loadMatrix = NULL, threshold = 0.05, plimit = 15, nlimit = 250,
+  niter = 1000, layout = FALSE, splitByConnectedComponent = FALSE,
+  askPlots = TRUE, thresholdConnectedComponent = 0.05,
+  GO.CellularComponent = NULL, GONamesAsLabels = TRUE,
+  LabelLengthAtPlot = 22, object = new("FELLA.USER"),
+  data = new("FELLA.DATA"))
 }
 \arguments{
 \item{method}{Character, one of: 

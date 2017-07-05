@@ -12,8 +12,6 @@
 #' @inheritParams .nlimit
 #' @inheritParams .splitByConnectedComponent
 #' @inheritParams .thresholdConnectedComponent
-#' @inheritParams .GO.CellularComponent
-#' @inheritParams .GONamesAsLabels
 #' @inheritParams .LabelLengthAtPlot
 #' @inheritParams .object
 #' @inheritParams .data
@@ -45,8 +43,6 @@ generateResultsGraph <- function(
     nlimit = 250, 
     splitByConnectedComponent = FALSE, 
     thresholdConnectedComponent = 0.05, 
-    GO.CellularComponent = NULL,
-    GONamesAsLabels = TRUE, 
     LabelLengthAtPlot = 22, 
     object = NULL, 
     data = NULL) {
@@ -65,8 +61,6 @@ generateResultsGraph <- function(
         nlimit = nlimit, 
         splitByConnectedComponent = splitByConnectedComponent, 
         thresholdConnectedComponent = thresholdConnectedComponent, 
-        GO.CellularComponent = GO.CellularComponent, 
-        GONamesAsLabels = GONamesAsLabels, 
         LabelLengthAtPlot = LabelLengthAtPlot, 
         object = object, 
         data = data)
@@ -85,25 +79,24 @@ generateResultsGraph <- function(
     
     if (method == "hypergeom") {
         # HYPERGEOMETRIC TEST
-        
         pvalues <- getPvalues(object, "hypergeom")
+        g.data <- getGraph(data)
         
         # Select pathways and compounds
         n.paths <- sum(pvalues < threshold)
         if (n.paths < 1) {
             message("Graph is empty. None of the pathways is significant.")
             return(NULL)
-        } else if (n.paths > plimit) {
-            nodes <- sort(order(pvalues)[1:plimit])
-            path.hypergeom <- names(pvalues)[nodes]
         } else {
-            path.hypergeom <- names(pvalues)[pvalues < threshold]
-        }
+            path.hypergeom <- names(head(
+                sort(pvalues[pvalues < threshold]), 
+                plimit))
+        } 
         
         comp.hypergeom <- intersect(
             getInput(object), 
             rownames(getMatrix(data, "hypergeom")))
-        #     browser()
+
         # Build the bipartite graph
         
         if (length(path.hypergeom) == 1) {
@@ -123,12 +116,21 @@ generateResultsGraph <- function(
             vids = (degree(graph.bipartite) > 0))
         
         # The com attribute for each node
-        V(graph.bipartite)$com <- ifelse(
-            grepl("C\\d{5}", V(graph.bipartite)$name), 
-            5, 
-            1
+        V(graph.bipartite)$com <- V(g.data)[V(graph.bipartite)$name]$com
+        V(graph.bipartite)$label <- sapply(
+            V(g.data)[V(graph.bipartite)$name]$NAME, 
+            function(name.aux) {
+                if (length(name.aux) == 0) return(NA)
+                # Take first name
+                name.first <- name.aux[[1]]
+                name.def <- substr(name.first, 1, LabelLengthAtPlot)
+                if (nchar(name.first) > LabelLengthAtPlot) 
+                    name.def <- paste0(name.def, "...")
+                
+                name.def
+            }
         )
-        
+            
         return(graph.bipartite)
     } else { 
         # DIFFUSION AND PAGERANK
@@ -153,43 +155,23 @@ generateResultsGraph <- function(
         
         if (method == "diffusion") graph <- as.undirected(graph)
         
-        # Build the cellular component data if specified
-        if (!is.null(GO.CellularComponent) & 
-            !identical(GO.CellularComponent, "")) {
-            message("Adding cellular component similarity...")
-            
-            graph <- addCellularComponentToGraph(
-                graph = graph, 
-                GO.CellularComponent = GO.CellularComponent, 
-                GONamesAsLabels = GONamesAsLabels)
-            
-            message("Done.")
-        } else {
-            graph <- set.vertex.attribute(
-                graph = graph, 
-                name = "GO.CC", 
-                value = rep(-1, vcount(graph)))
-        }
-        
         # Define labels for the plot
         vertex.labels <- character(vcount(graph))
-        for (i in 1:vcount(graph)) {
-            name.aux <- (V(graph)[[i]]$NAME)[1]
-            name.def <- substr(name.aux, 1, LabelLengthAtPlot)
-            if (nchar(name.aux) > LabelLengthAtPlot) 
-                name.def <- paste0(name.def, "...")
-            
-            if (V(graph)[i]$GO.CC != -1) 
-                name.def <- paste0(
-                    name.def, "[", names(V(graph)[[i]]$GO.CC), "]")
-            
-            vertex.labels[i] <- name.def
-        }
+        vertex.labels <- sapply(
+            V(graph)$NAME, 
+            function(name.aux) {
+                if (length(name.aux) == 0) return(NA)
+                # Take first name
+                name.first <- name.aux[[1]]
+                name.def <- substr(name.first, 1, LabelLengthAtPlot)
+                if (nchar(name.first) > LabelLengthAtPlot) 
+                    name.def <- paste0(name.def, "...")
+                
+                name.def
+            }
+        )
         
-        graph <- set.vertex.attribute(
-            graph = graph, 
-            name = "LABEL", 
-            value = vertex.labels)
+        V(graph)$label <- vertex.labels
         
         if (!splitByConnectedComponent) return(graph)
         

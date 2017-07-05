@@ -250,7 +250,7 @@ of both pathways; otherwise a plot with only one pathway
 would be quite uninformative. 
 
 ```{r, warning=FALSE, message=TRUE, fig.width=8, fig.height=8}
-FELLA::plot(
+plot(
     x = myAnalysis, 
     method = "hypergeom", 
     main = "My first enrichment using the hypergeometric test in FELLA", 
@@ -266,7 +266,7 @@ __modules, enzymes and reactions__
 that link affected pathways and compounds.
 
 ```{r, warning=FALSE, message=TRUE, fig.width=8, fig.height=8}
-FELLA::plot(
+plot(
     x = myAnalysis, 
     method = "diffusion", 
     main = "My first enrichment using the diffusion analysis in FELLA", 
@@ -279,12 +279,12 @@ FELLA::plot(
 For `method = "pagerank"` the concept is analogous to diffusion:
 
 ```{r, warning=FALSE, message=TRUE, fig.width=8, fig.height=8}
-FELLA::plot(
+plot(
     x = myAnalysis, 
     method = "pagerank", 
     main = "My first enrichment using the PageRank analysis in FELLA", 
     threshold = 0.1, 
-            data = FELLA.sample)
+    data = FELLA.sample)
 ```
 
 ## Exporting the results

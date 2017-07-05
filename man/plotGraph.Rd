@@ -5,8 +5,8 @@
 \title{Internal function to plot a solution graph}
 \usage{
 plotGraph(graph = NULL, input = NULL, layout = FALSE,
-    graph.layout = NULL, transparency = FALSE, showLegend = TRUE,
-    plot.fun = "plot.igraph", NamesAsLabels = TRUE, options = list())
+  graph.layout = NULL, transparency = FALSE, showLegend = TRUE,
+  plot.fun = "plot.igraph", NamesAsLabels = TRUE, ...)
 }
 \arguments{
 \item{graph}{Graph result that must come 
@@ -29,7 +29,7 @@ then it is used as graph layout}
 \item{NamesAsLabels}{Logical, should KEGG names be displayed 
 as labels instead of KEGG identifiers?}
 
-\item{options}{List of optional further arguments for the plotting function}
+\item{...}{Optional further arguments for the plotting function}
 }
 \value{
 If \code{layout = F} then the value 

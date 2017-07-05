@@ -6,7 +6,7 @@
 results graph object}
 \usage{
 addCellularComponentToGraph(graph = NULL, GO.CellularComponent = NULL,
-    GONamesAsLabels = TRUE, organism = "human")
+  GONamesAsLabels = TRUE, organism = "human")
 }
 \arguments{
 \item{graph}{An \code{\link[igraph]{igraph}} object, typically a small one 
@@ -20,7 +20,7 @@ If no similarity is desired, leave it as NULL}
 be displayed as labels instead of GO identifiers?}
 
 \item{organism}{Character, organism to pass to 
-\code{\link[GOSemSim]{goSim}}}
+\code{\link[GOSemSim]{mgoSim}}}
 }
 \value{
 An \code{\link{igraph}} object that contains 

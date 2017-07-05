@@ -5,8 +5,8 @@
 \title{Generate readable tables from the enrichment results}
 \usage{
 generateResultsTable(method = "diffusion", threshold = 0.005, plimit = 15,
-    nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
-    object = NULL, data = NULL)
+  nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
+  object = NULL, data = NULL)
 }
 \arguments{
 \item{method}{Character, one of: 

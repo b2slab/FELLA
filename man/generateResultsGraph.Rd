@@ -5,10 +5,10 @@
 \title{Generate graph objects from the enrichment results}
 \usage{
 generateResultsGraph(method = "diffusion", threshold = 0.05, plimit = 15,
-    nlimit = 250, splitByConnectedComponent = FALSE,
-    thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
-    GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, object = NULL,
-    data = NULL)
+  nlimit = 250, splitByConnectedComponent = FALSE,
+  thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
+  GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, object = NULL,
+  data = NULL)
 }
 \arguments{
 \item{method}{Character, one of: 

@@ -1,21 +1,21 @@
 # server.R
 
 shinyServer(function(input, output, session) {
-  
+  # Database of choice
   FELLA.DATA <- reactive({
     loadKEGGdata(
       databaseDir = input$database, 
       internalDir = FALSE, 
       loadMatrix = "all")
   })
-  
+  # database summary
   output$databaseInfo <- renderText({
     data <- FELLA.DATA()
     comment(FELLA:::getGraph(data))
   })
+  
   # First step: create the USER variable
   createUser <- reactive({
-    #     browser()
     if (input$radioInput == 1) {
       read.comp <- readLines("examples/input_1_compounds.list")
     } else if (input$radioInput == 2) {
@@ -24,7 +24,6 @@ shinyServer(function(input, output, session) {
       read.comp <- readLines("examples/input_3_metaboanalyst.list")
     } else {
       if (!is.null(input$file)) {
-        #         browser()
         read.file <- read.table(
           input$file$datapath, 
           header = FALSE, 
@@ -40,7 +39,6 @@ shinyServer(function(input, output, session) {
         return(NULL)
       }
     }
-    #     browser()
     data <- FELLA.DATA()
     if (is.null(data)) return(data)
     
@@ -51,10 +49,10 @@ shinyServer(function(input, output, session) {
       niter = input$niter, 
       data = data)
     
-    # browser()
     return(result)
   })
   
+  # Show the user how the file looks like
   output$exampleInput <- renderText(
     paste(
       readLines("examples/input_2_compounds.list"), 
@@ -62,16 +60,15 @@ shinyServer(function(input, output, session) {
     )
   )
   
-  # Second: the summary of the compounds in the input
+  # Second: the summary of the compounds in the input: 
+  # read names, mapped and unmapped metabolites
   inputSummary <- reactive({
     data <- FELLA.DATA()
     if (!is.null(createUser()) & !is.null(data)) {
       input <- getInput(createUser())
       inputNames <- getName(data, input)
-      #       browser()
       inputNames <- sapply(inputNames, function(x) {
         if (length(x)) {
-          #           browser()
           return(x[[1]])}
         return(NULL)
       }) 
@@ -83,7 +80,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # Downloadable file 
+  # Downloadable example file 
   output$downloadExample <- downloadHandler(
     filename = function() {
       "example2.txt"
@@ -118,26 +115,24 @@ shinyServer(function(input, output, session) {
   
   # Generate the graph / graphlist...
   # BUT the current graph is extracted using another function
-  # That's because the current graph can vary with the user-selected CC
+  # That's because the current graph can vary with the user-selected 
+  # GO term, if any
   generateGraph <- reactive({
+    usr <- createUser()
     data <- FELLA.DATA()
-    if (!is.null(createUser()) & !is.null(data)) {
-      #             browser()
+    if (!is.null(usr) & !is.null(data)) {
       return(
         generateResultsGraph(
-          object = createUser(),
+          object = usr,
           method = input$method, 
           threshold = input$threshold, 
           plimit = 15, 
           nlimit = input$nlimit, 
-          splitByConnectedComponent = as.logical(input$splitByConnectedComponent), 
+          splitByConnectedComponent = input$splitByConnectedComponent, 
           thresholdConnectedComponent = input$thresholdConnectedComponent, 
-          GO.CellularComponent = input$GO.CellularComponent, 
-          GONamesAsLabels = as.logical(input$GONamesAsLabels), 
           LabelLengthAtPlot = input$LabelLengthAtPlot, 
           data = data))
     }
-    else return(NULL)
   })
   
   # This function tracks the number of CCs and 
@@ -161,29 +156,30 @@ shinyServer(function(input, output, session) {
         outputNames <- paste0(sizes, " nodes (p = ", pvalues, ")")
         outputChoice <- as.list(1:length(outputNames))
         names(outputChoice) <- outputNames
-        #       browser()
-        updateSelectInput(session = session, 
-                          inputId = "selectGraphCC", 
-                          choices = outputChoice, 
-                          selected = 1)
+        
+        updateSelectInput(
+            session = session, 
+            inputId = "selectGraphCC", 
+            choices = outputChoice, 
+            selected = 1)
       } else {
         # If it is not split.. there is only one cc...
-        updateSelectInput(session = session, 
-                          inputId = "selectGraphCC", 
-                          choices = list("Whole graph (not split by CC)" =  1), 
-                          selected = 1)
+        updateSelectInput(
+            session = session, 
+            inputId = "selectGraphCC", 
+            choices = list("Whole graph (not split by CC)" =  1), 
+            selected = 1)
       }
     }
   })
   
-  # This function returns the currently chosen graph
+  # This function returns the currently chosen graph connected component
   currentGraph <- reactive({
     if (!is.null(createUser())) {
       if (input$method == "hypergeom") {
         return(generateGraph())
       } else {
-        #         browser()
-        if (!as.logical(input$splitByConnectedComponent)) {
+        if (!input$splitByConnectedComponent) {
           return(generateGraph())
         } else {
           return(generateGraph()[[as.numeric(input$selectGraphCC)]])
@@ -196,10 +192,9 @@ shinyServer(function(input, output, session) {
   # Tooltip about the current graph size
   output$graphSize <- renderText({
     if (!is.null(createUser())) {
-      if (!is.null(currentGraph()))  {
-        #         browser()
-        return(paste0("Number of nodes: ", 
-                      vcount(currentGraph())))
+      g <- currentGraph()
+      if (!is.null(g))  {
+        return(paste0("Number of nodes: ", vcount(g)))
       } else {
         return("Graph is NULL! No significant pathways have been found.")
       }
@@ -207,34 +202,10 @@ shinyServer(function(input, output, session) {
   })
   # ---------------------------------------------------
   
-  # plotSolution <- reactive({
-  #   if (!is.null(createUser())) {
-  #     #       browser()
-  #     return(plot(
-  #       x = createUser(),
-  #       method = input$method,
-  #       main = "Affected subgraph",
-  #       threshold = input$threshold,
-  #       plimit = 15,
-  #       nlimit = input$nlimit,
-  #       layout = T,
-  #       filename = NULL,
-  #       splitByConnectedComponent = as.logical(input$splitByConnectedComponent),
-  #       askPlots = F,
-  #       thresholdConnectedComponent = input$thresholdConnectedComponent,
-  #       GO.CellularComponent = input$GO.CellularComponent,
-  #       GONamesAsLabels = as.logical(input$GONamesAsLabels),
-  #       LabelLengthAtPlot = input$LabelLengthAtPlot,
-  #       data = FELLA.DATA))
-  #   }
-  #   else return(NULL)
-  # })
-  
   # Plot the CURRENT graph! 
   # Reactive function
   plotSolution <- reactive({
     if (!is.null(generateGraph())) {
-      #             browser()
       if (input$method == "hypergeom") {
         if (is.null(generateGraph()))  {
           return(NULL)
@@ -254,14 +225,8 @@ shinyServer(function(input, output, session) {
     else return(NULL)
   })
   
-  # Plot the CURRENT graph! 
-  # outputPlot
-  output$plotSolution <- renderPlot({
-    plotSolution()
-  })
-  
   # Table of results
-  output$tableSolution <- renderTable({
+  output$tableSolution <- DT::renderDataTable({
     data <- FELLA.DATA()
     if (!is.null(data)) {
       wholeTable <- generateResultsTable(
@@ -272,66 +237,21 @@ shinyServer(function(input, output, session) {
         nlimit = input$nlimit, 
         LabelLengthAtPlot = 100, 
         data = data)
-      #     browser()
+      
       plottedRows <- wholeTable$"KEGG id" %in% V(currentGraph())$name
       outTable <- wholeTable[plottedRows, ]
-      rownames(outTable) <- 1:dim(outTable)[1]
-      # browser()
-      return(outTable)
+      rownames(outTable) <- NULL
+      
+      DT::datatable(outTable)
     }
-    
   })
   
   # ---------------------------------------------------
   #  CC example: change default value for the updateTextInput!
   observe({
     if (input$exampleGOCC > 0)
-      updateTextInput(session, "GO.CellularComponent", value = "GO:0005739")
+      updateTextInput(session, "GOTermInput", value = "GO:0005739")
   })
-  
-  
-  # Click action
-  observe({
-    #       browser()
-    if (!is.null(input$clickSolution)) {
-      nodes.coord <- plotSolution()
-      diff.coord <- sweep(
-        nodes.coord[, 1:2], 
-        2, 
-        c(input$clickSolution$x, 
-          input$clickSolution$y), 
-        "-")
-      node.min <- which.min(apply(diff.coord, 1, function(x) x %*% x))
-      if ((diff.coord[node.min, 1]^2 + diff.coord[node.min, 2]^2) < 5e-4) {
-        link <- paste0(
-          "http://www.genome.jp/dbget-bin/www_bget?", 
-          nodes.coord[node.min, 3])
-        browseURL(link)
-      } 
-    }
-  })
-  
-  # Hover action
-  output$hoverNode <- renderText({
-    #           browser()
-    if (!is.null(input$hoverSolution)) {
-      nodes.coord <- plotSolution()
-      diff.coord <- sweep(
-        nodes.coord[, 1:2], 
-        2, 
-        c(input$hoverSolution$x, 
-          input$hoverSolution$y), 
-        "-")
-      node.min <- which.min(apply(diff.coord, 1, function(x) x %*% x))
-      if ((diff.coord[node.min, 1]^2 + diff.coord[node.min, 2]^2) < 5e-4) {
-        return(nodes.coord[, 4][node.min])
-      } 
-      return("No nodes hovered")
-    }
-    return("No nodes hovered")
-  })
-  # ---------------------------------------------------
-  # 
   
   # SAVE YOUR RESULTS
   output$saveText <- reactive({
@@ -352,24 +272,17 @@ shinyServer(function(input, output, session) {
       return(paste0("Results saved in directory ", directory))
       
     }
-    #       return(getwd())
     return("Introduce the directory to save your outputs")
   })
   
   ###########################################################
   # Cytoscape plugin!
   network <- reactive({
-    if (!is.null(createUser())) {
-      
-      g <- currentGraph()
+    g <- currentGraph()
+    if (!is.null(g)) {
       id <- V(g)$name
-      name <- V(g)$LABEL
+      name <- V(g)$label
       nodeData <- data.frame(id, name, stringsAsFactors = FALSE)
-      
-      # browser()
-      # solidColor <- character(vcount(g))
-      # nodeWidth <- character(vcount(g))
-      # nodeShape <- character(vcount(g))
       
       map.solidColor <- setNames(
         c("#E6A3A3", "#E2D3E2", "#DFC1A3", "#D0E5F2", "#A4D4A4"), 
@@ -398,51 +311,39 @@ shinyServer(function(input, output, session) {
       
       nodeLink <- paste0(
         "<a href=\"http://www.genome.jp/dbget-bin/www_bget?",
-        V(g)$name,
-        "\"",
-        "\ target=\"_blank",
-        "\">",
-        V(g)$name,
-        "</a>")
+        V(g)$name, "\"", "\ target=\"_blank", "\">", V(g)$name, "</a>")
       
-      
-      # nodeLink <- paste0(
-      #   "http://www.genome.jp/dbget-bin/www_bget?", 
-      #   V(g)$name
-      # )
       nodeData$href <- nodeLink
       nodeData$tooltip <- nodeLink
       nodeData$x <- (plotSolution()$x)*600
       nodeData$y <- -(plotSolution()$y)*800
-      #       nodeData$"font-size" <- rep(1, vcount(g))
       
       source <- V(g)[get.edgelist(g)[, 1]]$name
       target <- V(g)[get.edgelist(g)[, 2]]$name
       edgeData <- data.frame(source, target, stringsAsFactors = FALSE)
       
       names(edgeData) <- c("source", "target")
-      #       browser()
+
       network <- createCytoscapeJsNetwork(
         nodeData = nodeData,
         edgeData = edgeData, 
-        # nodeHref = nodeLink, 
-        #labelFontSize = rep(1, vcount(g)), 
-        #nodeShape = nodeShape,
         edgeSourceShape = "none",
         edgeTargetShape = "none")
-      # browser()
+      
       return(network)
     }
     return(NULL)
   })
   
   output$cytoscapePlot <- renderRcytoscapejs({
-    #     cyNetwork <- createCytoscapeJsNetwork(network()$nodes, network()$edges)
-    #     browser()
-    rcytoscapejs(nodeEntries = network()$nodes, 
-                 edgeEntries = network()$edges, 
-                 showPanzoom = TRUE, 
-                 layout = "preset")
+    net <- network()
+    if (!is.null(net)) {
+        rcytoscapejs(
+            nodeEntries = net$nodes, 
+            edgeEntries = net$edges, 
+            showPanzoom = TRUE, 
+            layout = "preset")
+    }
   })
   ###########################################################
   
@@ -568,12 +469,4 @@ shinyServer(function(input, output, session) {
     
     contentType = "application/pdf"
   )
-  
-  #   getFile <- reactive({
-  #     return((HTML(readLines('BiMS//index.html'))))
-  #   })
-  # 
-  #   output$bims <- renderUI({
-  #     getFile()
-  #   })
 })

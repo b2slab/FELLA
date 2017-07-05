@@ -5,8 +5,8 @@
 \title{Generate enzyme tables with genes and GO annotations}
 \usage{
 generateEnzymesTable(method = "diffusion", threshold = 0.005,
-    nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
-    object = NULL, data = NULL)
+  nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
+  object = NULL, data = NULL)
 }
 \arguments{
 \item{method}{Character, either 'diffusion' or 'pagerank'}

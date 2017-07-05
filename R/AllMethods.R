@@ -212,7 +212,6 @@ setMethod("show", signature = "FELLA.USER", function(object) {
 #'
 #' @param x A \code{\link{FELLA.USER}} object
 #' @inheritParams .methodSingle
-#' @param main Character; plot title
 #' @inheritParams .threshold
 #' @inheritParams .thresholdConnectedComponent
 #' @inheritParams .plimit
@@ -232,6 +231,8 @@ setMethod("show", signature = "FELLA.USER", function(object) {
 #' otherwise \code{invisible()}
 #' 
 #' @rdname FELLA.USER
+#' @importFrom grDevices dev.off png
+#' @importFrom graphics par mtext
 #' @exportMethod plot
 setMethod(
     "plot", 
@@ -239,7 +240,6 @@ setMethod(
     function(
         x = 1, 
         method = "hypergeom", 
-        main = "Affected subgraph", 
         threshold = 0.005, 
         plimit = 15, 
         nlimit = 250, 
@@ -248,8 +248,6 @@ setMethod(
         splitByConnectedComponent = FALSE, 
         askPlots = TRUE,  
         thresholdConnectedComponent = 0.05, 
-        GO.CellularComponent = NULL, 
-        GONamesAsLabels = TRUE, 
         LabelLengthAtPlot = 22, 
         data = NULL, 
         ...) {
@@ -263,8 +261,6 @@ setMethod(
             splitByConnectedComponent = splitByConnectedComponent, 
             askPlots = askPlots, 
             thresholdConnectedComponent = thresholdConnectedComponent, 
-            GO.CellularComponent = GO.CellularComponent, 
-            GONamesAsLabels = GONamesAsLabels, 
             LabelLengthAtPlot = LabelLengthAtPlot, 
             object = x, 
             data = data)
@@ -288,7 +284,7 @@ setMethod(
                 data = data)
             
             if (!is.null(filename)) 
-                png(filename = filename, height = 1000, width = 800)
+                grDevices::png(filename = filename, height = 1000, width = 800)
             
             ans.return <- plotBipartite(
                 graph = graph.bipartite, 
@@ -296,7 +292,7 @@ setMethod(
                 main = "Hypergeometric test results", 
                 ...)
             
-            if (!is.null(filename)) dev.off()
+            if (!is.null(filename)) grDevices::dev.off()
             
             return(invisible(ans.return))
             
@@ -313,8 +309,6 @@ setMethod(
                     threshold = threshold, 
                     nlimit = nlimit,
                     splitByConnectedComponent = FALSE, 
-                    GO.CellularComponent = GO.CellularComponent, 
-                    GONamesAsLabels = GONamesAsLabels, 
                     LabelLengthAtPlot = LabelLengthAtPlot, 
                     object = x, 
                     data = data)
@@ -326,7 +320,6 @@ setMethod(
                     graph = graph, 
                     input = getInput(x), 
                     layout = layout, 
-                    main = main, 
                     ...)
                 if (!is.null(filename)) dev.off()
                 return(invisible(ans.return))
@@ -336,15 +329,13 @@ setMethod(
                     threshold = threshold, 
                     nlimit = nlimit,
                     splitByConnectedComponent = TRUE, 
-                    GO.CellularComponent = GO.CellularComponent, 
-                    GONamesAsLabels = GONamesAsLabels, 
                     LabelLengthAtPlot = LabelLengthAtPlot, 
                     object = x, 
                     data = data)
                 
                 if (is.null(filename) & askPlots) {
-                    parOld <- par(mar = c(0, 0, 0, 0))
-                    par(ask = TRUE)
+                    parOld <- graphics::par(mar = c(0, 0, 0, 0))
+                    graphics::par(ask = TRUE)
                 } 
                 ans <- lapply(1:length(graph.list), function(graph.id) {
                     graph <- graph.list[[graph.id]]
@@ -365,9 +356,8 @@ setMethod(
                         graph = graph, 
                         input = getInput(x), 
                         layout = layout, 
-                        main = main, 
                         ...)
-                    mtext(paste0(
+                    graphics::mtext(paste0(
                         "p-value from permutation by component size (", 
                         vcount(graph), 
                         " nodes): " , names(graph.list)[graph.id]))
@@ -375,7 +365,7 @@ setMethod(
                     if (!is.null(filename)) dev.off()
                     ans.layout
                 })
-                if (is.null(filename) & askPlots) par(parOld)
+                if (is.null(filename) & askPlots) graphics::par(parOld)
                 names(ans) <- names(graph.list)
                 
                 if (layout) return(invisible(ans))

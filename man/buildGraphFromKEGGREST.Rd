@@ -4,8 +4,7 @@
 \alias{buildGraphFromKEGGREST}
 \title{Generate the KEGG graph}
 \usage{
-buildGraphFromKEGGREST(organism = "hsa", filter.path = NULL,
-    GOterms_hsa = TRUE)
+buildGraphFromKEGGREST(organism = "hsa", filter.path = NULL)
 }
 \arguments{
 \item{organism}{Character, KEGG code for the organism of interest}
@@ -14,11 +13,6 @@ buildGraphFromKEGGREST(organism = "hsa", filter.path = NULL,
 This is a pattern 
 matched using regexp. E.g: '01100' to filter 
 metabolic pathways in any species}
-
-\item{GOterms_hsa}{Logical value, should GO terms 
-be added to the KEGG enzyme 
-category? This is performed by default, and allows the GO 
-similarity analysis for the enrichment output}
 }
 \value{
 Curated KEGG graph (class \code{\link[igraph]{igraph}})
@@ -45,7 +39,6 @@ summary(g)}
 ## Graph for Mus musculus discarding the mmu01100 pathway
 g <- buildGraphFromKEGGREST(
 organism = "mmu", 
-filter.path = "mmu01100", 
-GOterms_hsa = FALSE)}
+filter.path = "mmu01100")}
 
 }

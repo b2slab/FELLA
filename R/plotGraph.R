@@ -11,11 +11,9 @@
 #' @inheritParams .NamesAsLabels
 #' @param graph.layout Two-column numeric matrix, if this argument is not null 
 #' then it is used as graph layout
-#' @param transparency Logical, should nodes have transparency? 
-#' (proportional to centrality in the solution)
 #' @param showLegend Logical, should the legend be plotted as well?
 #' @param plot.fun Character, can be either \code{plot.igraph} or \code{tkplot}
-#' @param options List of optional further arguments for the plotting function
+#' @param ... Optional further arguments for the plotting function
 #' 
 #' @return If \code{layout = F} then the value 
 #' returned is \code{invisible()}. 
@@ -50,18 +48,19 @@ plotGraph <- function(
     showLegend = TRUE, 
     plot.fun = "plot.igraph", 
     NamesAsLabels = TRUE, 
-    options = list()) {
+    ...) {
     
     if (vcount(graph) == 0) {
         warning("The graph is empty and won't be plotted.")
         return(invisible())
     }
     
-    GO.CellularComponent <- FALSE
     # If there is GO cellular component data available, plot it..!
-    if ("GO.CC" %in% list.vertex.attributes(graph)) {
-        GO.CC <- V(graph)$GO.CC
-        GO.CellularComponent <- TRUE
+    if ("GO.simil" %in% list.vertex.attributes(graph)) {
+        GO.simil <- V(graph)$GO.simil
+        GO.annot <- TRUE
+    } else {
+        GO.annot <- FALSE
     }
     
     # triangle vertex shape
@@ -117,60 +116,46 @@ plotGraph <- function(
         ymin = -1, 
         ymax = 1)
     
+    ## Define vertex colour
+    mapSolidColor <- c(
+        "1" = "#CD0000",
+        "2" = "#CD96CD",
+        "3" = "#FFA200",
+        "4" = "#8DB6CD",
+        "5" = "#548B54"
+    )
     vertex.color <- sapply(V(graph), function(y) {
-        solidColor <- switch(
-            graph.com[y], 
-            "1" = "#CD0000",
-            "2" = "#CD96CD",
-            "3" = "#FFA200",
-            "4" = "#8DB6CD",
-            "5" = "#548B54"
-        )
+        solidColor <- mapSolidColor[graph.com[y]]
+        if (!GO.annot) return(solidColor)
         
-        if (GO.CellularComponent && GO.CC[y] != -1) {
-            if (GO.CC[y] < 0.5) solidColor <- "#FFD500"
-            else if (GO.CC[y] < 0.7) solidColor <- "#FF5500"
-            else if (GO.CC[y] < 0.9) solidColor <- "#FF0000"
+        GO.y <- GO.simil[y]
+        if (!is.na(GO.y)) {
+            if (GO.y < 0.5) solidColor <- "#FFD500"
+            else if (GO.y < 0.7) solidColor <- "#FF5500"
+            else if (GO.y < 0.9) solidColor <- "#FF0000"
             else solidColor <- "#B300FF"
         }
-        # browser()
         
-        if (transparency) {
-            transpa <- max(round(10*vertex.number*graph.alpha[y]), 80)
-            if (transpa > 150) transpa <- 150
-            
-            transpaColor <- format(as.hexmode(transpa), upper.case = TRUE)
-            if (transpa < 16) transpaColor <- paste0("0", transpaColor)
-        } else {
-            transpaColor <- "FF"
-        }
-        
-        return(c(paste0(solidColor, "FF"), paste0(solidColor, transpaColor)))
+        return(solidColor)
     })
-    rownames(vertex.color) <- c("label", "node")
     
     # Vertex frame color
     vertex.frame.color <- rep("black", vcount(graph))
-    if (GO.CellularComponent) {
-        vertex.frame.color[GO.CC != -1] <- "#CD0000"
-        vertex.shape[GO.CC != -1] <- "triangle"
+    if (GO.annot) {
+        vertex.frame.color[!is.na(GO.simil)] <- "#CD0000"
+        vertex.shape[!is.na(GO.simil)] <- "triangle"
     }
     
     # Vertex size
-    vertex.size <- sapply(graph.com, function(y) {
-        vertexSize <- switch(
-            y, 
-            "1" = 7,
-            "2" = 5.5,
-            "3" = 4.25,
-            "4" = 3.5,
-            "5" = 3
-        )
-        return(vertexSize)
-    })
-    
+    mapSize <- c(
+        "1" = 7,
+        "2" = 5.5,
+        "3" = 4.25,
+        "4" = 3.5,
+        "5" = 3
+    )
+    vertex.size <- mapSize[graph.com]
     vertex.size[graph.input] <- 4
-    
     vertex.size <- vertex.size*(300/vcount(graph))^(1/3)
     
     # Labels
@@ -178,82 +163,59 @@ plotGraph <- function(
     vertex.label.degree <- -pi/2
     
     if (NamesAsLabels) {
-        vertex.label <- V(graph)$LABEL
+        vertex.label <- V(graph)$label
     } else {
         vertex.label <- V(graph)$name
     }
     
+    options <- as.list(substitute(list(...)))[-1L]
+    args.shared <- list(
+        layout = graph.layout, 
+        vertex.size = vertex.size, 
+        vertex.label = vertex.label, 
+        vertex.label.dist = vertex.label.dist, 
+        vertex.label.color = vertex.color, 
+        vertex.label.degree = vertex.label.degree, 
+        vertex.frame.color = vertex.frame.color, 
+        vertex.color = vertex.color, 
+        vertex.shape = vertex.shape,
+        edge.color = "#000000AA", 
+        edge.arrow.size = 0.25,
+        asp = graph.asp)
+    
     if (plot.fun == "plot.igraph") {
         do.call(
             plot.fun, 
-            c(
-                list(
-                    x = graph, 
-                    layout = graph.layout, 
-                    vertex.size = vertex.size, 
-                    vertex.label = vertex.label, 
-                    vertex.label.dist = vertex.label.dist, 
-                    vertex.label.color = vertex.color["label", ], 
-                    vertex.label.degree = vertex.label.degree, 
-                    vertex.frame.color = vertex.frame.color, 
-                    vertex.color = vertex.color["node", ], 
-                    vertex.shape = vertex.shape,
-                    edge.curved = FALSE, 
-                    edge.color = "#000000AA", 
-                    edge.arrow.size = 0.25,
-                    asp = graph.asp), 
-                options)
+            c(list(x = graph), args.shared, options)
         )
     } 
     if (plot.fun == "tkplot") {
         do.call(
             plot.fun, 
-            c(
-                list(
-                    graph = graph, # works if we use tkplot
-                    layout = graph.layout, 
-                    vertex.size = vertex.size, 
-                    vertex.label = vertex.label, 
-                    vertex.label.dist = vertex.label.dist, 
-                    vertex.label.color = vertex.color["label", ], 
-                    vertex.label.degree = vertex.label.degree, 
-                    vertex.frame.color = vertex.frame.color, 
-                    vertex.color = vertex.color["node", ], 
-                    vertex.shape = vertex.shape,
-                    edge.color = "#000000AA", 
-                    edge.arrow.size = 0.25,
-                    asp = graph.asp), 
-                options)
+            c(list(graph = graph), args.shared, options)
         )
     }
     
     # Plot the legend
-    if (showLegend) showLegend(GO.CellularComponent)
+    if (showLegend) showLegend(GO.annot = TRUE)
     
+    mapPrefix <- c(
+        "1" = "",
+        "2" = "md:",
+        "3" = "ec:",
+        "4" = "rn:",
+        "5" = "cpd:"
+    )
     if (!layout) {
         return(invisible(NULL))
     } else  {
-        x <- graph.layout[, 1]
-        y <- graph.layout[, 2]
-        out.id <- sapply(V(graph), function(vertex) paste0(
-            switch(
-                as.character(V(graph)[vertex]$com),
-                "1" = "",
-                "2" = "md:",
-                "3" = "ec:",
-                "4" = "rn:",
-                "5" = "cpd:"),
-            V(graph)[vertex]$name))
-        
-        out.name <- V(graph)$LABEL
         out.complete <- data.frame(
-            x, 
-            y, 
-            out.id, 
-            out.name, 
+            x = graph.layout[, 1], 
+            y = graph.layout[, 2], 
+            out.id = paste0(mapPrefix[V(graph)$com], V(graph)$name), 
+            out.name = V(graph)$label, 
             stringsAsFactors = FALSE)
-        names(out.complete) <- c("x", "y", "out.id", "out.name")
-        
+
         return(invisible(out.complete))
     }
 }
