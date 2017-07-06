@@ -10,7 +10,7 @@ library(knitr)
 library(xtable)
 
 # Cytoscape tool
-library(rcytoscapejs)
+library(visNetwork)
 library(DT)
 
 # Path to FELLA database with KEGG objects
@@ -24,7 +24,7 @@ pathData <- setNames(
   list.dirs(pathDBs, full.names = TRUE, recursive = FALSE), 
   list.dirs(pathDBs, full.names = FALSE, recursive = FALSE)
 )
-pathBIMS <- "BiMS/index.html"
+# pathBIMS <- "BiMS/index.html"
 
 # Shared object for all users
 # FELLA.DATA <- 

@@ -206,10 +206,11 @@ shinyUI(fluidPage(
           label = "Select connected component to visualise:", 
           choices = list("No graph available" =  1), 
           selected = 1), 
-        rcytoscapejsOutput(
+        visNetworkOutput(
             "cytoscapePlot", 
-            height = "1200px", 
-            width = "1200px"), 
+            height = "800px"
+            # width = "1200px"
+            ), 
         DT::dataTableOutput("tableSolution")
         
       ), 

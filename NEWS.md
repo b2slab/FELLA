@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.3.1
+
+* Removed `rcytoscapejs` dependency
+
 ### Version 0.3.0
 
 * Fixed vignette 

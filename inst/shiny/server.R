@@ -201,30 +201,6 @@ shinyServer(function(input, output, session) {
     }
   })
   # ---------------------------------------------------
-  
-  # Plot the CURRENT graph! 
-  # Reactive function
-  plotSolution <- reactive({
-    if (!is.null(generateGraph())) {
-      if (input$method == "hypergeom") {
-        if (is.null(generateGraph()))  {
-          return(NULL)
-        } else {
-          return(FELLA:::plotBipartite(
-            graph = currentGraph(), 
-            layout = TRUE))
-        }
-      } else {
-        return(FELLA:::plotGraph(
-          graph = currentGraph(), 
-          input = getInput(createUser()), 
-          layout = TRUE, 
-          NamesAsLabels = TRUE))
-      }
-    }
-    else return(NULL)
-  })
-  
   # Table of results
   output$tableSolution <- DT::renderDataTable({
     data <- FELLA.DATA()
@@ -281,69 +257,62 @@ shinyServer(function(input, output, session) {
     g <- currentGraph()
     if (!is.null(g)) {
       id <- V(g)$name
-      name <- V(g)$label
-      nodeData <- data.frame(id, name, stringsAsFactors = FALSE)
+      label <- V(g)$label
+      nodes <- data.frame(id, label, stringsAsFactors = FALSE)
       
-      map.solidColor <- setNames(
-        c("#E6A3A3", "#E2D3E2", "#DFC1A3", "#D0E5F2", "#A4D4A4"), 
-        1:5
-      )
-      map.solidLabelColor <- setNames(
-        c("#CD0000", "#CD96CD", "#CE6700", "#8DB6CD", "#548B54"), 
-        1:5
-      )
-      map.nodeWidth <- setNames(
-        c(40, 30, 25, 22, 22), 
-        1:5
-      )
-      
+      map.com <- c("pathway", "module", "enzyme", "reaction", "compound")
+      map.color <- c("#E6A3A3", "#E2D3E2", "#DFC1A3", "#D0E5F2", "#A4D4A4")
+      map.labelcolor <- c("#CD0000", "#CD96CD", "#CE6700", "#8DB6CD", "#548B54")
+      map.nodeWidth <- c(40, 30, 25, 22, 22)
+
       nodeShape <- ifelse(
-        V(g)$name %in% getInput(createUser()), 
-        "rectangle", 
+        V(g)$name %in% getInput(createUser()),
+        "box",
         "ellipse"
       )
-      
-      nodeData$color <- map.solidColor[V(g)$com]
-      nodeData$nodeLabelColor <- map.solidLabelColor[V(g)$com]
-      nodeData$width <- map.nodeWidth[V(g)$com]
-      nodeData$height <- map.nodeWidth[V(g)$com]
-      nodeData$shape <- nodeShape
-      
+      # 
+      nodes$group <- map.com[V(g)$com]
+      nodes$color <- map.color[V(g)$com]
+      # nodes$nodeLabelColor <- map.labelcolor[V(g)$com]
+      # width
+      nodes$value <- map.nodeWidth[V(g)$com]
+      # nodes$height <- map.nodeWidth[V(g)$com]
+      nodes$shape <- nodeShape
+      # tooltip
       nodeLink <- paste0(
         "<a href=\"http://www.genome.jp/dbget-bin/www_bget?",
         V(g)$name, "\"", "\ target=\"_blank", "\">", V(g)$name, "</a>")
-      
-      nodeData$href <- nodeLink
-      nodeData$tooltip <- nodeLink
-      nodeData$x <- (plotSolution()$x)*600
-      nodeData$y <- -(plotSolution()$y)*800
+
+      nodes$title <- nodeLink
+      # nodes$x <- (plotSolution()$x)*600
+      # nodes$y <- -(plotSolution()$y)*800
       
       source <- V(g)[get.edgelist(g)[, 1]]$name
       target <- V(g)[get.edgelist(g)[, 2]]$name
-      edgeData <- data.frame(source, target, stringsAsFactors = FALSE)
+      edges <- data.frame(source, target, stringsAsFactors = FALSE)
       
-      names(edgeData) <- c("source", "target")
+      names(edges) <- c("from", "to")
 
-      network <- createCytoscapeJsNetwork(
-        nodeData = nodeData,
-        edgeData = edgeData, 
-        edgeSourceShape = "none",
-        edgeTargetShape = "none")
+      network <- list(
+        nodes = nodes,
+        edges = edges)
       
       return(network)
     }
     return(NULL)
   })
   
-  output$cytoscapePlot <- renderRcytoscapejs({
-    net <- network()
-    if (!is.null(net)) {
-        rcytoscapejs(
-            nodeEntries = net$nodes, 
-            edgeEntries = net$edges, 
-            showPanzoom = TRUE, 
-            layout = "preset")
-    }
+  output$cytoscapePlot <- renderVisNetwork({
+      net <- network()
+      if (!is.null(net)) {
+          visNetwork(nodes = net$nodes, edges = net$edges) %>%
+              visIgraphLayout() %>%
+              visEdges(smooth = FALSE) %>% 
+              visOptions(
+                  selectedBy = "group", 
+                  nodesIdSelection = TRUE,
+                  highlightNearest = TRUE)
+      }
   })
   ###########################################################
   
