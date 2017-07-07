@@ -8,15 +8,7 @@
 #' This procedure gives statistical significance measures for each node 
 #' and allows the extraction of a subgraph according to a fixed threshold.
 #'
-#' @inheritParams .object
-#' @inheritParams .data
-#' @inheritParams .approx
-#' @param dampingFactor Numeric value between 0 and 1 (none inclusive), 
-#' damping factor \code{d} for 
-#' PageRank (\code{\link[igraph]{page_rank}})
-#' @inheritParams .t.df
-#' @inheritParams .niter
-#' @inheritParams .p.adjust
+#' @inheritParams .params
 #'
 #' @return The \code{\link[FELLA]{FELLA.USER}} object 
 #' with the PageRank enrichment results
@@ -50,8 +42,7 @@ runPagerank <- function(
     approx = "normality", 
     dampingFactor = 0.85, 
     t.df = 10, 
-    niter = 1000, 
-    p.adjust = "fdr") {
+    niter = 1000) {
     
     # Checking the input
     #########################
@@ -323,8 +314,6 @@ runPagerank <- function(
         names(pscores) <- names(RowSums)
         
     } 
-    
-    pscores <- stats::p.adjust(p = pscores, method = p.adjust)
     
     object@pagerank@pscores <- pscores
     object@pagerank@approx <- approx

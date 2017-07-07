@@ -10,8 +10,8 @@ generateResultsGraph(method = "diffusion", threshold = 0.05, plimit = 15,
   object = NULL, data = NULL)
 }
 \arguments{
-\item{method}{Character, one of: 
-"hypergeom", "diffusion" or "pagerank"}
+\item{method}{Character vector, containing some of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}

@@ -5,16 +5,7 @@
 #' according to the specified threshold. A \code{\link[FELLA]{FELLA.USER}} 
 #' object with a successful enrichment analysis must be supplied.
 #' 
-#'
-#' @inheritParams .methodSingle
-#' @inheritParams .threshold
-#' @inheritParams .plimit
-#' @inheritParams .nlimit
-#' @inheritParams .splitByConnectedComponent
-#' @inheritParams .thresholdConnectedComponent
-#' @inheritParams .LabelLengthAtPlot
-#' @inheritParams .object
-#' @inheritParams .data
+#' @inheritParams .params
 #'
 #' @return An \code{\link{igraph}} object if 
 #' \code{splitByConnectedComponent = F}; 

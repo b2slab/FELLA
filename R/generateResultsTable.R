@@ -6,18 +6,7 @@
 #' with a successful enrichment analysis.
 #' 
 #'
-#' @inheritParams .methodSingle
-#' @inheritParams .threshold
-#' @inheritParams .plimit
-#' @inheritParams .nlimit
-#' @inheritParams .LabelLengthAtPlot
-#' @param capPscores Numeric value, minimum p-score 
-#' admitted for the readable 
-#' formatting. Smaller p-scores will be displayed 
-#' as \code{< capPscores} in the 
-#' table.
-#' @inheritParams .object
-#' @inheritParams .data
+#' @inheritParams .params
 #'
 #' @return A table that contains the KEGG graph nodes with their p-score
 #' 
@@ -184,15 +173,7 @@ generateResultsTable <- function(
                 return(ans)
             }))
             nodeCom <- V(getGraph(data))[nodeIds]$com
-            nodeTypes <- sapply(
-                nodeCom, function(x) 
-                    switch(
-                        x, 
-                        "1" = "Pathway", 
-                        "2" = "Module", 
-                        "3" = "Enzyme", 
-                        "4" = "Reaction", 
-                        "5" = "Compound"))
+            nodeTypes <- listCategories()[nodeCom]
             
             out.pagerank <- data.frame(
                 "KEGG id" = nodeIds,

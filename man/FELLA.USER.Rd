@@ -24,8 +24,8 @@
 
 \item{x}{A \code{\link{FELLA.USER}} object}
 
-\item{method}{Character, one of: 
-"hypergeom", "diffusion" or "pagerank"}
+\item{method}{Character vector, containing some of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}

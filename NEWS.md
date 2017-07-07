@@ -2,6 +2,24 @@
 
 ---
 
+### Version 0.3.3
+
+* Improved argument documentation (still work to do)
+* Fused individual dummy functions that contained the commented parameters
+* Added `list-()` functions
+* Removed `p.adjust` from diffusion and pagerank
+* Improved unit testing
+
+To do:
+
+* Fix documentation of changed functions
+* Try to better isolate functions (e.g. `plot` and `generateResultsGraph`
+do too many things at once...)
+* Quantitative input?
+* Delete repetitive code
+* Use `checkArguments` in main functions
+* Improve `AllMethods`: use accessors, clean code...
+
 ### Version 0.3.2
 
 * Switched from `pValues` to `pScores` (except in `hypergeom`)

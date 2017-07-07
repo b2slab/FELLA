@@ -4,22 +4,7 @@
 #' and range. If it fails, it gives an error explaining why the argument 
 #' is invalid. 
 #'
-#' @inheritParams .method
-#' @inheritParams .approx
-#' @inheritParams .loadMatrix
-#' @inheritParams .threshold
-#' @inheritParams .plimit
-#' @inheritParams .nlimit
-#' @inheritParams .niter
-#' @inheritParams .layout
-#' @inheritParams .splitByConnectedComponent
-#' @inheritParams .askPlots
-#' @inheritParams .thresholdConnectedComponent
-#' @inheritParams .GO.CellularComponent
-#' @inheritParams .GONamesAsLabels
-#' @inheritParams .LabelLengthAtPlot
-#' @inheritParams .object
-#' @inheritParams .data
+#' @inheritParams .params
 #' 
 #' @return A list with values. Currently only a 
 #' logical value named \code{valid} 
@@ -48,7 +33,7 @@ checkArguments <- function(
     splitByConnectedComponent = FALSE, 
     askPlots = TRUE, 
     thresholdConnectedComponent = 0.05, 
-    GO.CellularComponent = NULL,
+    GOterm = NULL,
     GONamesAsLabels = TRUE, 
     LabelLengthAtPlot = 22, 
     object = new("FELLA.USER"), 
@@ -286,19 +271,19 @@ checkArguments <- function(
         return(list(ans = NULL, valid = FALSE))
     }
     
-    # GO.CellularComponent
+    # GOterm
     ##################################
-    if (!is.null(GO.CellularComponent) & 
-        !is.character(GO.CellularComponent)) {
+    if (!is.null(GOterm) & 
+        !is.character(GOterm)) {
         message(
-            "'GO.CellularComponent' must be NULL or a GO entry. ", 
+            "'GOterm' must be NULL or a GO entry. ", 
             "Returning NULL...")
         return(list(ans = NULL, valid = FALSE))
     }
     
-    if (length(GO.CellularComponent) > 1) {
+    if (length(GOterm) > 1) {
         message(
-            "'GO.CellularComponent' must be a length 1 character. ", 
+            "'GOterm' must be a length 1 character. ", 
             "Returning NULL...")
         return(list(ans = NULL, valid = FALSE))
     }

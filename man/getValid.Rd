@@ -4,12 +4,13 @@
 \alias{getValid}
 \title{Get the slot "valid"}
 \usage{
-getValid(object, type)
+getValid(object, method.)
 }
 \arguments{
 \item{object}{FELLA.USER object}
 
-\item{type}{Character, one of "hypergeom", "diffusion" or "pagerank"}
+\item{method.}{Character, exactly one of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 }
 \value{
 Slot "valid" (internal usage)

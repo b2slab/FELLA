@@ -2,8 +2,7 @@
 #' 
 #' Extractor function for the slot "valid"
 #'
-#' @inheritParams .object
-#' @inheritParams .type 
+#' @inheritParams .params
 #'
 #' @return Slot "valid" (internal usage)
 #' 
@@ -26,6 +25,6 @@
 #' getValid(new("FELLA.USER"), "diffusion")
 #' getValid(obj, "pagerank")
 #' 
-getValid <- function(object, type) {
-    return(slot(object, type)@valid)
+getValid <- function(object, method.) {
+    return(slot(object, method.)@valid)
 }

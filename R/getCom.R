@@ -2,8 +2,7 @@
 #' 
 #' Extractor function for all the nodes from a level/community of KEGG graph
 #'
-#' @inheritParams .data
-#' @inheritParams .level
+#' @inheritParams .params
 #' @param format Format of the output, "name" returns KEGG IDs whereas 
 #' "id" returns vertices IDs
 #'

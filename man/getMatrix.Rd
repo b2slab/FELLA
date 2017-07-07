@@ -4,12 +4,13 @@
 \alias{getMatrix}
 \title{Get matrix for the desired methodology}
 \usage{
-getMatrix(data, type)
+getMatrix(data, method.)
 }
 \arguments{
 \item{data}{FELLA.DATA object}
 
-\item{type}{Character, one of "hypergeom", "diffusion" or "pagerank"}
+\item{method.}{Character, exactly one of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 }
 \value{
 Matrix for the desired methodology (internal usage)

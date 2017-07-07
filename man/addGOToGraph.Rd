@@ -13,6 +13,9 @@ addGOToGraph(graph = NULL, GOterm = NULL, godata.options = list(OrgDb =
 \item{graph}{An \code{\link[igraph]{igraph}} object, typically a small one 
 coming from an enrichment procedure}
 
+\item{GOterm}{Character, GO entry to draw 
+semantic similarity in the solution graph.}
+
 \item{godata.options}{List, options for the database creator 
 \code{\link[GOSemSim]{godata}}}
 

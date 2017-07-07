@@ -2,8 +2,7 @@
 #' 
 #' Extractor function for the p-scores using the desired methodology
 #'
-#' @inheritParams .object
-#' @inheritParams .type
+#' @inheritParams .params
 #'
 #' @return Named vector of p-scores
 #' 
@@ -17,7 +16,7 @@
 #' sum(p < 0.1)
 #' 
 #' @export
-getPscores <- function(object, type) {
-    if (type == "hypergeom") return(slot(object, type)@pvalues)
-    return(slot(object, type)@pscores)
+getPscores <- function(object, method.) {
+    if (method. == "hypergeom") return(slot(object, method.)@pvalues)
+    return(slot(object, method.)@pscores)
 }

@@ -7,19 +7,12 @@
 #' \code{\link[FELLA]{FELLA.USER}} 
 #' object with the enrichment results available.
 #'
-#' @inheritParams .compounds
-#' @inheritParams .compoundsBackground
-#' @inheritParams .method
-#' @inheritParams .loadMatrix
-#' @inheritParams .approx
-#' @inheritParams .t.df
-#' @inheritParams .niter
+#' @inheritParams .params
 #' @param databaseDir Character, path to load the 
 #' \code{\link[FELLA]{FELLA.DATA}} object if
 #' it is not already passed through the argument \code{data}
 #' @param internalDir Logical, is the directory located 
 #' in the package directory?
-#' @inheritParams .data
 #' @param ... Further arguments for the enrichment function(s) 
 #' \code{\link[FELLA]{runDiffusion}}, \code{\link[FELLA]{runPagerank}}
 #' 

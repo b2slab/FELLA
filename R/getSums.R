@@ -2,8 +2,7 @@
 #' 
 #' Extractor function for rowSums/squaredRowSums
 #'
-#' @inheritParams .data
-#' @inheritParams .type
+#' @inheritParams .params
 #' @param squared Logical, whether to return 
 #' \code{rowSums} (\code{F}) or \code{squaredRowSums} (\code{T})
 #'
@@ -14,12 +13,12 @@
 #' data(FELLA.sample)
 #' rowsums <- getSums(FELLA.sample, "diffusion", squared = FALSE)
 #' hist(rowsums)
-getSums <- function(data, type, squared) {
+getSums <- function(data, method., squared) {
     if (squared) 
-        return(slot(data, type)@squaredRowSums)
+        return(slot(data, method.)@squaredRowSums)
     
     if (!squared) 
-        return(slot(data, type)@rowSums)
+        return(slot(data, method.)@rowSums)
     
-    return(invisible())
+    invisible()
 }

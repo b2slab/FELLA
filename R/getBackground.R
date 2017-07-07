@@ -2,7 +2,7 @@
 #' 
 #' Extractor function for the compounds defined as background
 #'
-#' @inheritParams .object
+#' @inheritParams .params
 #'
 #' @return Vector of compounds in the background. 
 #' If this vector is empty, all 

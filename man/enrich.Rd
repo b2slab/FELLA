@@ -16,11 +16,12 @@ KEGG IDs of the compounds considered as affected}
 the compounds that belong to the background. Can be \code{NULL} for the 
 default background (all compounds)}
 
-\item{method}{Character, one of: 
-"hypergeom", "diffusion", "pagerank" or "all"}
+\item{method}{Character vector, containing some of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
-\item{loadMatrix}{Character to choose if heavy matrices should be loaded. 
-One of: "diffusion", "pagerank", "all" or NULL}
+\item{loadMatrix}{Character vector to choose if 
+heavy matrices should be loaded. 
+Can contain: \code{"diffusion"}, \code{"pagerank"}}
 
 \item{approx}{Character: "simulation" for Monte Carlo, "normality", 
 "gamma" or "t" for parametric approaches}

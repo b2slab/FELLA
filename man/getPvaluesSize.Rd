@@ -24,3 +24,4 @@ M <- getPvaluesSize(FELLA.sample)
 dim(M)
 summary(as.vector(M))
 }
+\keyword{internal}

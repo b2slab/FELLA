@@ -205,21 +205,9 @@ setMethod("show", signature = "FELLA.USER", function(object) {
 #' from a FELLA.USER object
 #'
 #' @param x A \code{\link{FELLA.USER}} object
-#' @inheritParams .methodSingle
-#' @inheritParams .threshold
-#' @inheritParams .thresholdConnectedComponent
-#' @inheritParams .plimit
-#' @inheritParams .nlimit
-#' @inheritParams .layout 
+#' @inheritParams .params
 #' @param filename Character; optional file name to save the plot
-#' @inheritParams .splitByConnectedComponent
-#' @inheritParams .askPlots
-#' @inheritParams .GO.CellularComponent
-#' @inheritParams .GONamesAsLabels
-#' @inheritParams .LabelLengthAtPlot
-#' @inheritParams .data
 #' @param ... Additional arguments passed to plotting functions
-#' 
 #' 
 #' @return \code{plot} returns a layout if \code{layout = T}, 
 #' otherwise \code{invisible()}

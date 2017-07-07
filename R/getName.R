@@ -4,7 +4,7 @@
 #' for an ID are reported if annotated. 
 #' The KEGG identifiers may have mixed levels.
 #'
-#' @inheritParams .data
+#' @inheritParams .params
 #' @param id KEGG IDs whose name is desired
 #'
 #' @return List whose names are KEGG IDs and 

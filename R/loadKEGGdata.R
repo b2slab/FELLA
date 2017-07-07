@@ -4,10 +4,10 @@
 #' \code{\link[FELLA]{FELLA.DATA}} object. This object is necessary 
 #' to perform any kind of enrichment using \code{\link[FELLA]{FELLA}}.
 #'
+#' @inheritParams .params
 #' @param databaseDir Path for the KEGG RData files
 #' @param internalDir Logical, is the directory located 
 #' in the package directory?
-#' @inheritParams .loadMatrix
 #'
 #' @return The \code{\link[FELLA]{FELLA.DATA}} object 
 #' that contains the KEGG representation

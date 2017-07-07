@@ -1,7 +1,7 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and Enrichment for Metabolomics Data
-Version: 0.3.2
+Version: 0.3.3
 Date: 2017-7-7
 Authors@R: c(
     person(

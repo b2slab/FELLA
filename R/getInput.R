@@ -3,7 +3,7 @@
 #' Extractor function for the metabolites 
 #' specified by the user in the input
 #'
-#' @inheritParams .object
+#' @inheritParams .params
 #'
 #' @return Vector of metabolites in the input
 #' 

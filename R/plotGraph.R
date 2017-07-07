@@ -4,11 +4,10 @@
 #' tailored for the diffusion and pagerank
 #' analysis. 
 #'
+#' @inheritParams .params
 #' @param graph Graph result that must come 
 #' from diffusion or pagerank analysis
 #' @param input Character vector, compounds in the input to be highlighted
-#' @inheritParams .layout
-#' @inheritParams .NamesAsLabels
 #' @param graph.layout Two-column numeric matrix, if this argument is not null 
 #' then it is used as graph layout
 #' @param showLegend Logical, should the legend be plotted as well?
@@ -44,7 +43,6 @@ plotGraph <- function(
     input = NULL, 
     layout = FALSE,
     graph.layout = NULL, 
-    transparency = FALSE, 
     showLegend = TRUE, 
     plot.fun = "plot.igraph", 
     NamesAsLabels = TRUE, 
@@ -98,13 +96,6 @@ plotGraph <- function(
     vertex.shape[graph.input] <- "square"
     
     vertex.number <- vcount(graph)
-    
-    # Centrality for the transparency attribute
-    graph.alpha <- betweenness(
-        graph, 
-        directed = FALSE, 
-        normalized = TRUE)
-    graph.alpha[is.nan(graph.alpha)] <- 0
     
     graph.asp <- 1
     if (is.null(graph.layout)) graph.layout <- layout.auto(graph)

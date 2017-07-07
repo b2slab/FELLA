@@ -4,12 +4,13 @@
 \alias{getSums}
 \title{Get rowSums/squaredRowSums}
 \usage{
-getSums(data, type, squared)
+getSums(data, method., squared)
 }
 \arguments{
 \item{data}{FELLA.DATA object}
 
-\item{type}{Character, one of "hypergeom", "diffusion" or "pagerank"}
+\item{method.}{Character, exactly one of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{squared}{Logical, whether to return 
 \code{rowSums} (\code{F}) or \code{squaredRowSums} (\code{T})}

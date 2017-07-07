@@ -13,8 +13,9 @@ loadKEGGdata(databaseDir = "myDatabase", internalDir = TRUE,
 \item{internalDir}{Logical, is the directory located 
 in the package directory?}
 
-\item{loadMatrix}{Character to choose if heavy matrices should be loaded. 
-One of: "diffusion", "pagerank", "all" or NULL}
+\item{loadMatrix}{Character vector to choose if 
+heavy matrices should be loaded. 
+Can contain: \code{"diffusion"}, \code{"pagerank"}}
 }
 \value{
 The \code{\link[FELLA]{FELLA.DATA}} object 

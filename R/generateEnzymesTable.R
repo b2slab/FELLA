@@ -5,18 +5,8 @@
 #' of a \code{\link[FELLA]{FELLA.USER}} object 
 #' with a successful enrichment analysis.
 #' 
-#'
-#' @param method Character, either 'diffusion' or 'pagerank'
-#' @inheritParams .threshold
-#' @inheritParams .nlimit
-#' @inheritParams .LabelLengthAtPlot
-#' @param capPscores Numeric value, minimum p-score 
-#' admitted for the readable 
-#' formatting. Smaller p-scores will be displayed 
-#' as \code{< capPscores} in the 
-#' table.
-#' @inheritParams .object
-#' @inheritParams .data
+#' @inheritParams .params
+#' @param method. Character, either 'diffusion' or 'pagerank'
 #'
 #' @return A table that contains the enzymes 
 #' along with genes and GO labels
@@ -104,7 +94,7 @@ generateEnzymesTable <- function(
     
     g <- getGraph(data)
     nodeGenes <- sapply(
-        V(g)[nodeIds]$GENE, 
+        V(g)[nodeIds]$entrez, 
         function(genes) paste(genes, collapse = ";")
     )
     nodeGO <- sapply(
@@ -117,20 +107,13 @@ generateEnzymesTable <- function(
     )
     
     out.df <- data.frame(
-        nodeIds,
-        nodePscores, 
-        nodeNames, 
-        nodeGenes, 
-        nodeGO, 
-        nodeGOname, 
+        "EC_number" = nodeIds,
+        "p.value" = nodePscores, 
+        "EC_name" = nodeNames, 
+        "Genes" = nodeGenes, 
+        "GO_id" = nodeGO, 
+        "GO_name" = nodeGOname, 
         stringsAsFactors = FALSE)
-    names(out.df) <- c(
-        "EC_number", 
-        "p.value", 
-        "EC_name", 
-        "Genes", 
-        "GO_id", 
-        "GO_name")
     rownames(out.df) <- NULL
     
     message("Done.")

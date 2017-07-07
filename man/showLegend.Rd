@@ -7,6 +7,8 @@
 showLegend(GO.annot = FALSE, cex = 0.75)
 }
 \arguments{
+\item{GO.annot}{Logical, should GO annotations be included?}
+
 \item{cex}{Numeric value, \code{cex} parameter for the function 
 \code{\link[graphics]{legend}}}
 }

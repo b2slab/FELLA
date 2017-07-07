@@ -7,9 +7,7 @@
 #' can be performed. There is also the option 
 #' to define a personalised background.
 #'
-#' @inheritParams .compounds
-#' @inheritParams .compoundsBackground
-#' @inheritParams .data
+#' @inheritParams .params
 #'
 #' @return The \code{\link[FELLA]{FELLA.USER}} object 
 #' to perform the user analysis

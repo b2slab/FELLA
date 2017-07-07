@@ -4,12 +4,13 @@
 \alias{getPscores}
 \title{Get p-scores from the desired methodology}
 \usage{
-getPscores(object, type)
+getPscores(object, method.)
 }
 \arguments{
 \item{object}{FELLA.USER object}
 
-\item{type}{Character, one of "hypergeom", "diffusion" or "pagerank"}
+\item{method.}{Character, exactly one of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 }
 \value{
 Named vector of p-scores

@@ -8,9 +8,7 @@
 #' \code{\link[FELLA]{runDiffusion}}
 #' and \code{\link[FELLA]{runPagerank}}.
 #'
-#' @inheritParams .object
-#' @inheritParams .data
-#' @inheritParams .p.adjust
+#' @inheritParams .params
 #'
 #' @return The \code{\link[FELLA]{FELLA.USER}} object 
 #' with the hypergeometric test results

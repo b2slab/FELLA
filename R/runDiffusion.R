@@ -9,13 +9,7 @@
 #' for each node and allows 
 #' the extraction of a subgraph according to a fixed threshold.
 #'
-#' @inheritParams .object
-#' @inheritParams .data
-#' @inheritParams .approx
-#' @inheritParams .t.df
-#' @inheritParams .niter
-#' @inheritParams .p.adjust
-#' @inheritParams .BIMODAL
+#' @inheritParams .params
 #'
 #' @return The \code{\link[FELLA]{FELLA.USER}} object 
 #' with the diffusion enrichment results
@@ -49,7 +43,6 @@ runDiffusion <- function(
     approx = "normality", 
     t.df = 10, 
     niter = 1000, 
-    p.adjust = "fdr", 
     BIMODAL = FALSE) {
     
     # Checking the input
@@ -341,8 +334,6 @@ runDiffusion <- function(
             "Invalid 'type' argument for heat diffusion. ", 
             "Please choose between 'simulation' and 'normality'")
     }
-    
-    pscores <- stats::p.adjust(p = pscores, method = p.adjust)
     
     object@diffusion@pscores <- pscores
     object@diffusion@approx <- approx

@@ -4,9 +4,9 @@
 #' over representation analysis. As the nodes can only be compounds and 
 #' pathways, the layout is simple and bipartite.
 #'
+#' @inheritParams .params
 #' @param graph Graph result that must come from the 
 #' hypergeometric test analysis
-#' @inheritParams .layout
 #' @param ... Additional parameters passed to 
 #' \code{\link[igraph]{plot.igraph}}
 #' 
@@ -55,23 +55,19 @@ plotBipartite <- function(
         ymin = -1, 
         ymax = 1)
     
-    # Vertex shape
-    vertex.shape <- sapply(
-        graph.com, 
-        function(y) switch(y, "1" = "circle", "5" = "square"))
+    # Vertex shape & color
+    mp.shape <- c("1" = "circle", "5" = "square")
+    mp.color <- c("1" = "red3", "5" = "palegreen4")
+    mp.deg <- c("1" = 0, "5" = -pi)
     
-    # Vertex color
-    vertex.color <- sapply(
-        graph.com, 
-        function(y) switch(y, "1" = "red3", "5" = "palegreen4"))
+    vertex.shape <- mp.shape[graph.com]
+    vertex.color <- mp.color[graph.com]
     
     # Labels and sizes
     vertex.size <- 3
     vertex.label.dist <- 0.7
-    vertex.label.degree <- sapply(
-        graph.com, 
-        function(y) switch(y, "1" = 0, "5" = -pi))
-    
+    vertex.label.degree <- mp.deg[graph.com]
+
     # Actual plot
     plot.igraph(
         x = graph, 
@@ -93,12 +89,12 @@ plotBipartite <- function(
     } else  {
         x <- graph.layout[, 1]
         y <- graph.layout[, 2]
-        out.id <- sapply(V(graph), function(vertex) paste0(
-            switch(
-                as.character(V(graph)[vertex]$com),
-                "1" = "",
-                "5" = "cpd:"),
-            V(graph)[vertex]$name))
+        
+        mp.prefix <- c("1" = "", "5" = "cpd:")
+        out.id <- paste0(
+            mp.prefix[as.character(V(graph)[vertex]$com)], 
+            V(graph)[vertex]$name
+        )
         
         out.complete <- data.frame(x, y, out.id, stringsAsFactors = FALSE)
         

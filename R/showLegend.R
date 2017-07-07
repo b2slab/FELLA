@@ -3,7 +3,7 @@
 #' This function adds a legend to a solution plot. 
 #' It can include the CC similarity.
 #'
-#' @inheritParams .GO.CellularComponent
+#' @param GO.annot Logical, should GO annotations be included?
 #' @param cex Numeric value, \code{cex} parameter for the function 
 #' \code{\link[graphics]{legend}}
 #' 

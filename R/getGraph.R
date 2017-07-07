@@ -2,7 +2,7 @@
 #' 
 #' Extractor function for the KEGG graph from the FELLA.DATA object
 #'
-#' @inheritParams .data
+#' @inheritParams .params
 #'
 #' @return KEGG graph as an \link[igraph]{igraph} object
 #' @examples 

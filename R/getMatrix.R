@@ -3,8 +3,7 @@
 #' Extractor function for the matrices of 
 #' hypergeometric, diffusion and PageRank methodologies
 #'
-#' @inheritParams .data
-#' @inheritParams .type 
+#' @inheritParams .params
 #'
 #' @return Matrix for the desired methodology (internal usage)
 #' @examples 
@@ -18,6 +17,6 @@
 #' y <- getMatrix(FELLA.sample, "diffusion")
 #' dim(y)
 #' y
-getMatrix <- function(data, type) {
-    return(slot(data, type)@matrix)
+getMatrix <- function(data, method.) {
+    return(slot(data, method.)@matrix)
 }

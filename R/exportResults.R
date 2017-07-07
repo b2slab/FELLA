@@ -10,12 +10,7 @@
 #' \code{"png"}, [\code{"pdf"} soon] 
 #' @param file Character specifying the output 
 #' directory for the exported files
-#' @inheritParams .method
-#' @inheritParams .threshold
-#' @inheritParams .plimit
-#' @inheritParams .nlimit
-#' @inheritParams .object
-#' @inheritParams .data
+#' @inheritParams .params
 #' @param ... Developer parameter, currently ignored
 #'
 #' @return Return value is \code{invisible()}, 

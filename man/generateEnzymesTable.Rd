@@ -9,7 +9,8 @@ generateEnzymesTable(method = "diffusion", threshold = 0.005,
   object = NULL, data = NULL)
 }
 \arguments{
-\item{method}{Character, either 'diffusion' or 'pagerank'}
+\item{method}{Character vector, containing some of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}
@@ -24,12 +25,13 @@ The remaining characters will be truncated using "..."}
 \item{capPscores}{Numeric value, minimum p-score 
 admitted for the readable 
 formatting. Smaller p-scores will be displayed 
-as \code{< capPscores} in the 
-table.}
+as \code{< capPscores}}
 
 \item{object}{FELLA.USER object}
 
 \item{data}{FELLA.DATA object}
+
+\item{method.}{Character, either 'diffusion' or 'pagerank'}
 }
 \value{
 A table that contains the enzymes 

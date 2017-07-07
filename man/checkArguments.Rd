@@ -7,20 +7,20 @@
 checkArguments(method = "diffusion", approx = "normality",
   loadMatrix = NULL, threshold = 0.05, plimit = 15, nlimit = 250,
   niter = 1000, layout = FALSE, splitByConnectedComponent = FALSE,
-  askPlots = TRUE, thresholdConnectedComponent = 0.05,
-  GO.CellularComponent = NULL, GONamesAsLabels = TRUE,
-  LabelLengthAtPlot = 22, object = new("FELLA.USER"),
-  data = new("FELLA.DATA"))
+  askPlots = TRUE, thresholdConnectedComponent = 0.05, GOterm = NULL,
+  GONamesAsLabels = TRUE, LabelLengthAtPlot = 22,
+  object = new("FELLA.USER"), data = new("FELLA.DATA"))
 }
 \arguments{
-\item{method}{Character, one of: 
-"hypergeom", "diffusion", "pagerank" or "all"}
+\item{method}{Character vector, containing some of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{approx}{Character: "simulation" for Monte Carlo, "normality", 
 "gamma" or "t" for parametric approaches}
 
-\item{loadMatrix}{Character to choose if heavy matrices should be loaded. 
-One of: "diffusion", "pagerank", "all" or NULL}
+\item{loadMatrix}{Character vector to choose if 
+heavy matrices should be loaded. 
+Can contain: \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}
@@ -46,9 +46,8 @@ for the next plots using hit<ENTER>?}
 Connected components that are below the threshold are kept, 
 while the ones exceeding it (because they are too small) are discarded.}
 
-\item{GO.CellularComponent}{Character, GO entry to draw 
-semantic similarity in the solution graph. 
-If no similarity is desired, leave it as NULL}
+\item{GOterm}{Character, GO entry to draw 
+semantic similarity in the solution graph.}
 
 \item{GONamesAsLabels}{Logical, should GO names 
 be displayed as labels instead of GO identifiers?}

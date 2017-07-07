@@ -1,3 +1,109 @@
+#' ID sanitiser function
+#' 
+#' Sanitise KEGG identifiers
+#'
+#' @param x Character vector, IDs to sanitise
+#' @param category Character, one of: 
+#' \code{"pathway"}, \code{"module"}, \code{"enzyme"}, 
+#' \code{"ncbi-gene"}, \code{"reaction"}, \code{"compound"}
+#'
+#' @return Character vector, sanitised \code{x}
+#' 
+#' @examples 
+#' sanitise(c("path:hsa00010", "path:hsa00020"), "pathway", "hsa")
+#' 
+#' @keywords internal
+sanitise <- function(x, category, organism) {
+    old.attr <- attributes(x)
+    if (category == "pathway") {
+        ans <- gsub("(path:)(.+)(\\d{5})", paste0(organism, "\\3"), x)
+    }
+    if (category == "module") {
+        ans <- gsub("(md:)(.*)(M\\d{5})", "\\3", x)
+    }
+    if (category == "enzyme") {
+        ans <- ifelse(
+            grepl(pattern = "-", x = x),  
+            NA, 
+            gsub("(ec:)(\\d+\\.\\d+\\.\\d+\\.\\d+)", "\\2", x))
+    }
+    if (category == "ncbi-gene") {
+        ans <- gsub("(.+:)(.*\\d+)", "\\2", x)
+    }
+    if (category == "reaction") {
+        ans <- gsub("(rn:)(R\\d{5})", "\\2", x)
+    }
+    if (category == "compound") {
+        ans <- gsub("(cpd:)(C\\d{5})", "\\2", x)
+    }
+    
+    attributes(ans) <- old.attr
+    ans
+}
+
+#' Infer connections to EC 
+#' 
+#' This function infers network connections to KEGG EC 
+#' families by passing through genes. This assumes that the category being 
+#' mapped to enzymes is above them.
+#'
+#' @param ids Character vector of identifiers to map. For example, 
+#' all the KEGG pathways
+#' @param ent Character, entity that we are mapping 
+#' (one of \code{"pathway"} and one of \code{"module"})
+#' @param ent2gene Named character vector, names are the entity \code{ent} 
+#' and values are genes
+#' @param gene2enyzme Named character vector, names are genes and 
+#' values are EC enzyme families
+#' category Character, one of: 
+#'
+#' @return Two-column data frame. Column \code{"from"} contains the 
+#' KEGG enzyme families whereas \code{"to"} contains the entity \code{ent}.
+#' 
+#' @examples 
+#' ids <- "hsa00010"
+#' ent <- "pathway"
+#' ent2gene <- c("hsa00010" = "hsa:10", "hsa00010" = "hsa:120")
+#' gene2enzyme <- c("hsa:10" = "1.1.1.1", "hsa:120" = "1.2.3.4")
+#' infere.con2ec(ids, ent, ent2gene, gene2enzyme)
+#' 
+#' @keywords internal
+infere.con2ec <- function(ids, ent, ent2gene, gene2enzyme) {
+    ans <- plyr::ldply(
+        ids, 
+        function(x) {
+            aux <- ent2gene[names(ent2gene) == x]
+            ans <- unique(gene2enzyme[names(gene2enzyme) %in% aux])
+            # names(ans) <- rep(x, length(ans))
+            data.frame(from = ans, to = rep(x, length(ans)))
+        }) 
+    
+    attr(ans, "from") <- "enzyme"
+    attr(ans, "to") <- ent
+    ans
+} 
+
+#' Extract largest CC
+#' 
+#' Largest connected component of an igraph object
+#'
+#' @param graph Igraph object
+#' 
+#' @return Connected igraph object
+#' 
+#' @examples 
+#' library(igraph)
+#' g <- barabasi.game(10) + graph.empty(10)
+#' largestcc(g)
+#' 
+#' @keywords internal
+largestcc <- function(graph) {
+    cl <- clusters(graph)
+    x <- which.max(cl$csize)
+    induced.subgraph(graph, which(cl$membership == x))
+}
+
+
 #' Generate the KEGG graph 
 #' 
 #' Function \code{buildGraphFromKEGG} returns the 
@@ -10,8 +116,8 @@
 #' @param organism Character, KEGG code for the organism of interest
 #' @param filter.path Character vector, pathways to filter. 
 #' This is a pattern 
-#' matched using regexp. E.g: '01100' to filter 
-#' metabolic pathways in any species
+#' matched using regexp. E.g: \code{"01100"} to filter 
+#' the overview metabolic pathway in any species
 #' 
 #' @return Curated KEGG graph (class \code{\link[igraph]{igraph}})
 #' 
@@ -41,52 +147,6 @@ buildGraphFromKEGGREST <- function(
     filter.path = NULL) {
     
     categories <- c("pathway", "module", "enzyme", "reaction", "compound")
-    
-    # Get rid of hsa:, cpd:....
-    sanitise <- function(x, category, organism) {
-        old.attr <- attributes(x)
-        if (category == "pathway") {
-            ans <- gsub("(path:)(.+)(\\d{5})", paste0(organism, "\\3"), x)
-        }
-        if (category == "module") {
-            ans <- gsub("(md:)(.*)(M\\d{5})", "\\3", x)
-        }
-        if (category == "enzyme") {
-            ans <- ifelse(
-                grepl(pattern = "-", x = x),  
-                NA, 
-                gsub("(ec:)(\\d+\\.\\d+\\.\\d+\\.\\d+)", "\\2", x))
-        }
-        if (category == "ncbi-gene") {
-            ans <- gsub("(.+:)(.*\\d+)", "\\2", x)
-        }
-        if (category == "reaction") {
-            ans <- gsub("(rn:)(R\\d{5})", "\\2", x)
-        }
-        if (category == "compound") {
-            ans <- gsub("(cpd:)(C\\d{5})", "\\2", x)
-        }
-        
-        attributes(ans) <- old.attr
-        ans
-    }
-    
-    # Connections through genes
-    infere.con2ec <- function(ids, ent, ent2gene, gene2enzyme) {
-        ans <- plyr::ldply(
-            ids, 
-            function(x) {
-                aux <- ent2gene[names(ent2gene) == x]
-                ans <- unique(gene2enzyme[names(gene2enzyme) %in% aux])
-                # names(ans) <- rep(x, length(ans))
-                data.frame(from = ans, to = rep(x, length(ans)))
-            }) 
-        
-        attr(ans, "from") <- "enzyme"
-        attr(ans, "to") <- ent
-        ans
-    }  
-    
     
     # Data from KEGGREST
     # 
@@ -268,11 +328,6 @@ buildGraphFromKEGGREST <- function(
         g.raw <- delete.vertices(g.raw, names.out)
     }
     
-    largestcc <- function(graph) {
-        cl <- clusters(graph)
-        x <- which.max(cl$csize)
-        induced.subgraph(graph, which(cl$membership == x))
-    }
     g.raw <- largestcc(g.raw)
     
     message("Done.")
@@ -311,16 +366,11 @@ buildGraphFromKEGGREST <- function(
     tmp <- list.list
     names(tmp) <- NULL
     tmp <- unlist(tmp)
-    V(g.curated)$NAME <- lapply(
-        strsplit(tmp[V(g.curated)$name], split = "; "), 
-        function(names) {
-            # Tried sorting according to number of characters 
-            # (take shortest names). This is weird, as some names 
-            # are not very known. I will leave the original order
-            # 
-            # names[order(nchar(names))]
-            names
-        })
+    
+    # Tried sorting according to number of characters 
+    # (take shortest names). This is weird, as some names 
+    # are not very known. I will leave the original order
+    V(g.curated)$NAME <- strsplit(tmp[V(g.curated)$name], split = "; ")
     V(g.curated)$entrez <- m.enzyme_gene[V(g.curated)$name]
     
     comment(g.curated) <- KEGGREST::keggInfo(organism)

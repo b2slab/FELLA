@@ -5,7 +5,7 @@
 \title{Pathway enrichment through heat diffusion}
 \usage{
 runDiffusion(object = NULL, data = NULL, approx = "normality",
-  t.df = 10, niter = 1000, p.adjust = "fdr", BIMODAL = FALSE)
+  t.df = 10, niter = 1000, BIMODAL = FALSE)
 }
 \arguments{
 \item{object}{FELLA.USER object}
@@ -22,12 +22,6 @@ if the approximation \code{approx = "t"} is used}
 \item{niter}{Number of iterations (permutations) 
 for Monte Carlo ("simulation"), 
 must be a numeric value between 1e2 and 1e5}
-
-\item{p.adjust}{Character passed to the 
-\code{\link[stats]{p.adjust}} method}
-
-\item{BIMODAL}{Logical value, should the bimodal test 
-for compounds be used?}
 }
 \value{
 The \code{\link[FELLA]{FELLA.USER}} object 

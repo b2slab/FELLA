@@ -11,8 +11,8 @@ buildGraphFromKEGGREST(organism = "hsa", filter.path = NULL)
 
 \item{filter.path}{Character vector, pathways to filter. 
 This is a pattern 
-matched using regexp. E.g: '01100' to filter 
-metabolic pathways in any species}
+matched using regexp. E.g: \code{"01100"} to filter 
+the overview metabolic pathway in any species}
 }
 \value{
 Curated KEGG graph (class \code{\link[igraph]{igraph}})

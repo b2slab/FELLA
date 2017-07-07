@@ -1,8 +1,3 @@
-#' Dummy function with function arguments
-#' 
-#' This function eases parameter inheritance to centralise the 
-#' documentation
-#' 
 #' @param object FELLA.USER object
 #' @param data FELLA.DATA object
 #' @param type Character vector, containing entries in
@@ -35,6 +30,8 @@
 #' should the solution be split by CC?
 #' @param askPlots Logical, should R ask 
 #' for the next plots using hit<ENTER>?
+#' @param thresholdConnectedComponent Numeric value between 0 and 1, 
+#' refers to the threshold to keep a CC regarding its size
 #' @param GOterm Character, GO entry to draw 
 #' semantic similarity in the solution graph. 
 #' @param GONamesAsLabels Logical, should GO names 
@@ -45,9 +42,6 @@
 # Other
 #' @param p.adjust Character passed to the 
 #' \code{\link[stats]{p.adjust}} method
-#' @param dampingFactor Numeric value between 0 and 1 (none inclusive), 
-#' damping factor \code{d} for 
-#' PageRank (\code{\link[igraph]{page_rank}})
 #' @param t.df Numeric value; number of degrees of freedom 
 #' of the t distribution 
 #' if the approximation \code{approx = "t"} is used
@@ -58,10 +52,3 @@
 #' default background (all compounds)
 #' @param NamesAsLabels Logical, should KEGG names be displayed 
 #' as labels instead of KEGG identifiers?
-#' @param capPscores Numeric value, minimum p-score 
-#' admitted for the readable 
-#' formatting. Smaller p-scores will be displayed 
-#' as \code{< capPscores} 
-#' 
-#' @keywords internal
-.params <- function() {}

@@ -15,8 +15,8 @@ exportResults(format = "csv", file = "myOutput", method = "diffusion",
 \item{file}{Character specifying the output 
 directory for the exported files}
 
-\item{method}{Character, one of: 
-"hypergeom", "diffusion", "pagerank" or "all"}
+\item{method}{Character vector, containing some of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}

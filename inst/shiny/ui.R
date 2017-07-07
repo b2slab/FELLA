@@ -128,7 +128,7 @@ shinyUI(fluidPage(
             sliderInput(
               "threshold", 
               label = h4(
-                "Threshold (fdr) for the nodes in the solution graph"), 
+                "Threshold (p-score) for the nodes in the solution graph"), 
               min = 0.005, 
               max = 0.2, 
               step = 0.005,

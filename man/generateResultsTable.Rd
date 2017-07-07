@@ -9,8 +9,8 @@ generateResultsTable(method = "diffusion", threshold = 0.005, plimit = 15,
   object = NULL, data = NULL)
 }
 \arguments{
-\item{method}{Character, one of: 
-"hypergeom", "diffusion" or "pagerank"}
+\item{method}{Character vector, containing some of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}
@@ -27,8 +27,7 @@ The remaining characters will be truncated using "..."}
 \item{capPscores}{Numeric value, minimum p-score 
 admitted for the readable 
 formatting. Smaller p-scores will be displayed 
-as \code{< capPscores} in the 
-table.}
+as \code{< capPscores}}
 
 \item{object}{FELLA.USER object}
 

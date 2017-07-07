@@ -8,8 +8,7 @@
 #' 
 #' @param graph An \code{\link[igraph]{igraph}} object, typically a small one 
 #' coming from an enrichment procedure
-#' @inheritParams .GO.CellularComponent
-#' @inheritParams .GONamesAsLabels
+#' @inheritParams .params
 #' @param godata.options List, options for the database creator 
 #' \code{\link[GOSemSim]{godata}}
 #' @param mart.options List, options for the \code{biomaRt} function
