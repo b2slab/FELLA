@@ -4,13 +4,9 @@
 \alias{showLegend}
 \title{Internal function to add a legend to a graph plot}
 \usage{
-showLegend(GO.CellularComponent = FALSE, cex = 0.75)
+showLegend(GO.annot = FALSE, cex = 0.75)
 }
 \arguments{
-\item{GO.CellularComponent}{Character, GO entry to draw 
-semantic similarity in the solution graph. 
-If no similarity is desired, leave it as NULL}
-
 \item{cex}{Numeric value, \code{cex} parameter for the function 
 \code{\link[graphics]{legend}}}
 }
@@ -31,5 +27,5 @@ g <- barabasi.game(20)
 plot(g)
 showLegend()
 plot(g)
-showLegend(GO.CellularComponent = TRUE)
+showLegend(GO.annot = TRUE)
 }

@@ -16,8 +16,8 @@
 \S4method{plot}{FELLA.USER,missing}(x = 1, method = "hypergeom",
   threshold = 0.005, plimit = 15, nlimit = 250, layout = FALSE,
   filename = NULL, splitByConnectedComponent = FALSE, askPlots = TRUE,
-  thresholdConnectedComponent = 0.05, GO.CellularComponent = NULL,
-  GONamesAsLabels = TRUE, LabelLengthAtPlot = 22, data = NULL, ...)
+  thresholdConnectedComponent = 0.05, LabelLengthAtPlot = 22, data = NULL,
+  ...)
 }
 \arguments{
 \item{object}{A \code{\link{FELLA.USER}} object}
@@ -48,13 +48,6 @@ for the next plots using hit<ENTER>?}
 \item{thresholdConnectedComponent}{Numeric value between 0 and 1. 
 Connected components that are below the threshold are kept, 
 while the ones exceeding it (because they are too small) are discarded.}
-
-\item{GO.CellularComponent}{Character, GO entry to draw 
-semantic similarity in the solution graph. 
-If no similarity is desired, leave it as NULL}
-
-\item{GONamesAsLabels}{Logical, should GO names 
-be displayed as labels instead of GO identifiers?}
 
 \item{LabelLengthAtPlot}{Numeric value between 10 and 50. 
 Maximum length that a label can reach when plotting the graph. 

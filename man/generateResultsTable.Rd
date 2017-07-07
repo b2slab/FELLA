@@ -5,7 +5,7 @@
 \title{Generate readable tables from the enrichment results}
 \usage{
 generateResultsTable(method = "diffusion", threshold = 0.005, plimit = 15,
-  nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
+  nlimit = 250, LabelLengthAtPlot = 45, capPscores = 1e-10,
   object = NULL, data = NULL)
 }
 \arguments{
@@ -24,10 +24,10 @@ This limits the order of the solution graph}
 Maximum length that a label can reach when plotting the graph. 
 The remaining characters will be truncated using "..."}
 
-\item{capPvalues}{Numeric value, minimum p-value 
+\item{capPscores}{Numeric value, minimum p-score 
 admitted for the readable 
-formatting. Smaller p-values will be displayed 
-as \code{< capPvalues} in the 
+formatting. Smaller p-scores will be displayed 
+as \code{< capPscores} in the 
 table.}
 
 \item{object}{FELLA.USER object}
@@ -35,7 +35,7 @@ table.}
 \item{data}{FELLA.DATA object}
 }
 \value{
-A table that contains the KEGG graph nodes with their p-value
+A table that contains the KEGG graph nodes with their p-score
 }
 \description{
 Function \code{generateResultsTable} returns a table 

@@ -19,9 +19,6 @@ from diffusion or pagerank analysis}
 \item{graph.layout}{Two-column numeric matrix, if this argument is not null 
 then it is used as graph layout}
 
-\item{transparency}{Logical, should nodes have transparency? 
-(proportional to centrality in the solution)}
-
 \item{showLegend}{Logical, should the legend be plotted as well?}
 
 \item{plot.fun}{Character, can be either \code{plot.igraph} or \code{tkplot}}

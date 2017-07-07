@@ -10,10 +10,10 @@
 #' @inheritParams .threshold
 #' @inheritParams .nlimit
 #' @inheritParams .LabelLengthAtPlot
-#' @param capPvalues Numeric value, minimum p-value 
+#' @param capPscores Numeric value, minimum p-score 
 #' admitted for the readable 
-#' formatting. Smaller p-values will be displayed 
-#' as \code{< capPvalues} in the 
+#' formatting. Smaller p-scores will be displayed 
+#' as \code{< capPscores} in the 
 #' table.
 #' @inheritParams .object
 #' @inheritParams .data
@@ -40,7 +40,7 @@ generateEnzymesTable <- function(
     threshold = 0.005, 
     nlimit = 250, 
     LabelLengthAtPlot = 45, 
-    capPvalues = 1e-10, 
+    capPscores = 1e-6, 
     object = NULL, 
     data = NULL) {
     
@@ -78,19 +78,19 @@ generateEnzymesTable <- function(
     
     message("Writing ", method, "enzymes...")
     
-    pvalues.ec <- sort(
-        getPvalues(object, method)[getCom(data, level = 3, format = "id")])
-    pvalues.ec[pvalues.ec < capPvalues] <- capPvalues
+    pscores.ec <- sort(
+        getPscores(object, method)[getCom(data, level = 3, format = "id")])
+    pscores.ec[pscores.ec < capPscores] <- capPscores
     
-    if (pvalues.ec[1] >= threshold) {
+    if (pscores.ec[1] >= threshold) {
         message("No enzyme is below the p-value threshold.")
         return(NULL)
     } 
-    nodePvalues <- head(
-        pvalues.ec[pvalues.ec < threshold], 
+    nodePscores <- head(
+        pscores.ec[pscores.ec < threshold], 
         nlimit)
     
-    nodeIds <- names(nodePvalues)
+    nodeIds <- names(nodePscores)
     nodeNames <- sapply(
         getName(data, id = nodeIds), 
         function(id) {
@@ -118,7 +118,7 @@ generateEnzymesTable <- function(
     
     out.df <- data.frame(
         nodeIds,
-        nodePvalues, 
+        nodePscores, 
         nodeNames, 
         nodeGenes, 
         nodeGO, 

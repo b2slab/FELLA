@@ -20,57 +20,51 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
         p.values <- sort(object@hypergeom@pvalues)[1:n.show]
         
         output$hypergeom <- data.frame(
-            names(p.values), 
-            signif(p.values, digits = 4))
-        names(output$hypergeom) <- c("Description", "p.value")
+            "Description" = names(p.values), 
+            "p.value" = signif(p.values, digits = 4))
     }
     
     if (is.na(object@diffusion@valid)) output$diffusion <- "Not performed"
     else if (!object@diffusion@valid) output$diffusion <- "Failed"
     else {
-        dif.select <- which(object@diffusion@pvalues < 0.05)
+        dif.select <- which(object@diffusion@pscores < 0.05)
         
-        out.pvalues <- signif(object@diffusion@pvalues[dif.select], digits = 3)
-        smallest <- which(out.pvalues < 2e-16)
-        out.pvalues <- format(out.pvalues)
-        out.pvalues[smallest] <- "<2e-16"
+        out.pscores <- signif(object@diffusion@pscores[dif.select], digits = 3)
+        smallest <- which(out.pscores < 2e-16)
+        out.pscores <- format(out.pscores)
+        out.pscores[smallest] <- "<2e-16"
         
-        out.names <- names(out.pvalues)
+        out.names <- names(out.pscores)
         #out.description <- dic[out.names]
         #out.highlight <- out.names %in% object@diffusion@highlight
         
         out.order <- order(out.names)
         
         output$diffusion <- data.frame(
-            out.names, out.pvalues, 
+            "KEGG id" = out.names, "p.score" = out.pscores, 
             row.names = NULL)[out.order, ]
         row.names(output$diffusion) <- NULL
-        # names(output$diffusion) <- c("KEGG id", "p.value", 
-        # "Description", "Guess?")
-        names(output$diffusion) <- c("KEGG id", "p.value")
     }
     
     if (is.na(object@pagerank@valid)) output$pagerank <- "Not performed"
     else if (!object@pagerank@valid) output$pagerank <- "Failed"
     else {
-        dif.select <- which(object@pagerank@pvalues < 0.05)
+        dif.select <- which(object@pagerank@pscores < 0.05)
         
-        out.pvalues <- signif(object@pagerank@pvalues[dif.select], digits = 3)
-        smallest <- which(out.pvalues < 2e-16)
-        out.pvalues <- format(out.pvalues)
-        out.pvalues[smallest] <- "<2e-16"
+        out.pscores <- signif(object@pagerank@pscores[dif.select], digits = 3)
+        smallest <- which(out.pscores < 2e-16)
+        out.pscores <- format(out.pscores)
+        out.pscores[smallest] <- "<2e-16"
         
-        out.names <- names(out.pvalues)
+        out.names <- names(out.pscores)
         #out.description <- dic[out.names]
         #out.highlight <- out.names %in% object@diffusion@highlight
         
         
         output$pagerank <- data.frame(
-            out.names, out.pvalues, 
-            row.names = NULL)
+            "KEGG id" = out.names, 
+            "p.score" = out.pscores)
         row.names(output$pagerank) <- NULL
-        names(output$pagerank) <- c("KEGG id", "p.value")
-        
     }
     
     return(output)
@@ -177,9 +171,9 @@ setMethod("show", signature = "FELLA.USER", function(object) {
     else {
         cat("ready.", fill = TRUE)
         n.show <- min(15, length(
-            getPvalues(object = object, type = "hypergeom")))
+            getPscores(object = object, type = "hypergeom")))
         cat("Top", n.show, "p-values:", fill = TRUE)
-        print(sort(getPvalues(object, "hypergeom"))[1:n.show])
+        print(sort(getPscores(object, "hypergeom"))[1:n.show])
     }
     
     breakline()
@@ -190,7 +184,7 @@ setMethod("show", signature = "FELLA.USER", function(object) {
     else {
         cat("ready.", fill = TRUE)
         cat("Significant nodes (0.05): ", 
-            sum(getPvalues(object, "diffusion") < 0.05))
+            sum(getPscores(object, "diffusion") < 0.05))
     }
     
     breakline()
@@ -201,7 +195,7 @@ setMethod("show", signature = "FELLA.USER", function(object) {
     else {
         cat("ready.", fill = TRUE)
         cat("Significant nodes (0.05): ", 
-            sum(getPvalues(object, "pagerank") < 0.05))
+            sum(getPscores(object, "pagerank") < 0.05))
     }
     
     invisible()

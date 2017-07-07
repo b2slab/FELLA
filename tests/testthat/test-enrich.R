@@ -22,7 +22,7 @@ test_that("Enrichment wrapper", {
       
       expect_s4_class(FELLA.test, "FELLA.USER")
       
-      pval <- getPvalues(FELLA.test, method)
+      pval <- getPscores(FELLA.test, method)
       
       expect_named(pval)
       expect_is(pval, "numeric")

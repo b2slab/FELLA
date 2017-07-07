@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.3.2
+
+* Switched from `pValues` to `pScores` (except in `hypergeom`)
+
 ### Version 0.3.1
 
 * Removed `rcytoscapejs` dependency

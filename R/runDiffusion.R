@@ -176,11 +176,11 @@ runDiffusion <- function(
             })
             
             n.nodes <- length(current.temp)
-            pvalues <- sapply(1:n.nodes, function(row) {
+            pscores <- sapply(1:n.nodes, function(row) {
                 ((1 - stats::ecdf(null.temp[row, ])(current.temp[row]))*
                     n.nodes + 1)/(n.nodes + 1)
             })
-            names(pvalues) <- V(graph)$name
+            names(pscores) <- V(graph)$name
             
             
         } else {
@@ -201,11 +201,11 @@ runDiffusion <- function(
             })
             
             n.nodes <- length(current.temp)
-            pvalues <- sapply(1:n.nodes, function(row) {
+            pscores <- sapply(1:n.nodes, function(row) {
                 ((1 - stats::ecdf(null.temp[row, ])(current.temp[row]))*
                     n.nodes + 1)/(n.nodes + 1)
             })
-            names(pvalues) <- rownames(diffusion.matrix)
+            names(pscores) <- rownames(diffusion.matrix)
         }
         
     } else if (approx %in% c("normality", "gamma", "t")) {
@@ -314,27 +314,27 @@ runDiffusion <- function(
         }
         
         if (approx == "normality") {
-            pvalues <- stats::pnorm(
+            pscores <- stats::pnorm(
                 q = current.temp, 
                 mean = temp.means, 
                 sd = sqrt(temp.vars), 
                 lower.tail = FALSE)
         }
         if (approx == "gamma") {
-            pvalues <- stats::pgamma(
+            pscores <- stats::pgamma(
                 q = current.temp, 
                 shape = temp.means^2/temp.vars, 
                 scale = temp.vars/temp.means, 
                 lower.tail = FALSE)
         }
         if (approx == "t") {
-            pvalues <- stats::pt(
+            pscores <- stats::pt(
                 q = (current.temp - temp.means)/sqrt(temp.vars), 
                 df = t.df, 
                 lower.tail = FALSE)
         }
         
-        names(pvalues) <- names(RowSums)
+        names(pscores) <- names(RowSums)
         #     browser()
     } else {
         stop(
@@ -342,9 +342,9 @@ runDiffusion <- function(
             "Please choose between 'simulation' and 'normality'")
     }
     
-    pvalues <- stats::p.adjust(p = pvalues, method = p.adjust)
+    pscores <- stats::p.adjust(p = pscores, method = p.adjust)
     
-    object@diffusion@pvalues <- pvalues
+    object@diffusion@pscores <- pscores
     object@diffusion@approx <- approx
     object@diffusion@niter <- niter
     

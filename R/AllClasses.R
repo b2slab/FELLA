@@ -185,7 +185,7 @@ setClass(
 #' of the diffusion enrichment analysis
 #'
 #' @slot valid Logical value; is the analysis valid?
-#' @slot pvalues Named numeric vector with p-values
+#' @slot pscores Named numeric vector with p-values
 #' @slot approx Character; which approximation was used? 
 #' Can be "simulation" for Monte Carlo; 
 #' "normality", "gamma" or "t" for parametric approaches
@@ -197,13 +197,13 @@ setClass(
     "U.diffusion",
     representation(
         valid = "logical",
-        pvalues = "vector",
+        pscores = "vector",
         approx = "character", 
         niter = "numeric"
     ),
     prototype(
         valid = NA, 
-        pvalues = vector(),
+        pscores = vector(),
         approx = character(), 
         niter = numeric()
     )
@@ -213,7 +213,7 @@ setClass(
 #' of the PageRank enrichment analysis
 #'
 #' @slot valid Logical value; is the analysis valid?
-#' @slot pvalues Named numeric vector with p-values
+#' @slot pscores Named numeric vector with p-values
 #' @slot approx Character; which approximation was used? 
 #' Can be "simulation" for Monte Carlo; 
 #' "normality", "gamma" or "t" for parametric approaches
@@ -225,13 +225,13 @@ setClass(
     "U.pagerank",
     representation(
         valid = "logical", 
-        pvalues = "vector",
+        pscores = "vector",
         approx = "character", 
         niter = "numeric"
     ),
     prototype(
         valid = NA, 
-        pvalues = vector(),
+        pscores = vector(),
         approx = character(), 
         niter = numeric()
     )

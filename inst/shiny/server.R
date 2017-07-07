@@ -152,8 +152,8 @@ shinyServer(function(input, output, session) {
         #  If the result is split by cc... 
         #  make a new selectInput! With all the cc's.
         sizes <- sapply(generateGraph(), vcount)
-        pvalues <- names(generateGraph())
-        outputNames <- paste0(sizes, " nodes (p = ", pvalues, ")")
+        pscores <- names(generateGraph())
+        outputNames <- paste0(sizes, " nodes (p = ", pscores, ")")
         outputChoice <- as.list(1:length(outputNames))
         names(outputChoice) <- outputNames
         
@@ -242,7 +242,7 @@ shinyServer(function(input, output, session) {
       
       if (!is.null(createUser())) 
         write.csv(
-          createUser()@pagerank@pvalues,
+          createUser()@pagerank@pscores,
           file = paste0(directory, "/table.csv"))
       
       return(paste0("Results saved in directory ", directory))

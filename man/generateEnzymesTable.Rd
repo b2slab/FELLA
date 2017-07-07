@@ -5,7 +5,7 @@
 \title{Generate enzyme tables with genes and GO annotations}
 \usage{
 generateEnzymesTable(method = "diffusion", threshold = 0.005,
-  nlimit = 250, LabelLengthAtPlot = 45, capPvalues = 1e-10,
+  nlimit = 250, LabelLengthAtPlot = 45, capPscores = 1e-06,
   object = NULL, data = NULL)
 }
 \arguments{
@@ -21,10 +21,10 @@ This limits the order of the solution graph}
 Maximum length that a label can reach when plotting the graph. 
 The remaining characters will be truncated using "..."}
 
-\item{capPvalues}{Numeric value, minimum p-value 
+\item{capPscores}{Numeric value, minimum p-score 
 admitted for the readable 
-formatting. Smaller p-values will be displayed 
-as \code{< capPvalues} in the 
+formatting. Smaller p-scores will be displayed 
+as \code{< capPscores} in the 
 table.}
 
 \item{object}{FELLA.USER object}

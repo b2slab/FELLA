@@ -79,17 +79,17 @@ generateResultsGraph <- function(
     
     if (method == "hypergeom") {
         # HYPERGEOMETRIC TEST
-        pvalues <- getPvalues(object, "hypergeom")
+        pscores <- getPscores(object, "hypergeom")
         g.data <- getGraph(data)
         
         # Select pathways and compounds
-        n.paths <- sum(pvalues < threshold)
+        n.paths <- sum(pscores < threshold)
         if (n.paths < 1) {
             message("Graph is empty. None of the pathways is significant.")
             return(NULL)
         } else {
             path.hypergeom <- names(head(
-                sort(pvalues[pvalues < threshold]), 
+                sort(pscores[pscores < threshold]), 
                 plimit))
         } 
         
@@ -134,9 +134,9 @@ generateResultsGraph <- function(
         return(graph.bipartite)
     } else { 
         # DIFFUSION AND PAGERANK
-        pvalues <- getPvalues(object, method)
+        pscores <- getPscores(object, method)
         
-        n.nodes <- sum(pvalues < threshold)
+        n.nodes <- sum(pscores < threshold)
         if (n.nodes < 1) {
             message("Graph is empty.")
             return(NULL)
@@ -146,9 +146,9 @@ generateResultsGraph <- function(
                 " nodes below the threshold have been limited to ", 
                 nlimit, 
                 " nodes."))
-            nodes <- names(pvalues)[sort(head(order(pvalues), nlimit))]
+            nodes <- names(pscores)[sort(head(order(pscores), nlimit))]
         } else {
-            nodes <- names(pvalues)[pvalues < threshold]
+            nodes <- names(pscores)[pscores < threshold]
         }
         
         graph <- induced.subgraph(graph = getGraph(data), vids = nodes)

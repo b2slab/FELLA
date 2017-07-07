@@ -20,4 +20,4 @@ FELLA.object <- FELLA::enrich(compounds = input.sample,
 
 
 getCom(data = FELLA.sample, level = "compound")
-summary(getPvalues(object = FELLA.object, type = "diffusion"))
+summary(getPscores(object = FELLA.object, type = "diffusion"))

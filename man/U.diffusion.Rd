@@ -14,7 +14,7 @@ of the diffusion enrichment analysis
 \describe{
 \item{\code{valid}}{Logical value; is the analysis valid?}
 
-\item{\code{pvalues}}{Named numeric vector with p-values}
+\item{\code{pscores}}{Named numeric vector with p-values}
 
 \item{\code{approx}}{Character; which approximation was used? 
 Can be "simulation" for Monte Carlo; 

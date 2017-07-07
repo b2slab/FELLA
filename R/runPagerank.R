@@ -191,11 +191,11 @@ runPagerank <- function(
             })
             
             n.nodes <- length(current.score)
-            pvalues <- sapply(1:n.nodes, function(row) {
+            pscores <- sapply(1:n.nodes, function(row) {
                 ((1 - stats::ecdf(null.score[row, ])(current.score[row]))*
                     n.nodes + 1)/(n.nodes + 1)
             })
-            names(pvalues) <- V(graph)$name
+            names(pscores) <- V(graph)$name
             
         } else {
             # Calculate current scores.
@@ -222,11 +222,11 @@ runPagerank <- function(
             })
             
             n.nodes <- length(current.score)
-            pvalues <- sapply(1:n.nodes, function(row) {
+            pscores <- sapply(1:n.nodes, function(row) {
                 ((1 - stats::ecdf(null.score[row, ])(current.score[row]))*
                     n.nodes + 1)/(n.nodes + 1)
             })
-            names(pvalues) <- rownames(pagerank.matrix)
+            names(pscores) <- rownames(pagerank.matrix)
         }
         
     } else if (approx %in% c("normality", "gamma", "t")) {
@@ -294,39 +294,39 @@ runPagerank <- function(
             damping = d, 
             personalized = prior)$vector
         
-        # p-values
+        # p-scores
         score.means <- RowSums/n.comp
         score.vars <- (n.comp - n.input)/(n.input*n.comp*(n.comp - 1))*
             (squaredRowSums - (RowSums^2)/n.comp)
         
         if (approx == "normality") {
-            pvalues <- stats::pnorm(
+            pscores <- stats::pnorm(
                 q = current.score, 
                 mean = score.means, 
                 sd = sqrt(score.vars), 
                 lower.tail = FALSE)
         }
         if (approx == "gamma") {
-            pvalues <- stats::pgamma(
+            pscores <- stats::pgamma(
                 q = current.score, 
                 shape = score.means^2/score.vars, 
                 scale = score.vars/score.means, 
                 lower.tail = FALSE)
         }
         if (approx == "t") {
-            pvalues <- stats::pt(
+            pscores <- stats::pt(
                 q = (current.score - score.means)/sqrt(score.vars), 
                 df = t.df, 
                 lower.tail = FALSE)
         }
         
-        names(pvalues) <- names(RowSums)
+        names(pscores) <- names(RowSums)
         
     } 
     
-    pvalues <- stats::p.adjust(p = pvalues, method = p.adjust)
+    pscores <- stats::p.adjust(p = pscores, method = p.adjust)
     
-    object@pagerank@pvalues <- pvalues
+    object@pagerank@pscores <- pscores
     object@pagerank@approx <- approx
     object@pagerank@niter <- niter  
     

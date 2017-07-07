@@ -11,15 +11,15 @@
 #' @inheritParams .plimit
 #' @inheritParams .nlimit
 #' @inheritParams .LabelLengthAtPlot
-#' @param capPvalues Numeric value, minimum p-value 
+#' @param capPscores Numeric value, minimum p-score 
 #' admitted for the readable 
-#' formatting. Smaller p-values will be displayed 
-#' as \code{< capPvalues} in the 
+#' formatting. Smaller p-scores will be displayed 
+#' as \code{< capPscores} in the 
 #' table.
 #' @inheritParams .object
 #' @inheritParams .data
 #'
-#' @return A table that contains the KEGG graph nodes with their p-value
+#' @return A table that contains the KEGG graph nodes with their p-score
 #' 
 #' @examples 
 #' data(FELLA.sample)
@@ -41,7 +41,7 @@ generateResultsTable <- function(
     plimit = 15, 
     nlimit = 250, 
     LabelLengthAtPlot = 45, 
-    capPvalues = 1e-10, 
+    capPscores = 1e-10, 
     object = NULL, 
     data = NULL) {
     
@@ -74,34 +74,28 @@ generateResultsTable <- function(
     if (method == "hypergeom") {
         message("Writing hypergeom results...")
         
-        pvalues <- sort(getPvalues(object, "hypergeom"))
+        pscores <- sort(getPscores(object, "hypergeom"))
         
-        if (pvalues[1] >= threshold) {
+        if (pscores[1] >= threshold) {
             message("No pathway is below the p-value threshold.")
         } else {
-            last <- min(plimit, tail(which(pvalues < threshold), 1))
-            pvalues <- pvalues[1:last]
+            last <- min(plimit, tail(which(pscores < threshold), 1))
+            pscores <- pscores[1:last]
             
             # Info to display
-            paths <- names(pvalues)
+            paths <- names(pscores)
             pathnames <- as.character(data@keggdata@id2name[paths])
             pathhits <- object@hypergeom@pathhits[paths]
             pathbackground <- object@hypergeom@pathbackground[paths]
             
             # Build the dataframe
             out.hypergeom <- data.frame(
-                paths, 
-                pathnames, 
-                pathhits, 
-                pathbackground, 
-                pvalues, 
+                "KEGG id" = paths, 
+                "KEGG name" = pathnames, 
+                "CompoundHits" = pathhits, 
+                "CompoundsInPathway" = pathbackground, 
+                "p.value" = pscores, 
                 stringsAsFactors = FALSE)
-            names(out.hypergeom) <- c(
-                "KEGG id", 
-                "KEGG name", 
-                "CompoundHits", 
-                "CompoundsInPathway", 
-                "p.value")
             rownames(out.hypergeom) <- NULL
             
             message("Done.")
@@ -115,17 +109,17 @@ generateResultsTable <- function(
     if (method == "diffusion") {
         message("Writing diffusion results...")
         
-        pvalues <- sort(getPvalues(object, "diffusion"))
-        pvalues[pvalues < capPvalues] <- capPvalues
+        pscores <- sort(getPscores(object, "diffusion"))
+        pscores[pscores < capPscores] <- capPscores
         
-        if (pvalues[1] >= threshold) {
+        if (pscores[1] >= threshold) {
             message("No node is below the p-value threshold.")
         } else {
-            last <- min(nlimit, tail(which(pvalues < threshold), 1))
-            pvalues <- pvalues[1:last]
-            pvalues <- pvalues[order(names(pvalues))]
+            last <- min(nlimit, tail(which(pscores < threshold), 1))
+            pscores <- pscores[1:last]
+            pscores <- pscores[order(names(pscores))]
             
-            nodeIds <- names(pvalues)
+            nodeIds <- names(pscores)
             nodeNames <- as.character(sapply(nodeIds, function(id) {
                 ans <- data@keggdata@id2name[[id]]
                 if (length(ans) == 0) 
@@ -151,7 +145,7 @@ generateResultsTable <- function(
                 nodeIds,
                 nodeTypes,
                 nodeNames, 
-                pvalues, 
+                pscores, 
                 stringsAsFactors = FALSE)[order(nodeCom), ]
             names(out.diffusion) <- c(
                 "KEGG id", 
@@ -170,17 +164,17 @@ generateResultsTable <- function(
     if (method == "pagerank") {
         message("Writing pagerank results...")
         
-        pvalues <- sort(getPvalues(object, "pagerank"))
-        pvalues[pvalues < capPvalues] <- capPvalues
+        pscores <- sort(getPscores(object, "pagerank"))
+        pscores[pscores < capPscores] <- capPscores
         
-        if (pvalues[1] >= threshold) {
+        if (pscores[1] >= threshold) {
             message("No node is below the p-value threshold.")
         } else {
-            last <- min(nlimit, tail(which(pvalues < threshold), 1))
-            pvalues <- pvalues[1:last]
-            pvalues <- pvalues[order(names(pvalues))]
+            last <- min(nlimit, tail(which(pscores < threshold), 1))
+            pscores <- pscores[1:last]
+            pscores <- pscores[order(names(pscores))]
             
-            nodeIds <- names(pvalues)
+            nodeIds <- names(pscores)
             nodeNames <- as.character(sapply(nodeIds, function(id) {
                 ans <- data@keggdata@id2name[[id]][1]
                 if (length(ans) == 0) return(NULL)
@@ -201,16 +195,12 @@ generateResultsTable <- function(
                         "5" = "Compound"))
             
             out.pagerank <- data.frame(
-                nodeIds,
-                nodeTypes,
-                nodeNames, 
-                pvalues, 
+                "KEGG id" = nodeIds,
+                "Entry type" = nodeTypes,
+                "KEGG name" = nodeNames, 
+                "p.score" = pscores, 
                 stringsAsFactors = FALSE)[order(nodeCom), ]
-            names(out.pagerank) <- c(
-                "KEGG id", 
-                "Entry type", 
-                "KEGG name", 
-                "p.value")
+
             rownames(out.pagerank) <- NULL
             
             message("Done.")

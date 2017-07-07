@@ -90,4 +90,4 @@ test_that("Not all compounds map, background with mapping issues too", {
 # 
 # 
 # getCom(data = FELLA.sample, level = "compound")
-# summary(getPvalues(object = FELLA.object, type = "diffusion"))
+# summary(getPscores(object = FELLA.object, type = "diffusion"))
