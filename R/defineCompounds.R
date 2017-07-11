@@ -39,7 +39,7 @@ defineCompounds <- function(
     # Load the FELLA.DATA object (required right now)
     if (!is.FELLA.DATA(data)) {
         stop("'data' is not a FELLA.DATA object")
-    } else if (data@keggdata@status != "loaded"){
+    } else if (getStatus(data) != "loaded"){
         stop("'data' points to an empty FELLA.DATA object")
     }
     ################################

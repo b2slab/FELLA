@@ -279,7 +279,6 @@ getSums <- function(data, method, squared) {
 #' 
 #' @examples 
 #' ## This function is internal
-#' attach(environment(FELLA:::getValid))
 #' 
 #' data(FELLA.sample)
 #' data(input.sample)
@@ -290,12 +289,32 @@ getSums <- function(data, method, squared) {
 #' data = FELLA.sample)
 #' 
 #' ## If the analysis is valid
-#' getValid(obj, "diffusion")
+#' FELLA:::getValid(obj, "diffusion")
 #' 
 #' ## Otherwise
-#' getValid(new("FELLA.USER"), "diffusion")
-#' getValid(obj, "pagerank")
+#' FELLA:::getValid(new("FELLA.USER"), "diffusion")
+#' FELLA:::getValid(obj, "pagerank")
 #' 
 getValid <- function(object, method) {
     return(slot(object, method)@valid)
+}
+
+#' Get the slot "status" 
+#' 
+#' Extractor function for the slot "status" for the KEGG data
+#'
+#' @inheritParams .params
+#'
+#' @return Slot "status" (internal usage)
+#' 
+#' @examples 
+#' ## This function is internal
+#' 
+#' data(FELLA.sample)
+#' 
+#' ## Is the object loade?
+#' FELLA:::getStatus(FELLA.sample)
+#' FELLA:::getStatus(new("FELLA.DATA"))
+getStatus <- function(data) {
+    return(data@keggdata@status)
 }

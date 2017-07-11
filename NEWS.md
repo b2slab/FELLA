@@ -2,6 +2,11 @@
 
 ---
 
+### Version 0.4.1
+
+* Added accessor to `status` and substituted all the calls
+* Addition of GO terms works
+
 ### Version 0.4.0
 
 * Removed some superfluous arguments: askplots, filename, BIMODAL

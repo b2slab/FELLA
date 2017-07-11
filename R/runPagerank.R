@@ -59,7 +59,7 @@ runPagerank <- function(
         return(invisible())
     }
     
-    if (data@keggdata@status != "loaded"){
+    if (getStatus(data) != "loaded"){
         message(
             "'data' points to an empty FELLA.DATA object! ", 
             "Returning original 'object'...")

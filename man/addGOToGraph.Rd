@@ -60,7 +60,7 @@ GOterm = "GO:0005739")
 any(V(g)$GO.simil >= 0)
 ## With the CC
 v.cc <- unlist(V(g.cc)$GO.simil)
-sum(v.cc >= 0)
+sum(v.cc >= 0, na.rm = TRUE)
 table(v.cc)
 
 }

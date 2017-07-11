@@ -222,7 +222,7 @@ setMethod(
         if (!checkArgs$valid)
             stop("Bad argument when calling function 'plot' in FELLA.")
         
-        if (data@keggdata@status != "loaded"){
+        if (getStatus(data) != "loaded"){
             stop("'data' points to an empty FELLA.DATA object")
         }
         
