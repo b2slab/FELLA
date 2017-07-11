@@ -14,17 +14,16 @@
 \S4method{show}{FELLA.USER}(object)
 
 \S4method{plot}{FELLA.USER,missing}(x = 1, method = "hypergeom",
-  threshold = 0.005, plimit = 15, nlimit = 250, layout = FALSE,
-  filename = NULL, splitByConnectedComponent = FALSE, askPlots = TRUE,
-  thresholdConnectedComponent = 0.05, LabelLengthAtPlot = 22, data = NULL,
-  ...)
+    threshold = 0.05, plimit = 15, nlimit = 250, layout = FALSE,
+    splitByConnectedComponent = FALSE, thresholdConnectedComponent = 0.05,
+    LabelLengthAtPlot = 22, data = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{FELLA.USER}} object}
 
 \item{x}{A \code{\link{FELLA.USER}} object}
 
-\item{method}{Character vector, containing some of: 
+\item{method}{Character, exactly one of: 
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
@@ -37,13 +36,8 @@ This limits the order of the solution graph}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 
-\item{filename}{Character; optional file name to save the plot}
-
 \item{splitByConnectedComponent}{Logical, 
 should the solution be split by CC?}
-
-\item{askPlots}{Logical, should R ask 
-for the next plots using hit<ENTER>?}
 
 \item{thresholdConnectedComponent}{Numeric value between 0 and 1. 
 Connected components that are below the threshold are kept, 

@@ -10,64 +10,43 @@
 #' @exportMethod summary
 setMethod("summary", signature = "FELLA.USER", function(object) {
     breakline <- "\n---------------------------------------------------\n"
-    #dic <- object@dictionary
-    output <- list()
     
-    if (is.na(object@hypergeom@valid)) output$hypergeom <- "Not performed"
-    else if (!object@hypergeom@valid) output$hypergeom <- "Failed"
-    else {
-        n.show <- min(30, length(object@hypergeom@pvalues))
-        p.values <- sort(object@hypergeom@pvalues)[1:n.show]
-        
-        output$hypergeom <- data.frame(
-            "Description" = names(p.values), 
-            "p.value" = signif(p.values, digits = 4))
-    }
-    
-    if (is.na(object@diffusion@valid)) output$diffusion <- "Not performed"
-    else if (!object@diffusion@valid) output$diffusion <- "Failed"
-    else {
-        dif.select <- which(object@diffusion@pscores < 0.05)
-        
-        out.pscores <- signif(object@diffusion@pscores[dif.select], digits = 3)
-        smallest <- which(out.pscores < 2e-16)
-        out.pscores <- format(out.pscores)
-        out.pscores[smallest] <- "<2e-16"
-        
-        out.names <- names(out.pscores)
-        #out.description <- dic[out.names]
-        #out.highlight <- out.names %in% object@diffusion@highlight
-        
-        out.order <- order(out.names)
-        
-        output$diffusion <- data.frame(
-            "KEGG id" = out.names, "p.score" = out.pscores, 
-            row.names = NULL)[out.order, ]
-        row.names(output$diffusion) <- NULL
-    }
-    
-    if (is.na(object@pagerank@valid)) output$pagerank <- "Not performed"
-    else if (!object@pagerank@valid) output$pagerank <- "Failed"
-    else {
-        dif.select <- which(object@pagerank@pscores < 0.05)
-        
-        out.pscores <- signif(object@pagerank@pscores[dif.select], digits = 3)
-        smallest <- which(out.pscores < 2e-16)
-        out.pscores <- format(out.pscores)
-        out.pscores[smallest] <- "<2e-16"
-        
-        out.names <- names(out.pscores)
-        #out.description <- dic[out.names]
-        #out.highlight <- out.names %in% object@diffusion@highlight
-        
-        
-        output$pagerank <- data.frame(
-            "KEGG id" = out.names, 
-            "p.score" = out.pscores)
-        row.names(output$pagerank) <- NULL
-    }
-    
-    return(output)
+    lapply(
+        listMethods(), 
+        function(method) {
+            ans <- list()
+            
+            valid <- getValid(object, method)
+            if (is.na(valid)) return("Not performed")
+            if (!valid) return("Failed")
+            
+            if (method == "hypergeom") {
+                pval <- getPscores(object, "hypergeom")
+                p.values <- head(sort(pval), 30)
+                
+                data.frame(
+                    "Description" = names(p.values), 
+                    "p.value" = signif(p.values, digits = 4))
+            } else {
+                psco <- sort(getPscores(object, method))
+                out.pscores <- signif(psco[psco < .05], digits = 3)
+                # Set a threshold
+
+                out.pscores <- format(out.pscores)
+                out.pscores[out.pscores < 1e-6] <- "<1e-6"
+                
+                out.names <- names(out.pscores)
+                out.order <- order(out.names)
+                
+                df <- data.frame(
+                    "KEGG id" = names(out.pscores), 
+                    "p.score" = out.pscores)
+                row.names(df) <- NULL
+                
+                df
+            }
+        }
+    )
 })
 
 
@@ -83,7 +62,7 @@ setMethod("show", signature = "FELLA.DATA", function(object) {
     breakline <- "\n---------------------------------------------------\n"
     
     cat("General data:\n")
-    if (vcount(object@keggdata@graph) == 0) {
+    if (vcount(getGraph(object)) == 0) {
         cat("- KEGG graph not loaded.\n")
     } else {
         cat("- KEGG graph is ready.\n")
@@ -106,13 +85,13 @@ setMethod("show", signature = "FELLA.DATA", function(object) {
     cat(breakline)
     
     cat("Heat diffusion:\n")
-    if (prod(dim(object@diffusion@matrix)) == 1) {
+    if (prod(dim(getMatrix(object, "diffusion"))) == 1) {
         cat("- Matrix not loaded.\n")
     } else {
         cat("- Matrix is ready.\n")
     }
-    if (length(object@diffusion@rowSums) == 0 || 
-        length(object@diffusion@squaredRowSums) == 0) {
+    if (length(getSums(object, "diffusion", squared = FALSE)) == 0 || 
+        length(getSums(object, "diffusion", squared = TRUE)) == 0) {
         cat("- RowSums not loaded.")
     } else {
         cat("- RowSums are ready.")
@@ -121,13 +100,13 @@ setMethod("show", signature = "FELLA.DATA", function(object) {
     cat(breakline)
     
     cat("PageRank:\n")
-    if (prod(dim(object@pagerank@matrix)) == 1) {
+    if (prod(dim(getMatrix(object, "pagerank"))) == 1) {
         cat("- Matrix not loaded.\n")
     } else {
         cat("- Matrix is ready.\n")
     }
-    if (length(object@pagerank@rowSums) == 0 || 
-        length(object@pagerank@squaredRowSums) == 0) {
+    if (length(getSums(object, "pagerank", squared = FALSE)) == 0 || 
+        length(getSums(object, "pagerank", squared = TRUE)) == 0) {
         cat("- RowSums not loaded.\n")
     } else {
         cat("- RowSums are ready.\n")
@@ -171,7 +150,7 @@ setMethod("show", signature = "FELLA.USER", function(object) {
     else {
         cat("ready.", fill = TRUE)
         n.show <- min(15, length(
-            getPscores(object = object, type = "hypergeom")))
+            getPscores(object = object, method = "hypergeom")))
         cat("Top", n.show, "p-values:", fill = TRUE)
         print(sort(getPscores(object, "hypergeom"))[1:n.show])
     }
@@ -183,7 +162,7 @@ setMethod("show", signature = "FELLA.USER", function(object) {
     else if (!getValid(object, "diffusion")) cat("error during execution")
     else {
         cat("ready.", fill = TRUE)
-        cat("Significant nodes (0.05): ", 
+        cat("P-scores under 0.05: ", 
             sum(getPscores(object, "diffusion") < 0.05))
     }
     
@@ -194,7 +173,7 @@ setMethod("show", signature = "FELLA.USER", function(object) {
     else if (!getValid(object, "pagerank")) cat("error during execution")
     else {
         cat("ready.", fill = TRUE)
-        cat("Significant nodes (0.05): ", 
+        cat("P-scores under 0.05: ", 
             sum(getPscores(object, "pagerank") < 0.05))
     }
     
@@ -206,15 +185,12 @@ setMethod("show", signature = "FELLA.USER", function(object) {
 #'
 #' @param x A \code{\link{FELLA.USER}} object
 #' @inheritParams .params
-#' @param filename Character; optional file name to save the plot
 #' @param ... Additional arguments passed to plotting functions
 #' 
 #' @return \code{plot} returns a layout if \code{layout = T}, 
 #' otherwise \code{invisible()}
 #' 
 #' @rdname FELLA.USER
-#' @importFrom grDevices dev.off png
-#' @importFrom graphics par mtext
 #' @exportMethod plot
 setMethod(
     "plot", 
@@ -222,13 +198,11 @@ setMethod(
     function(
         x = 1, 
         method = "hypergeom", 
-        threshold = 0.005, 
+        threshold = 0.05, 
         plimit = 15, 
         nlimit = 250, 
         layout = FALSE, 
-        filename = NULL, 
         splitByConnectedComponent = FALSE, 
-        askPlots = TRUE,  
         thresholdConnectedComponent = 0.05, 
         LabelLengthAtPlot = 22, 
         data = NULL, 
@@ -241,23 +215,23 @@ setMethod(
             nlimit = nlimit, 
             layout = layout, 
             splitByConnectedComponent = splitByConnectedComponent, 
-            askPlots = askPlots, 
             thresholdConnectedComponent = thresholdConnectedComponent, 
             LabelLengthAtPlot = LabelLengthAtPlot, 
             object = x, 
             data = data)
         if (!checkArgs$valid)
-            stop("Bad argument when calling function 'FELLA::plot'.")
+            stop("Bad argument when calling function 'plot' in FELLA.")
         
         if (data@keggdata@status != "loaded"){
             stop("'data' points to an empty FELLA.DATA object")
         }
         
+        valid <- getValid(x, method)
+        if (is.na(valid) || !valid) {
+            stop(paste0("Results from ", method, " are not ready yet."))
+        } 
+        
         if (method == "hypergeom") {
-            if (is.na(x@hypergeom@valid) || !x@hypergeom@valid) {
-                stop("Hypergeometric test is not ready yet.")
-            } 
-            
             graph.bipartite <- generateResultsGraph(
                 method = method, 
                 threshold = threshold, 
@@ -265,25 +239,16 @@ setMethod(
                 object = x, 
                 data = data)
             
-            if (!is.null(filename)) 
-                grDevices::png(filename = filename, height = 1000, width = 800)
-            
             ans.return <- plotBipartite(
                 graph = graph.bipartite, 
                 layout = layout, 
-                main = "Hypergeometric test results", 
                 ...)
-            
-            if (!is.null(filename)) grDevices::dev.off()
-            
+
             return(invisible(ans.return))
             
-        } else if (method == "diffusion" || method == "pagerank") {
-            valid <- slot(x, method)@valid
-            if (is.na(valid) || !valid) {
-                stop(paste0("Results from ", method, " are not ready yet."))
-            } 
-            
+        } else {
+            # We have checked that "method" is in hypergeom, diffusion
+            # and pagerank. Therefore, it's one of the last two
             # That may be a list or a unique graph
             if (!splitByConnectedComponent) {
                 graph <- generateResultsGraph(
@@ -295,15 +260,12 @@ setMethod(
                     object = x, 
                     data = data)
                 
-                if (!is.null(filename)) 
-                    png(filename = filename, height = 1400, width = 1500)
-                
                 ans.return <- plotGraph(
                     graph = graph, 
                     input = getInput(x), 
                     layout = layout, 
                     ...)
-                if (!is.null(filename)) dev.off()
+
                 return(invisible(ans.return))
             } else {
                 graph.list <- generateResultsGraph(
@@ -315,39 +277,18 @@ setMethod(
                     object = x, 
                     data = data)
                 
-                if (is.null(filename) & askPlots) {
-                    parOld <- graphics::par(mar = c(0, 0, 0, 0))
-                    graphics::par(ask = TRUE)
-                } 
                 ans <- lapply(1:length(graph.list), function(graph.id) {
                     graph <- graph.list[[graph.id]]
-                    
-                    if (!is.null(filename)) {
-                        png(
-                            filename = paste0(
-                                substr(filename, 1, nchar(filename) - 4), 
-                                "_", 
-                                graph.id, 
-                                ".png"), 
-                            height = 1400, 
-                            width = 1500)
-                    }
-                    
                     
                     ans.layout <- plotGraph(
                         graph = graph, 
                         input = getInput(x), 
                         layout = layout, 
                         ...)
-                    graphics::mtext(paste0(
-                        "p-value from permutation by component size (", 
-                        vcount(graph), 
-                        " nodes): " , names(graph.list)[graph.id]))
-                    
-                    if (!is.null(filename)) dev.off()
+
                     ans.layout
                 })
-                if (is.null(filename) & askPlots) graphics::par(parOld)
+
                 names(ans) <- names(graph.list)
                 
                 if (layout) return(invisible(ans))
@@ -355,9 +296,6 @@ setMethod(
             }
         }
         
-        stop(
-            "The 'method' argument must be ", 
-            "'hypergeom', 'diffusion' or 'pagerank'.")
         return(invisible())
     })
 

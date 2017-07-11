@@ -42,8 +42,7 @@ excluding the hsa01100 pathway:
 ```r
 g <- buildGraphFromKEGGREST(
   organism = "hsa", 
-  filter.path = "hsa01100", 
-  GOterms_hsa = TRUE
+  filter.path = "hsa01100"
 )
 buildDataFromGraph(
   g, 

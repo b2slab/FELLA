@@ -10,7 +10,7 @@
 #' @return Character vector, sanitised \code{x}
 #' 
 #' @examples 
-#' sanitise(c("path:hsa00010", "path:hsa00020"), "pathway", "hsa")
+#' FELLA:::sanitise(c("path:hsa00010", "path:hsa00020"), "pathway", "hsa")
 #' 
 #' @keywords internal
 sanitise <- function(x, category, organism) {
@@ -65,7 +65,7 @@ sanitise <- function(x, category, organism) {
 #' ent <- "pathway"
 #' ent2gene <- c("hsa00010" = "hsa:10", "hsa00010" = "hsa:120")
 #' gene2enzyme <- c("hsa:10" = "1.1.1.1", "hsa:120" = "1.2.3.4")
-#' infere.con2ec(ids, ent, ent2gene, gene2enzyme)
+#' FELLA:::infere.con2ec(ids, ent, ent2gene, gene2enzyme)
 #' 
 #' @keywords internal
 infere.con2ec <- function(ids, ent, ent2gene, gene2enzyme) {
@@ -94,7 +94,7 @@ infere.con2ec <- function(ids, ent, ent2gene, gene2enzyme) {
 #' @examples 
 #' library(igraph)
 #' g <- barabasi.game(10) + graph.empty(10)
-#' largestcc(g)
+#' FELLA:::largestcc(g)
 #' 
 #' @keywords internal
 largestcc <- function(graph) {
@@ -146,7 +146,7 @@ buildGraphFromKEGGREST <- function(
     organism = "hsa",  
     filter.path = NULL) {
     
-    categories <- c("pathway", "module", "enzyme", "reaction", "compound")
+    categories <- listCategories()
     
     # Data from KEGGREST
     # 

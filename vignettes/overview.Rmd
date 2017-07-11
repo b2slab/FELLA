@@ -209,7 +209,7 @@ at once with the option `method = "all"`:
 ```{r, warning=FALSE, message=FALSE}
 myAnalysis <- enrich(
     compounds = input.full, 
-    method = "all", 
+    method = listMethods(), 
     approx = "normality", 
     data = FELLA.sample)
 
@@ -223,7 +223,6 @@ here is an example with `runDiffusion`:
 myAnalysis_bis <- runDiffusion(
     object = myAnalysis, 
     approx = "normality", 
-    p.adjust = "fdr", 
     data = FELLA.sample)
 show(myAnalysis_bis)
 ```

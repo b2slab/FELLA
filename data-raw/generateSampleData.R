@@ -1,11 +1,12 @@
 library(igraph)
 
-path <- "~/Datasets/FELLAdataslim/"
+# path <- "~/Datasets/FELLAdataslim/"
 matrices <- "hypergeom"
 
 # Only the graph is needed, then using FELLA's functions we will
 # generate the data from a toy graph
-load(paste0(path, "keggdata.graph.RData"))
+keggdata.graph <- buildGraphFromKEGGREST()
+# load(paste0(path, "keggdata.graph.RData"))
 
 #############################################
 # Code from Sam Steingold at list.nongnu.org
@@ -47,23 +48,27 @@ tmpdir <- paste0(tempdir(), "/databuild/")
 # FELLA::buildDataFromGraph(graph.toy, outputDir = tmpdir, niter = 11)
 
 # Generate the data without diffusion/pagerank matrices
-FELLA::buildDataFromGraph(graph.sample, 
-                          outputDir = tmpdir, 
-                          matrices = matrices, 
-                          niter = 11)
+FELLA::buildDataFromGraph(
+    graph.sample, 
+    databaseDir = tmpdir, 
+    internalDir = FALSE, 
+    matrices = matrices, 
+    niter = 11)
 
 list.files(tmpdir)
 e.temp <- new.env(parent = globalenv())
-sapply(list.files(tmpdir, full.names = T), 
-       function(link) load(link, envir = e.temp))
+sapply(
+    list.files(tmpdir, full.names = T), 
+    function(link) load(link, envir = e.temp))
 # save(list = ls(e), file = "data-raw/test.RData", envir = e.temp)
-FELLA.sample <- FELLA::loadKEGGdata(tmpdir)
+FELLA.sample <- FELLA::loadKEGGdata(tmpdir, internalDir = FALSE)
 
 # test it...
-k <- enrich(compounds = input.sample, 
-            method = "diffusion", 
-            approx = "normality", 
-            data = FELLA.sample)
+k <- enrich(
+    compounds = input.sample, 
+    method = "diffusion", 
+    approx = "normality", 
+    data = FELLA.sample)
 plot(k, data = FELLA.sample, 
      method = "diffusion", 
      threshold = .1)

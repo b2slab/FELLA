@@ -5,6 +5,7 @@
 #' is invalid. 
 #'
 #' @inheritParams .params
+#' @param ... ignored arguments
 #' 
 #' @return A list with values. Currently only a 
 #' logical value named \code{valid} 
@@ -23,6 +24,7 @@
 #' arg2$valid
 checkArguments <- function(
     method = "diffusion", 
+    methods = "diffusion", 
     approx = "normality", 
     loadMatrix = NULL, 
     threshold = 0.05, 
@@ -31,35 +33,51 @@ checkArguments <- function(
     niter = 1e3, 
     layout = FALSE, 
     splitByConnectedComponent = FALSE, 
-    askPlots = TRUE, 
     thresholdConnectedComponent = 0.05, 
     GOterm = NULL,
     GONamesAsLabels = TRUE, 
     LabelLengthAtPlot = 22, 
     object = new("FELLA.USER"), 
-    data = new("FELLA.DATA")) {
+    data = new("FELLA.DATA"), 
+    ...) {
     
     # METHOD
     ###########################
+    
+    # version with length restriction
     if (!is.character(method)) {
         message(
-            "'method' must be a character: ", 
-            "'hypergeom', 'diffusion', 'pagerank' or 'all'. ", 
+            "'method' must be of character type and must be one of: ", 
+            "'hypergeom', 'diffusion' and 'pagerank'. ", 
             "Returning original 'object'...")
         return(list(ans = object, valid = FALSE))
     }
-    
     if (length(method) > 1) {
         message(
             "'method' must be a length 1 character. ", 
             "Returning original 'object'...")
         return(list(ans = object, valid = FALSE))
     }
-    
-    if (!(method %in% c("hypergeom", "diffusion", "pagerank", "all"))) {
+    if (!(method %in% c("hypergeom", "diffusion", "pagerank"))) {
         message(
-            "'method' must be a character: ", 
-            "'hypergeom', 'diffusion', 'pagerank' or 'all'. ", 
+            "'method' must contain exactly one of: ", 
+            "'hypergeom', 'diffusion' or 'pagerank'. ", 
+            "Returning original 'object'...")
+        return(list(ans = object, valid = FALSE))
+    }
+    ## method (several allowed)
+    if (!is.character(methods)) {
+        message(
+            "'methods' must be a character containing some of: ", 
+            "'hypergeom', 'diffusion' or 'pagerank'. ", 
+            "Returning original 'object'...")
+        return(list(ans = object, valid = FALSE))
+    }
+    if (!any(methods %in% c("hypergeom", "diffusion", "pagerank"))) {
+        message(
+            "'methods' must be a character vector ", "
+            containing at least one of: ", 
+            "'hypergeom', 'diffusion' or 'pagerank'. ", 
             "Returning original 'object'...")
         return(list(ans = object, valid = FALSE))
     }
@@ -231,21 +249,6 @@ checkArguments <- function(
         return(list(ans = NULL, valid = FALSE))
     }
     
-    # askPlots
-    ############################
-    if (!is.logical(askPlots)) {
-        message(
-            "'askPlots' must be logical. ", 
-            "Returning NULL...")
-        return(list(ans = NULL, valid = FALSE))
-    }
-    
-    if (length(askPlots) > 1) {
-        message(
-            "'askPlots' must be a length 1 logical. ", 
-            "Returning NULL...")
-        return(list(ans = NULL, valid = FALSE))
-    }  
     # thresholdConnectedComponent
     ###################################
     if (!is.numeric(thresholdConnectedComponent)) {

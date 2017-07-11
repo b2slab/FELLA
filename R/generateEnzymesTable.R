@@ -6,7 +6,7 @@
 #' with a successful enrichment analysis.
 #' 
 #' @inheritParams .params
-#' @param method. Character, either 'diffusion' or 'pagerank'
+#' @param ... ignored arguments
 #'
 #' @return A table that contains the enzymes 
 #' along with genes and GO labels
@@ -32,7 +32,8 @@ generateEnzymesTable <- function(
     LabelLengthAtPlot = 45, 
     capPscores = 1e-6, 
     object = NULL, 
-    data = NULL) {
+    data = NULL, 
+    ...) {
     
     if (!is.FELLA.DATA(data)) {
         stop("'data' is not a FELLA.DATA object")
@@ -68,17 +69,15 @@ generateEnzymesTable <- function(
     
     message("Writing ", method, "enzymes...")
     
-    pscores.ec <- sort(
-        getPscores(object, method)[getCom(data, level = 3, format = "id")])
+    id.ec <- getCom(data, level = 3, format = "id")
+    pscores.ec <- sort(getPscores(object, method)[id.ec])
     pscores.ec[pscores.ec < capPscores] <- capPscores
     
     if (pscores.ec[1] >= threshold) {
         message("No enzyme is below the p-value threshold.")
         return(NULL)
     } 
-    nodePscores <- head(
-        pscores.ec[pscores.ec < threshold], 
-        nlimit)
+    nodePscores <- head(pscores.ec[pscores.ec < threshold], nlimit)
     
     nodeIds <- names(nodePscores)
     nodeNames <- sapply(
@@ -97,27 +96,29 @@ generateEnzymesTable <- function(
         V(g)[nodeIds]$entrez, 
         function(genes) paste(genes, collapse = ";")
     )
-    nodeGO <- sapply(
-        V(g)[nodeIds]$GO, 
-        function(goterms) paste(names(goterms), collapse = ";")
-    )
-    nodeGOname <- sapply(
-        V(g)[nodeIds]$GO, 
-        function(goterms) paste(goterms, collapse = ";")
-    )
-    
+
     out.df <- data.frame(
         "EC_number" = nodeIds,
         "p.value" = nodePscores, 
         "EC_name" = nodeNames, 
         "Genes" = nodeGenes, 
-        "GO_id" = nodeGO, 
-        "GO_name" = nodeGOname, 
         stringsAsFactors = FALSE)
     rownames(out.df) <- NULL
+    
+    if ("GO" %in% list.vertex.attributes(g)) {
+        nodeGO <- sapply(
+            V(g)[nodeIds]$GO, 
+            function(goterms) paste(names(goterms), collapse = ";")
+        )
+        nodeGOname <- sapply(
+            V(g)[nodeIds]$GO, 
+            function(goterms) paste(goterms, collapse = ";")
+        )
+        out.df$GO_id <- nodeGO
+        out.df$GO_name <- nodeGOname
+    }
     
     message("Done.")
     
     return(out.df)
-    
 }

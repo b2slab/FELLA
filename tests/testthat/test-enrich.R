@@ -23,14 +23,14 @@ test_that("Enrichment wrapper", {
                 function(approx) {
                     FELLA.test <- enrich(
                         compounds = input.sample, 
-                        method = method, 
+                        methods = method, 
                         approx = approx, 
                         niter = 100, 
                         data = FELLA.sample)
                     
                     expect_s4_class(FELLA.test, "FELLA.USER")
                     
-                    pval <- getPscores(FELLA.test, method. = method)
+                    pval <- getPscores(FELLA.test, method = method)
                     
                     expect_named(pval)
                     expect_is(pval, "numeric")

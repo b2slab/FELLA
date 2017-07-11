@@ -5,7 +5,7 @@
 \title{Pathway enrichment through PageRank}
 \usage{
 runPagerank(object = NULL, data = NULL, approx = "normality",
-  dampingFactor = 0.85, t.df = 10, niter = 1000)
+    dampingFactor = 0.85, t.df = 10, niter = 1000)
 }
 \arguments{
 \item{object}{FELLA.USER object}

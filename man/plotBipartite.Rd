@@ -27,14 +27,13 @@ pathways, the layout is simple and bipartite.
 }
 \examples{
 ## This function is internal
-attach(environment(FELLA:::plotBipartite))
-
 data(FELLA.sample)
 data(input.sample)
 ## Enrich input
 obj <- enrich(
 compounds = input.sample, 
-data = FELLA.sample)
+data = FELLA.sample, 
+method = "hypergeom")
 ## Generate the bipartite graph (only in the hypergeometric test)
 g <- generateResultsGraph(
 method = "hypergeom", 
@@ -42,6 +41,6 @@ threshold = 1,
 object = obj, 
 data = FELLA.sample)
 ## Plot it
-plotBipartite(g)
+FELLA:::plotBipartite(g)
 
 }

@@ -5,7 +5,7 @@
 \title{Pathway enrichment through heat diffusion}
 \usage{
 runDiffusion(object = NULL, data = NULL, approx = "normality",
-  t.df = 10, niter = 1000, BIMODAL = FALSE)
+    t.df = 10, niter = 1000)
 }
 \arguments{
 \item{object}{FELLA.USER object}

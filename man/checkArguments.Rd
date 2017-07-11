@@ -4,15 +4,18 @@
 \alias{checkArguments}
 \title{Internal function to check arguments and give personalised errors}
 \usage{
-checkArguments(method = "diffusion", approx = "normality",
-  loadMatrix = NULL, threshold = 0.05, plimit = 15, nlimit = 250,
-  niter = 1000, layout = FALSE, splitByConnectedComponent = FALSE,
-  askPlots = TRUE, thresholdConnectedComponent = 0.05, GOterm = NULL,
-  GONamesAsLabels = TRUE, LabelLengthAtPlot = 22,
-  object = new("FELLA.USER"), data = new("FELLA.DATA"))
+checkArguments(method = "diffusion", methods = "diffusion",
+    approx = "normality", loadMatrix = NULL, threshold = 0.05,
+    plimit = 15, nlimit = 250, niter = 1000, layout = FALSE,
+    splitByConnectedComponent = FALSE, thresholdConnectedComponent = 0.05,
+    GOterm = NULL, GONamesAsLabels = TRUE, LabelLengthAtPlot = 22,
+    object = new("FELLA.USER"), data = new("FELLA.DATA"), ...)
 }
 \arguments{
-\item{method}{Character vector, containing some of: 
+\item{method}{Character, exactly one of: 
+\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
+
+\item{methods}{Character vector, containing some of: 
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{approx}{Character: "simulation" for Monte Carlo, "normality", 
@@ -39,9 +42,6 @@ must be a numeric value between 1e2 and 1e5}
 \item{splitByConnectedComponent}{Logical, 
 should the solution be split by CC?}
 
-\item{askPlots}{Logical, should R ask 
-for the next plots using hit<ENTER>?}
-
 \item{thresholdConnectedComponent}{Numeric value between 0 and 1. 
 Connected components that are below the threshold are kept, 
 while the ones exceeding it (because they are too small) are discarded.}
@@ -59,6 +59,8 @@ The remaining characters will be truncated using "..."}
 \item{object}{FELLA.USER object}
 
 \item{data}{FELLA.DATA object}
+
+\item{...}{ignored arguments}
 }
 \value{
 A list with values. Currently only a 

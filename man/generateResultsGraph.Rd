@@ -5,12 +5,12 @@
 \title{Generate graph objects from the enrichment results}
 \usage{
 generateResultsGraph(method = "diffusion", threshold = 0.05, plimit = 15,
-  nlimit = 250, splitByConnectedComponent = FALSE,
-  thresholdConnectedComponent = 0.05, LabelLengthAtPlot = 22,
-  object = NULL, data = NULL)
+    nlimit = 250, splitByConnectedComponent = FALSE,
+    thresholdConnectedComponent = 0.05, LabelLengthAtPlot = 22,
+    object = NULL, data = NULL, ...)
 }
 \arguments{
-\item{method}{Character vector, containing some of: 
+\item{method}{Character, exactly one of: 
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
@@ -35,6 +35,8 @@ The remaining characters will be truncated using "..."}
 \item{object}{FELLA.USER object}
 
 \item{data}{FELLA.DATA object}
+
+\item{...}{ignored arguments}
 }
 \value{
 An \code{\link{igraph}} object if 

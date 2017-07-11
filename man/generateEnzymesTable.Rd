@@ -5,11 +5,11 @@
 \title{Generate enzyme tables with genes and GO annotations}
 \usage{
 generateEnzymesTable(method = "diffusion", threshold = 0.005,
-  nlimit = 250, LabelLengthAtPlot = 45, capPscores = 1e-06,
-  object = NULL, data = NULL)
+    nlimit = 250, LabelLengthAtPlot = 45, capPscores = 1e-06,
+    object = NULL, data = NULL, ...)
 }
 \arguments{
-\item{method}{Character vector, containing some of: 
+\item{method}{Character, exactly one of: 
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
@@ -31,7 +31,7 @@ as \code{< capPscores}}
 
 \item{data}{FELLA.DATA object}
 
-\item{method.}{Character, either 'diffusion' or 'pagerank'}
+\item{...}{ignored arguments}
 }
 \value{
 A table that contains the enzymes 

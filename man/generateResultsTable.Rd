@@ -5,11 +5,11 @@
 \title{Generate readable tables from the enrichment results}
 \usage{
 generateResultsTable(method = "diffusion", threshold = 0.005, plimit = 15,
-  nlimit = 250, LabelLengthAtPlot = 45, capPscores = 1e-10,
-  object = NULL, data = NULL)
+    nlimit = 250, LabelLengthAtPlot = 45, capPscores = 1e-10,
+    object = NULL, data = NULL, ...)
 }
 \arguments{
-\item{method}{Character vector, containing some of: 
+\item{method}{Character, exactly one of: 
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
@@ -32,6 +32,8 @@ as \code{< capPscores}}
 \item{object}{FELLA.USER object}
 
 \item{data}{FELLA.DATA object}
+
+\item{...}{ignored arguments}
 }
 \value{
 A table that contains the KEGG graph nodes with their p-score

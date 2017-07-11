@@ -36,7 +36,7 @@
 enrich <- function(
     compounds = NULL, 
     compoundsBackground = NULL, 
-    method = "all", 
+    methods = listMethods(), 
     loadMatrix = "none", 
     approx = "normality", 
     t.df = 10, 
@@ -67,11 +67,11 @@ enrich <- function(
     
     
     # Run all the analyses
-    if (any(method %in% c("hypergeom", "all"))) {
+    if ("hypergeom" %in% methods) {
         object <- runHypergeom(object = object, data = data)
     }
     
-    if (any(method %in% c("diffusion", "all"))) {
+    if ("diffusion" %in% methods) {
         object <- runDiffusion(
             object = object, 
             data = data, 
@@ -81,7 +81,7 @@ enrich <- function(
             ...)
     }
     
-    if (any(method %in% c("pagerank", "all"))) {
+    if ("pagerank" %in% methods) {
         object <- runPagerank(
             object = object, 
             data = data, 

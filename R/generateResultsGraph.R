@@ -6,6 +6,7 @@
 #' object with a successful enrichment analysis must be supplied.
 #' 
 #' @inheritParams .params
+#' @param ... ignored arguments
 #'
 #' @return An \code{\link{igraph}} object if 
 #' \code{splitByConnectedComponent = F}; 
@@ -36,7 +37,8 @@ generateResultsGraph <- function(
     thresholdConnectedComponent = 0.05, 
     LabelLengthAtPlot = 22, 
     object = NULL, 
-    data = NULL) {
+    data = NULL, 
+    ...) {
     
     #   browser()
     if (!is.FELLA.DATA(data)) {
@@ -59,9 +61,10 @@ generateResultsGraph <- function(
     if (!checkArgs$valid)
         stop("Bad argument when calling function 'generateResultsGraph'.")
     
-    if (is.na(getValid(object, method)) || !getValid(object, method)) {
+    valid <- getValid(object, method)
+    if (is.na(valid) || !valid) {
         warning(
-            paste0("Mehod ", method, " has not been executed yet. "), 
+            paste0("Method ", method, " has not been executed yet. "), 
             "Returning NULL...")
         return(invisible())
     } 
@@ -89,16 +92,8 @@ generateResultsGraph <- function(
             rownames(getMatrix(data, "hypergeom")))
 
         # Build the bipartite graph
-        
-        if (length(path.hypergeom) == 1) {
-            incidence <- as.matrix(
-                getMatrix(data, "hypergeom")[comp.hypergeom, path.hypergeom], 
-                ncol = 1)
-            colnames(incidence) <- path.hypergeom
-        } else {
-            incidence <- getMatrix(data, "hypergeom")[
-                comp.hypergeom, path.hypergeom]
-        }
+        incidence <- getMatrix(data, "hypergeom")[
+            comp.hypergeom, path.hypergeom, drop = FALSE]
         
         graph.bipartite <- graph.incidence(incidence = incidence)
         #     browser()
@@ -171,7 +166,8 @@ generateResultsGraph <- function(
         # Connected components
         graph.clust <- clusters(graph)
         
-        # Size cannot exceed 250 to calculate p-values... we will approximate
+        # Size cannot exceed 250 to 
+        # calculate p-values... we will approximate
         if (n.nodes.graph > 250) {
             warning(
                 "The number of nodes of the whole solution, which is ", 

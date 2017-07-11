@@ -5,8 +5,7 @@
 \title{Export the enrichment results in several file formats}
 \usage{
 exportResults(format = "csv", file = "myOutput", method = "diffusion",
-  threshold = 0.05, plimit = 15, nlimit = 250, object = NULL,
-  data = NULL, ...)
+    object = NULL, data = NULL, ...)
 }
 \arguments{
 \item{format}{Character, one of: \code{"csv"}, \code{"igraph"}, 
@@ -15,16 +14,8 @@ exportResults(format = "csv", file = "myOutput", method = "diffusion",
 \item{file}{Character specifying the output 
 directory for the exported files}
 
-\item{method}{Character vector, containing some of: 
+\item{method}{Character, exactly one of: 
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
-
-\item{threshold}{Numeric value between 0 and 1. 
-Applied when filtering KEGG nodes}
-
-\item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
-
-\item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
-This limits the order of the solution graph}
 
 \item{object}{FELLA.USER object}
 

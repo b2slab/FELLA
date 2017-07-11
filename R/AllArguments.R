@@ -10,9 +10,9 @@
 #' @param level Desired level, can be coded as a number or a character: 
 #' 1 or "pathway"; 2 or "module"; 3 or "enzyme"; 
 #' 4 or "reaction"; 5 or "compound".
-#' @param method. Character, exactly one of: 
+#' @param method Character, exactly one of: 
 #' \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}
-#' @param method Character vector, containing some of: 
+#' @param methods Character vector, containing some of: 
 #' \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}
 #' @param approx Character: "simulation" for Monte Carlo, "normality", 
 #' "gamma" or "t" for parametric approaches
@@ -33,8 +33,6 @@
 #' @param layout Logical, should the plot be returned as a layout?
 #' @param splitByConnectedComponent Logical, 
 #' should the solution be split by CC?
-#' @param askPlots Logical, should R ask 
-#' for the next plots using hit<ENTER>?
 #' @param GOterm Character, GO entry to draw 
 #' semantic similarity in the solution graph. 
 #' @param GONamesAsLabels Logical, should GO names 

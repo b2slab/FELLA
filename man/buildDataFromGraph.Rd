@@ -5,9 +5,9 @@
 \title{Generate RData KEGG files from the curated KEGG graph}
 \usage{
 buildDataFromGraph(keggdata.graph = NULL, databaseDir = "myDatabase",
-  internalDir = TRUE, matrices = c("hypergeom", "diffusion", "pagerank"),
-  normality = c("diffusion", "pagerank"), dampingFactor = 0.85,
-  niter = 1000)
+    internalDir = TRUE, matrices = c("hypergeom", "diffusion", "pagerank"),
+    normality = c("diffusion", "pagerank"), dampingFactor = 0.85,
+    niter = 1000)
 }
 \arguments{
 \item{keggdata.graph}{An \code{\link[igraph]{igraph}} 

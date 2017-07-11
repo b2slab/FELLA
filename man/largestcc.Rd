@@ -18,7 +18,7 @@ Largest connected component of an igraph object
 \examples{
 library(igraph)
 g <- barabasi.game(10) + graph.empty(10)
-largestcc(g)
+FELLA:::largestcc(g)
 
 }
 \keyword{internal}

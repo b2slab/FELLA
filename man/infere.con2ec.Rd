@@ -34,7 +34,7 @@ ids <- "hsa00010"
 ent <- "pathway"
 ent2gene <- c("hsa00010" = "hsa:10", "hsa00010" = "hsa:120")
 gene2enzyme <- c("hsa:10" = "1.1.1.1", "hsa:120" = "1.2.3.4")
-infere.con2ec(ids, ent, ent2gene, gene2enzyme)
+FELLA:::infere.con2ec(ids, ent, ent2gene, gene2enzyme)
 
 }
 \keyword{internal}

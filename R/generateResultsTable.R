@@ -7,6 +7,7 @@
 #' 
 #'
 #' @inheritParams .params
+#' @param ... ignored arguments
 #'
 #' @return A table that contains the KEGG graph nodes with their p-score
 #' 
@@ -32,7 +33,8 @@ generateResultsTable <- function(
     LabelLengthAtPlot = 45, 
     capPscores = 1e-10, 
     object = NULL, 
-    data = NULL) {
+    data = NULL, 
+    ...) {
     
     if (!is.FELLA.DATA(data)) {
         stop("'data' is not a FELLA.DATA object")

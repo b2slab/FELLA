@@ -42,8 +42,7 @@ runDiffusion <- function(
     data = NULL, 
     approx = "normality", 
     t.df = 10, 
-    niter = 1000, 
-    BIMODAL = FALSE) {
+    niter = 1000) {
     
     # Checking the input
     ###########################
@@ -204,31 +203,13 @@ runDiffusion <- function(
     } else if (approx %in% c("normality", "gamma", "t")) {
         message("Estimating p-values through the specified distribution.")
         
-        if (length(getBackground(object)) > 0 | BIMODAL) {
+        if (length(getBackground(object)) > 0) {
             if (prod(dim(getMatrix(data, "diffusion"))) == 1) {
                 # Custom background, no matrix...
                 message(
                     "Diffusion matrix not loaded. ", 
                     "Normality is not available yet for custom background.")
                 return(object)
-            } else if (BIMODAL) {
-                # THIS ELSE IS THE ONLY BIMODAL THING
-                # you can safely delete it
-                background.matrix <- getMatrix(data, "diffusion")
-                idComp <- getCom(data, "compound")
-                
-                inputInfluence <- diag(background.matrix[idComp, idComp])
-                #         browser()
-                
-                diag(background.matrix[idComp, idComp]) <- 0
-                
-                RowSums <- rowSums(background.matrix) 
-                squaredRowSums <- apply(
-                    X = background.matrix, 
-                    MARGIN = 1, 
-                    FUN = function(row) sum(row*row))
-                
-                n.comp <- dim(background.matrix)[2]
             } else {
                 # Custom background, matrix available
                 background.matrix <- 
@@ -288,23 +269,6 @@ runDiffusion <- function(
         temp.means <- RowSums*n.input/n.comp
         temp.vars <- n.input*(n.comp - n.input)/(n.comp*(n.comp - 1))*
             (squaredRowSums - (RowSums^2)/n.comp)
-        # ONLY THIS IS BIMODAL
-        if (BIMODAL){
-            # need to change the compounds
-            temp.means[idComp] <- RowSums[idComp]*(n.input)/(n.comp - 1) 
-            temp.vars[idComp] <- 
-                n.input*(n.comp - 1 - n.input)/((n.comp - 1)*(n.comp - 2))*
-                (squaredRowSums[idComp] - (RowSums[idComp]^2)/(n.comp - 1))
-            #       browser()
-            # input:
-            theInput <- getInput(object)
-            temp.means[theInput] <- 
-                RowSums[theInput]*(n.input - 1)/(n.comp - 1) + 
-                inputInfluence[theInput]
-            temp.vars[theInput] <- 
-                (n.input - 1)*(n.comp - n.input)/((n.comp - 1)*(n.comp - 2))*
-                (squaredRowSums[theInput] - (RowSums[theInput]^2)/(n.comp - 1))
-        }
         
         if (approx == "normality") {
             pscores <- stats::pnorm(

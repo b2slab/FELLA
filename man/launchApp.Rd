@@ -19,6 +19,9 @@ and whether to launch browser or not}
 Launch a shiny application to perform the metabolomics data enrichment.
 }
 \examples{
+\dontrun{
 r <- try(launchApp())
+}
+
 
 }

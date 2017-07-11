@@ -2,6 +2,20 @@
 
 ---
 
+### Version 0.4.0
+
+* Removed some superfluous arguments: askplots, filename, BIMODAL
+* Aggregated `get-.R` and `list-.R` functions in single files
+* Cleaned part of: `AllMethods`, `exportResults`, `generate-`
+* Fixed unit testing
+* Fixed runnable examples
+* Fixed vignette
+* Rebuilt example data
+* Improved argument handling. `method` can no longer be `"all"` and 
+handles a unique method now, but `methods`
+can pass a vector of methods instead
+* Passes `check()` and `BiocCheck(".")` 
+
 ### Version 0.3.3
 
 * Improved argument documentation (still work to do)

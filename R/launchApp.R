@@ -9,7 +9,10 @@
 #' @return \code{invisible()}, but as a side effect the app will be launched
 #' 
 #' @examples 
+#' \dontrun{
 #' r <- try(launchApp())
+#' }
+#' 
 #' 
 launchApp <- function(
     port = 8888, 

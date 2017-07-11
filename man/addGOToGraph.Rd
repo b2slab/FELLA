@@ -6,8 +6,8 @@
 results graph object}
 \usage{
 addGOToGraph(graph = NULL, GOterm = NULL, godata.options = list(OrgDb =
-  "org.Hs.eg.db", ont = "CC"), mart.options = list(biomart = "ensembl",
-  dataset = "hsapiens_gene_ensembl"), GONamesAsLabels = TRUE)
+    "org.Hs.eg.db", ont = "CC"), mart.options = list(biomart = "ensembl",
+    dataset = "hsapiens_gene_ensembl"), GONamesAsLabels = TRUE)
 }
 \arguments{
 \item{graph}{An \code{\link[igraph]{igraph}} object, typically a small one 
@@ -38,7 +38,6 @@ a graph object with class
 }
 \examples{
 ## This function is internal
-attach(environment(FELLA:::addCellularComponentToGraph))
 library(igraph)
 data(FELLA.sample)
 data(input.sample)
@@ -51,8 +50,9 @@ g <- generateResultsGraph(
 threshold = 0.1, 
 object = obj, 
 data = FELLA.sample)
+g
 ## Add the cellular component
-g.cc <- addGOToGraph(
+g.cc <- FELLA:::addGOToGraph(
 graph = g, 
 GOterm = "GO:0005739")
 

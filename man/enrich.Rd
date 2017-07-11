@@ -4,9 +4,10 @@
 \alias{enrich}
 \title{Wrapper function for enrichment analysis}
 \usage{
-enrich(compounds = NULL, compoundsBackground = NULL, method = "all",
-  loadMatrix = "none", approx = "normality", t.df = 10, niter = 1000,
-  databaseDir = "myDatabase", internalDir = TRUE, data = NULL, ...)
+enrich(compounds = NULL, compoundsBackground = NULL,
+    methods = listMethods(), loadMatrix = "none", approx = "normality",
+    t.df = 10, niter = 1000, databaseDir = "myDatabase",
+    internalDir = TRUE, data = NULL, ...)
 }
 \arguments{
 \item{compounds}{Character vector containing the 
@@ -16,7 +17,7 @@ KEGG IDs of the compounds considered as affected}
 the compounds that belong to the background. Can be \code{NULL} for the 
 default background (all compounds)}
 
-\item{method}{Character vector, containing some of: 
+\item{methods}{Character vector, containing some of: 
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{loadMatrix}{Character vector to choose if 

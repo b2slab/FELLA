@@ -20,7 +20,7 @@ Character vector, sanitised \code{x}
 Sanitise KEGG identifiers
 }
 \examples{
-sanitise(c("path:hsa00010", "path:hsa00020"), "pathway", "hsa")
+FELLA:::sanitise(c("path:hsa00010", "path:hsa00020"), "pathway", "hsa")
 
 }
 \keyword{internal}

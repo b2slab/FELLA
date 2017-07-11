@@ -5,8 +5,8 @@
 \title{Internal function to plot a solution graph}
 \usage{
 plotGraph(graph = NULL, input = NULL, layout = FALSE,
-  graph.layout = NULL, showLegend = TRUE, plot.fun = "plot.igraph",
-  NamesAsLabels = TRUE, ...)
+    graph.layout = NULL, showLegend = TRUE, plot.fun = "plot.igraph",
+    NamesAsLabels = TRUE, ...)
 }
 \arguments{
 \item{graph}{Graph result that must come 
