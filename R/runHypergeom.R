@@ -32,6 +32,7 @@
 #' data = FELLA.sample)
 #' obj.diff
 #' 
+#' @importFrom stats phyper p.adjust
 #' @import Matrix
 #' @export
 runHypergeom <- function(

@@ -5,8 +5,8 @@
 #' \code{\link[FELLA]{FELLA.USER}} object, making use of igraph function 
 #' \code{\link[igraph]{page.rank}}. 
 #' If a custom background was specified, it will be used. 
-#' This procedure gives statistical significance measures for each node 
-#' and allows the extraction of a subgraph according to a fixed threshold.
+#' 
+#' @template approxTemplate
 #'
 #' @inheritParams .params
 #'
@@ -33,6 +33,7 @@
 #' data = FELLA.sample)
 #' obj.diff
 #' 
+#' @importFrom stats ecdf pnorm pgamma pt
 #' @import Matrix
 #' @import igraph
 #' @export
@@ -45,19 +46,16 @@ runPagerank <- function(
     niter = 1000) {
     
     # Checking the input
-    #########################
-    if (!is.FELLA.USER(object)) {
-        message(
-            "'object' is not a FELLA.USER object. ", 
-            "Returning NULL...")
-        return(invisible())
-    } 
-    if (!is.FELLA.DATA(data)) {
-        message(
-            "'data' is not a FELLA.DATA object. ", 
-            "Returning NULL...")
-        return(invisible())
-    }
+    ###########################
+    checkArgs <- checkArguments(
+        approx = approx, 
+        dampingFactor = dampingFactor, 
+        t.df = t.df, 
+        niter = niter,
+        object = object, 
+        data = data)
+    if (!checkArgs$valid)
+        stop("Bad argument when calling function 'runPagerank'.")
     
     if (getStatus(data) != "loaded"){
         message(
@@ -65,64 +63,10 @@ runPagerank <- function(
             "Returning original 'object'...")
         return(object)
     }
-    
-    if (!is.character(approx)) {
-        message(
-            "'approx' must be a character: ", 
-            "'simulation', 'normality', 'gamma' or 't'. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (!(approx %in% c("simulation", "normality", "gamma", "t"))) {
-        message(
-            "'approx' must be a character: ", 
-            "'simulation', 'normality', 'gamma' or 't'. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (!is.numeric(t.df)) {
-        message(
-            "'t.df' must be a real value greater than 0. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (t.df <= 0) {
-        message(
-            "'t.df' must be a real value greater than 0. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (!is.numeric(niter)) {
-        message(
-            "'niter' must be an integer between 100 and 1e5. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (niter < 100 | niter > 1e5) {
-        message(
-            "'niter' must be an integer between 100 and 1e5. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    #######################
+    #####################
     
     message("Running PageRank...")
     
-    # Damping factor
-    if (!is.numeric(dampingFactor)) 
-        stop(
-            "'dampingFactor' must be a number ", 
-            "between 0 and 1, both excluded.")
-    
-    if (dampingFactor <= 0 | dampingFactor >= 1) 
-        stop(
-            "'dampingFactor' must be a number ", 
-            "between 0 and 1, both excluded.")
     d <- dampingFactor
     
     # The metabolites in the input
@@ -136,6 +80,7 @@ runPagerank <- function(
         return(object)
     }
     
+    ###### First case: simulation
     if (approx == "simulation") {
         message("Estimating p-values by simulation.")
         
@@ -200,10 +145,8 @@ runPagerank <- function(
             
             pagerank.matrix <- getMatrix(data, "pagerank")
             
-            if (n.input == 1) {
-                current.score <- pagerank.matrix[, comp.input]
-            }
-            else current.score <- rowSums(pagerank.matrix[, comp.input])
+            current.score <- rowSums(
+                pagerank.matrix[, comp.input, drop = FALSE])
             
             null.score <- sapply(1:niter, function(dummy) {
                 if (dummy %% round(.1*niter) == 0) 
@@ -219,9 +162,9 @@ runPagerank <- function(
             })
             names(pscores) <- rownames(pagerank.matrix)
         }
-        
-    } else if (approx %in% c("normality", "gamma", "t")) {
-        message("Estimating p-values through the specified distribution.")
+    ###### Second case: moments   
+    } else {
+        message("Computing p-scores through the specified distribution.")
         
         # The background
         if (length(getBackground(object)) > 0) {
@@ -241,7 +184,7 @@ runPagerank <- function(
                     MARGIN = 1, 
                     FUN = function(row) sum(row*row))
                 
-                n.comp <- dim(background.matrix)[2]
+                n.comp <- ncol(background.matrix)
             }
         } else {# Default background
             n.comp <- length(getCom(data, "compound"))
@@ -286,6 +229,7 @@ runPagerank <- function(
             personalized = prior)$vector
         
         # p-scores
+        # statistical moments
         score.means <- RowSums/n.comp
         score.vars <- (n.comp - n.input)/(n.input*n.comp*(n.comp - 1))*
             (squaredRowSums - (RowSums^2)/n.comp)

@@ -142,7 +142,7 @@ loadKEGGdata <- function(
             message(
                 "'diffusion.matrix.RData' not present in:", 
                 paste0(path, "diffusion.matrix.RData"), 
-                ". Simulated p-values will execute slower for diffusion.")
+                ". Simulated p-values may execute slower for diffusion.")
         } else {
             load(paste0(path, "diffusion.matrix.RData"))
             diffusion.matrix <- get("diffusion.matrix")
@@ -153,11 +153,11 @@ loadKEGGdata <- function(
     } else {
         message(
             "'diffusion.matrix.RData' not loaded. ", 
-            "Simulated p-values will execute slower for diffusion.")
+            "Simulated p-values may execute slower for diffusion.")
     }
     message("Done.")
     
-    # Load diffusion rowsums for p-value calculation 
+    # Load diffusion rowsums for z-score calculation 
     message("Loading rowSums...")
     if (file.exists(paste0(path, "diffusion.rowSums.RData")) ) {
         load(paste0(path, "diffusion.rowSums.RData"))
@@ -170,7 +170,7 @@ loadKEGGdata <- function(
         message(
             "'diffusion.rowSums.RData' not present in:", 
             paste0(path, "diffusion.rowSums.RData"), 
-            ". Appoximate normal p-values won't be available for diffusion.")
+            ". Z-scores won't be available for diffusion.")
     }
     message("Done.")
     
@@ -198,7 +198,7 @@ loadKEGGdata <- function(
     }
     message("Done.")
     
-    # Load pagerank rowsums for p-value calculation
+    # Load pagerank rowsums for z-score calculation
     message("Loading rowSums...")
     if (file.exists(paste0(path, "pagerank.rowSums.RData")) ) {
         load(paste0(path, "pagerank.rowSums.RData"))
@@ -211,7 +211,7 @@ loadKEGGdata <- function(
         message(
             "'pagerank.rowSums.RData' not present in:", 
             paste0(path, "pagerank.rowSums.RData"), 
-            ". Appoximate normal p-values won't be available for pagerank.") 
+            ". Z-scores won't be available for pagerank.") 
     }
     message("Done.")
     

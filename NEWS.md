@@ -2,6 +2,14 @@
 
 ---
 
+### Version 0.4.2
+
+* Added doc template for the statistical normalisation
+* Removed p-values from table
+* Improved `generateResultsTable` function
+* Improved `runDiffusion` and `runPagerank` at the code level and 
+avoided checking arguments
+
 ### Version 0.4.1
 
 * Added accessor to `status` and substituted all the calls

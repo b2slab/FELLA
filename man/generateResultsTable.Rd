@@ -50,6 +50,14 @@ data(input.sample)
 obj <- enrich(
 compounds = input.sample, 
 data = FELLA.sample)
+
+tab <- generateResultsTable(
+method = "hypergeom",
+threshold = 0.1, 
+object = obj, 
+data = FELLA.sample)
+head(tab)
+
 tab <- generateResultsTable(
 threshold = 0.1, 
 object = obj, 

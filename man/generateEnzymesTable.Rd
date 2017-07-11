@@ -9,8 +9,7 @@ generateEnzymesTable(method = "diffusion", threshold = 0.005,
     object = NULL, data = NULL, ...)
 }
 \arguments{
-\item{method}{Character, exactly one of: 
-\code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
+\item{method}{one in \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
 Applied when filtering KEGG nodes}

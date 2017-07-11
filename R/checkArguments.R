@@ -17,20 +17,23 @@
 #' 
 #' @examples 
 #' ## This function is internal
-#' attach(environment(FELLA:::checkArguments))
-#' arg1 <- checkArguments(method = "hello")
+#' arg1 <- FELLA:::checkArguments(method = "hello")
 #' arg1$valid
-#' arg2 <- checkArguments(method = "diffusion")
+#' arg2 <- FELLA:::checkArguments(method = "diffusion")
 #' arg2$valid
+#' 
+#' @keywords internal
 checkArguments <- function(
     method = "diffusion", 
     methods = "diffusion", 
     approx = "normality", 
     loadMatrix = NULL, 
-    threshold = 0.05, 
+    threshold = 0.05,
     plimit = 15, 
     nlimit = 250, 
     niter = 1e3, 
+    t.df = 10, 
+    dampingFactor = 0.85, 
     layout = FALSE, 
     splitByConnectedComponent = FALSE, 
     thresholdConnectedComponent = 0.05, 
@@ -58,7 +61,7 @@ checkArguments <- function(
             "Returning original 'object'...")
         return(list(ans = object, valid = FALSE))
     }
-    if (!(method %in% c("hypergeom", "diffusion", "pagerank"))) {
+    if (!(method %in% listMethods())) {
         message(
             "'method' must contain exactly one of: ", 
             "'hypergeom', 'diffusion' or 'pagerank'. ", 
@@ -73,7 +76,7 @@ checkArguments <- function(
             "Returning original 'object'...")
         return(list(ans = object, valid = FALSE))
     }
-    if (!any(methods %in% c("hypergeom", "diffusion", "pagerank"))) {
+    if (!any(methods %in% listMethods())) {
         message(
             "'methods' must be a character vector ", "
             containing at least one of: ", 
@@ -100,7 +103,7 @@ checkArguments <- function(
         return(list(ans = NULL, valid = FALSE))
     }
     
-    if (!(approx %in% c("simulation", "normality"))) {
+    if (!(approx %in% listApprox())) {
         message(
             "'approx' must be a character: ", 
             "'simulation',  'normality', 'gamma' or 't'. ", 
@@ -213,6 +216,52 @@ checkArguments <- function(
     if (niter < 1e2 | niter > 1e5) {
         message(
             "'niter' must be numeric between 1e2 and 1e5. ", 
+            "Returning NULL...")
+        return(list(ans = NULL, valid = FALSE))
+    }
+    
+    # t.df
+    ##########################
+    if (!is.numeric(t.df)) {
+        message(
+            "'t.df' must be a positive numeric value. ", 
+            "Returning NULL...")
+        return(list(ans = NULL, valid = FALSE))
+    }
+    
+    if (length(t.df) > 1) {
+        message(
+            "'t.df' must be a length 1 numeric. ", 
+            "Returning NULL...")
+        return(list(ans = NULL, valid = FALSE))
+    }
+    
+    if (t.df <= 0) {
+        message(
+            "'t.df' must be a positive numeric value. ", 
+            "Returning NULL...")
+        return(list(ans = NULL, valid = FALSE))
+    }
+    
+    # dampingFactor
+    #################
+    if (!is.numeric(dampingFactor)) {
+        message(
+            "'dampingFactor' must be numeric between 0 and 1, none included. ", 
+            "Returning NULL...")
+        return(list(ans = NULL, valid = FALSE))
+    }
+    
+    if (length(dampingFactor) > 1) {
+        message(
+            "'dampingFactor' must be a length 1 numeric. ", 
+            "Returning NULL...")
+        return(list(ans = NULL, valid = FALSE))
+    }
+    
+    if (dampingFactor <= 0 | dampingFactor >= 1) {
+        message(
+            "'dampingFactor' must be numeric between 0 and 1, none included. ", 
             "Returning NULL...")
         return(list(ans = NULL, valid = FALSE))
     }

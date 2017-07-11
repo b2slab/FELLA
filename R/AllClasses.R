@@ -185,7 +185,7 @@ setClass(
 #' of the diffusion enrichment analysis
 #'
 #' @slot valid Logical value; is the analysis valid?
-#' @slot pscores Named numeric vector with p-values
+#' @slot pscores Named numeric vector with p-scores
 #' @slot approx Character; which approximation was used? 
 #' Can be "simulation" for Monte Carlo; 
 #' "normality", "gamma" or "t" for parametric approaches
@@ -213,7 +213,7 @@ setClass(
 #' of the PageRank enrichment analysis
 #'
 #' @slot valid Logical value; is the analysis valid?
-#' @slot pscores Named numeric vector with p-values
+#' @slot pscores Named numeric vector with p-scores
 #' @slot approx Character; which approximation was used? 
 #' Can be "simulation" for Monte Carlo; 
 #' "normality", "gamma" or "t" for parametric approaches

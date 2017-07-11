@@ -44,7 +44,7 @@ defineCompounds <- function(
     }
     ################################
     
-    # Optional: load the background of compounds for p-value calculation
+    # Optional: load the background of compounds for permutation calculation
     if (length(compoundsBackground) == 0) {
         message(
             "No background compounds specified. ", 

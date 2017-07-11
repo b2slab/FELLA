@@ -5,9 +5,8 @@
 #' \code{\link[FELLA]{FELLA.USER}} object. 
 #' If a custom background was specified, 
 #' it will be used. 
-#' This procedure gives statistical significance measures 
-#' for each node and allows 
-#' the extraction of a subgraph according to a fixed threshold.
+#' 
+#' @template approxTemplate
 #'
 #' @inheritParams .params
 #'
@@ -34,6 +33,7 @@
 #' data = FELLA.sample)
 #' obj.diff
 #' 
+#' @importFrom stats ecdf pnorm pgamma pt
 #' @import Matrix
 #' @import igraph
 #' @export
@@ -46,66 +46,18 @@ runDiffusion <- function(
     
     # Checking the input
     ###########################
-    if (!is.FELLA.USER(object)) {
-        message(
-            "'object' is not a FELLA.USER object. ", 
-            "Returning NULL...")
-        return(invisible())
-    } 
-    if (!is.FELLA.DATA(data)) {
-        message(
-            "'data' is not a FELLA.DATA object. ", 
-            "Returning NULL...")
-        return(invisible())
-    }
+    checkArgs <- checkArguments(
+        approx = approx, 
+        t.df = t.df, 
+        niter = niter,
+        object = object, 
+        data = data)
+    if (!checkArgs$valid)
+        stop("Bad argument when calling function 'runDiffusion'.")
     
     if (getStatus(data) != "loaded"){
         message(
             "'data' points to an empty FELLA.DATA object! ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (!is.character(approx)) {
-        message(
-            "'approx' must be a character: ", 
-            "'simulation', 'normality', 'gamma' or 't'. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (!(approx %in% c("simulation", "normality", "gamma", "t"))) {
-        message(
-            "'approx' must be a character: ", 
-            "'simulation', 'normality', 'gamma' or 't'. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (!is.numeric(t.df)) {
-        message(
-            "'t.df' must be a real value greater than 0. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (t.df <= 0) {
-        message(
-            "'t.df' must be a real value greater than 0. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (!is.numeric(niter)) {
-        message(
-            "'niter' must be an integer between 100 and 1e5. ", 
-            "Returning original 'object'...")
-        return(object)
-    }
-    
-    if (niter < 100 | niter > 1e5) {
-        message(
-            "'niter' must be an integer between 100 and 1e5. ", 
             "Returning original 'object'...")
         return(object)
     }
@@ -124,6 +76,7 @@ runDiffusion <- function(
         return(object)
     }
     
+    ###### First case: simulation
     if (approx == "simulation") {
         message("Estimating p-values by simulation.")
         
@@ -179,17 +132,15 @@ runDiffusion <- function(
             # Calculate current temperature
             diffusion.matrix <- getMatrix(data, "diffusion")
             
-            if (n.input == 1) {
-                current.temp <- diffusion.matrix[, comp.input]
-            }
-            else current.temp <- rowSums(diffusion.matrix[, comp.input])
-            
+            current.temp <- rowSums(
+                diffusion.matrix[, comp.input, drop = FALSE])
             
             null.temp <- sapply(1:niter, function(dummy) {
                 if (dummy %% round(.1*niter) == 0) 
                     message(round(dummy*100/niter),"%")
                 
-                rowSums(diffusion.matrix[, sample(comp.background, n.input)])
+                rowSums(
+                    diffusion.matrix[, sample(comp.background, n.input)])
             })
             
             n.nodes <- length(current.temp)
@@ -200,18 +151,18 @@ runDiffusion <- function(
             names(pscores) <- rownames(diffusion.matrix)
         }
         
+    ###### Second case: moments
     } else if (approx %in% c("normality", "gamma", "t")) {
-        message("Estimating p-values through the specified distribution.")
-        
+        message("Computing p-scores through the specified distribution.")
         if (length(getBackground(object)) > 0) {
             if (prod(dim(getMatrix(data, "diffusion"))) == 1) {
                 # Custom background, no matrix...
                 message(
                     "Diffusion matrix not loaded. ", 
-                    "Normality is not available yet for custom background.")
+                    "Normality is not available for custom background ", 
+                    "without it.")
                 return(object)
-            } else {
-                # Custom background, matrix available
+            } else {# Custom background, matrix available
                 background.matrix <- 
                     getMatrix(data, "diffusion")[, getBackground(object)]
                 RowSums <- rowSums(background.matrix)
@@ -220,7 +171,7 @@ runDiffusion <- function(
                     MARGIN = 1, 
                     FUN = function(row) sum(row*row))
                 
-                n.comp <- dim(background.matrix)[2]
+                n.comp <- ncol(background.matrix)
             }
         } else {# Default background
             n.comp <- length(getCom(data, "compound"))
@@ -258,18 +209,19 @@ runDiffusion <- function(
             Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
         
         # Heat generation vector
-        generation <- numeric(dim(KI)[1])
+        generation <- numeric(nrow(KI))
         names(generation) <- V(graph)$name
         
         # Current temperatures
         generation[comp.input] <- 1
         current.temp <- as.vector(solve(KI, generation))
         
-        # p-values
+        # Statistical moments
         temp.means <- RowSums*n.input/n.comp
         temp.vars <- n.input*(n.comp - n.input)/(n.comp*(n.comp - 1))*
             (squaredRowSums - (RowSums^2)/n.comp)
         
+        # Statistical approximations
         if (approx == "normality") {
             pscores <- stats::pnorm(
                 q = current.temp, 
@@ -292,12 +244,7 @@ runDiffusion <- function(
         }
         
         names(pscores) <- names(RowSums)
-        #     browser()
-    } else {
-        stop(
-            "Invalid 'type' argument for heat diffusion. ", 
-            "Please choose between 'simulation' and 'normality'")
-    }
+    } 
     
     object@diffusion@pscores <- pscores
     object@diffusion@approx <- approx

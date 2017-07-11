@@ -6,9 +6,10 @@
 \usage{
 checkArguments(method = "diffusion", methods = "diffusion",
     approx = "normality", loadMatrix = NULL, threshold = 0.05,
-    plimit = 15, nlimit = 250, niter = 1000, layout = FALSE,
-    splitByConnectedComponent = FALSE, thresholdConnectedComponent = 0.05,
-    GOterm = NULL, GONamesAsLabels = TRUE, LabelLengthAtPlot = 22,
+    plimit = 15, nlimit = 250, niter = 1000, t.df = 10,
+    dampingFactor = 0.85, layout = FALSE, splitByConnectedComponent = FALSE,
+    thresholdConnectedComponent = 0.05, GOterm = NULL,
+    GONamesAsLabels = TRUE, LabelLengthAtPlot = 22,
     object = new("FELLA.USER"), data = new("FELLA.DATA"), ...)
 }
 \arguments{
@@ -36,6 +37,14 @@ This limits the order of the solution graph}
 \item{niter}{Number of iterations (permutations) 
 for Monte Carlo ("simulation"), 
 must be a numeric value between 1e2 and 1e5}
+
+\item{t.df}{Numeric value; number of degrees of freedom 
+of the t distribution 
+if the approximation \code{approx = "t"} is used}
+
+\item{dampingFactor}{Numeric value between 0 and 1 (none inclusive), 
+damping factor \code{d} for 
+PageRank (\code{\link[igraph]{page_rank}})}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 
@@ -78,9 +87,10 @@ is invalid.
 }
 \examples{
 ## This function is internal
-attach(environment(FELLA:::checkArguments))
-arg1 <- checkArguments(method = "hello")
+arg1 <- FELLA:::checkArguments(method = "hello")
 arg1$valid
-arg2 <- checkArguments(method = "diffusion")
+arg2 <- FELLA:::checkArguments(method = "diffusion")
 arg2$valid
+
 }
+\keyword{internal}

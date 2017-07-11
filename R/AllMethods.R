@@ -7,12 +7,13 @@
 #' @return \code{summary} returns a list with the summary data
 #' 
 #' @rdname FELLA.USER
+#' @importFrom stats setNames
 #' @exportMethod summary
 setMethod("summary", signature = "FELLA.USER", function(object) {
     breakline <- "\n---------------------------------------------------\n"
     
     lapply(
-        listMethods(), 
+        stats::setNames(listMethods(), listMethods()), 
         function(method) {
             ans <- list()
             
@@ -76,7 +77,7 @@ setMethod("show", signature = "FELLA.DATA", function(object) {
     cat(breakline)
     
     cat("Hypergeometric test:\n")
-    if (prod(dim(object@hypergeom@matrix)) == 1) {
+    if (prod(dim(getMatrix(object, "hypergeom"))) == 1) {
         cat("- Matrix not loaded.")
     } else {
         cat("- Matrix is ready.")
@@ -298,5 +299,3 @@ setMethod(
         
         return(invisible())
     })
-
-

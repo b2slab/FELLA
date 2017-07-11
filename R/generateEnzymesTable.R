@@ -6,6 +6,7 @@
 #' with a successful enrichment analysis.
 #' 
 #' @inheritParams .params
+#' @param method one in \code{"diffusion"}, \code{"pagerank"}
 #' @param ... ignored arguments
 #'
 #' @return A table that contains the enzymes 
@@ -35,12 +36,6 @@ generateEnzymesTable <- function(
     data = NULL, 
     ...) {
     
-    if (!is.FELLA.DATA(data)) {
-        stop("'data' is not a FELLA.DATA object")
-    } else if (getStatus(data) != "loaded"){
-        stop("'data' points to an empty FELLA.DATA object")
-    }
-    
     checkArgs <- checkArguments(
         method = method, 
         threshold = threshold, 
@@ -48,9 +43,12 @@ generateEnzymesTable <- function(
         LabelLengthAtPlot = LabelLengthAtPlot, 
         object = object, 
         data = data)
-    
     if (!checkArgs$valid)
         stop("Bad argument when calling function 'generateEnzymesGraph'.")
+    
+    if (getStatus(data) != "loaded"){
+        stop("'data' points to an empty FELLA.DATA object")
+    }
     
     if (!(method %in% c("diffusion", "pagerank"))) {
         warning(
@@ -58,9 +56,7 @@ generateEnzymesTable <- function(
             " but it is ", method, ". Returning NULL...")
         return(NULL)
     }
-    
-    
-    if (is.na(getValid(object, method)) || !getValid(object, method)) {
+    if (is.na(getValid(object, method)) | !getValid(object, method)) {
         warning(
             paste0("Mehod ", method, " has not been executed yet. "),  
             "Returning NULL...")
@@ -74,7 +70,7 @@ generateEnzymesTable <- function(
     pscores.ec[pscores.ec < capPscores] <- capPscores
     
     if (pscores.ec[1] >= threshold) {
-        message("No enzyme is below the p-value threshold.")
+        message("No enzyme is below the p-score threshold.")
         return(NULL)
     } 
     nodePscores <- head(pscores.ec[pscores.ec < threshold], nlimit)
