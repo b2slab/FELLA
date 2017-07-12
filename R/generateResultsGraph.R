@@ -121,6 +121,7 @@ generateResultsGraph <- function(
     } else { 
         # DIFFUSION AND PAGERANK
         pscores <- getPscores(object, method)
+        input <- getInput(object)
         
         n.nodes <- sum(pscores < threshold)
         if (n.nodes < 1) {
@@ -158,6 +159,7 @@ generateResultsGraph <- function(
         )
         
         V(graph)$label <- vertex.labels
+        V(graph)$input <- V(graph)$name %in% input
         
         if (!splitByConnectedComponent) return(graph)
         

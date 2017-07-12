@@ -5,13 +5,10 @@
 \alias{FELLA.USER-class}
 \alias{FELLA.USER}
 \alias{show,FELLA.USER-method}
-\alias{summary,FELLA.USER-method}
 \alias{plot,FELLA.USER,missing-method}
 \title{An S4 class to save all the user analysis data}
 \usage{
 \S4method{show}{FELLA.USER}(object)
-
-\S4method{summary}{FELLA.USER}(object)
 
 \S4method{plot}{FELLA.USER,missing}(x = new("FELLA.USER"),
     method = "hypergeom", threshold = 0.05, plimit = 15, nlimit = 250,
@@ -53,9 +50,8 @@ The remaining characters will be truncated using "..."}
 \item{...}{Additional arguments passed to plotting functions}
 }
 \value{
-\code{show} returns \code{invisible()}
-
-\code{summary} returns a list with the summary data
+\code{show} invisibly returns a list of data frames with the 
+best hits for each applied method
 
 \code{plot} returns a layout if \code{layout = T}, 
 otherwise \code{invisible()}
@@ -63,10 +59,10 @@ otherwise \code{invisible()}
 \description{
 An S4 class to save all the user analysis data
 
-\code{"show"} is an S4 method to show a FELLA.USER object
-
-\code{"summary"} is an S4 method to show a summary 
-of the FELLA.USER object
+Assigning the value of show to a variable will provide
+small data frames with the best scoring pathways (\code{hypergeom})
+and the best nodes in the KEGG network (\code{diffusion} and 
+\code{pagerank})
 
 \code{"plot"} is an S4 method to plot the results 
 from a FELLA.USER object

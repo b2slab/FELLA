@@ -2,6 +2,13 @@
 
 ---
 
+### Version 0.4.4
+
+* Fused `checkArguments` into `AllArguments.R`
+* Deleted the generic `summary` as it is not necessary. 
+Now the same can be achieved using `show` only, and this avoids 
+method dispatch issues. 
+
 ### Version 0.4.3
 
 * Added the `summary` method for `FELLA.DATA` objects

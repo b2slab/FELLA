@@ -4,15 +4,12 @@
 \alias{plotGraph}
 \title{Internal function to plot a solution graph}
 \usage{
-plotGraph(graph = NULL, input = NULL, layout = FALSE,
-    graph.layout = NULL, plotLegend = TRUE, plot.fun = "plot.igraph",
-    NamesAsLabels = TRUE, ...)
+plotGraph(graph = NULL, layout = FALSE, graph.layout = NULL,
+    plotLegend = TRUE, plot.fun = "plot.igraph", NamesAsLabels = TRUE, ...)
 }
 \arguments{
 \item{graph}{Graph result that must come 
 from diffusion or pagerank analysis}
-
-\item{input}{Character vector, compounds in the input to be highlighted}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 

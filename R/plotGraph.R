@@ -51,7 +51,6 @@ mytriangle <- function(coords, v=NULL, params) {
 #' @inheritParams .params
 #' @param graph Graph result that must come 
 #' from diffusion or pagerank analysis
-#' @param input Character vector, compounds in the input to be highlighted
 #' @param graph.layout Two-column numeric matrix, if this argument is not null 
 #' then it is used as graph layout
 #' @param plotLegend Logical, should the legend be plotted as well?
@@ -83,7 +82,6 @@ mytriangle <- function(coords, v=NULL, params) {
 #' @keywords internal
 plotGraph <- function(
     graph = NULL, 
-    input = NULL, 
     layout = FALSE,
     graph.layout = NULL, 
     plotLegend = TRUE, 
@@ -109,10 +107,8 @@ plotGraph <- function(
         "triangle", clip = vertex.shapes("circle")$clip, plot = mytriangle)
     #########################################################
     
-    # Nodes in the input
-    graph.input <- intersect(input, V(graph)$name)
-    graph.input <- as.numeric(V(graph)[graph.input])
-    
+    # Nodes in the input are in V(graph)$input
+    graph.input <- V(graph)$input
     graph.com <- as.character(V(graph)$com)
     
     # Vertex shape
