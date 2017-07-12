@@ -12,7 +12,7 @@
 #' @usage data(FELLA.sample)
 #' @examples data(FELLA.sample)
 #' @return A \code{\link[FELLA]{FELLA.DATA}} object
-#' @source Generated from a mid-2014 KEGG release 
+#' @source Generated from a mid-2017 KEGG release 
 #' (\url{http://www.genome.jp/kegg/})
 "FELLA.sample"
 
@@ -29,6 +29,6 @@
 #' @usage data(input.sample)
 #' @examples data(input.sample)
 #' @return A \code{character} vector containing 30 KEGG IDs
-#' @source Generated from a mid-2014 KEGG release 
+#' @source Generated from a mid-2017 KEGG release 
 #' (\url{http://www.genome.jp/kegg/})
 "input.sample"

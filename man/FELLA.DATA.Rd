@@ -5,20 +5,27 @@
 \alias{FELLA.DATA-class}
 \alias{FELLA.DATA}
 \alias{show,FELLA.DATA-method}
+\alias{summary,FELLA.DATA-method}
 \title{An S4 class to represent all the necessary KEGG data}
 \usage{
 \S4method{show}{FELLA.DATA}(object)
+
+\S4method{summary}{FELLA.DATA}(object)
 }
 \arguments{
 \item{object}{A \code{\link[FELLA]{FELLA.DATA}} object}
 }
 \value{
 \code{show} returns \code{invisible()}
+
+\code{summary} returns \code{invisible()}
 }
 \description{
 An S4 class to represent all the necessary KEGG data
 
 \code{"show"} is an S4 method to show a FELLA.DATA object
+
+\code{"summary"} is an S4 method to show a summary of a FELLA.DATA object
 }
 \section{Slots}{
 

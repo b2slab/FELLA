@@ -8,8 +8,8 @@ exportResults(format = "csv", file = "myOutput", method = "diffusion",
     object = NULL, data = NULL, ...)
 }
 \arguments{
-\item{format}{Character, one of: \code{"csv"}, \code{"igraph"}, 
-\code{"png"}, [\code{"pdf"} soon]}
+\item{format}{Character, one of: \code{"csv"}, \code{"igraph"} 
+or supported igraph formats, see \code{\link[igraph]{write.graph}}}
 
 \item{file}{Character specifying the output 
 directory for the exported files}

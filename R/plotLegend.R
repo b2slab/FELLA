@@ -12,15 +12,14 @@
 #' 
 #' @examples 
 #' ## This function is internal
-#' attach(environment(FELLA:::showLegend))
 #' 
 #' library(igraph)
 #' g <- barabasi.game(20)
 #' plot(g)
-#' showLegend()
+#' FELLA:::plotLegend()
 #' plot(g)
-#' showLegend(GO.annot = TRUE)
-showLegend <- function(
+#' FELLA:::plotLegend(GO.annot = TRUE)
+plotLegend <- function(
     GO.annot = FALSE, 
     cex = 0.75) {
     # In the left side, legend for node categories

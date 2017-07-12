@@ -2,6 +2,14 @@
 
 ---
 
+### Version 0.4.3
+
+* Added the `summary` method for `FELLA.DATA` objects
+* Fixed some dependencies in methods
+* Separated `mytriangle` in function `plotGraph`
+* Renamed functions (`is-.R`, `plotLegend.R`)
+* Updated sample data documentation
+
 ### Version 0.4.2
 
 * Added doc template for the statistical normalisation

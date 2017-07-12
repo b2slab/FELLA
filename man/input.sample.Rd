@@ -6,7 +6,7 @@
 \title{A randomly generated list of affected metabolites}
 \format{An object of class \code{character} of length 30.}
 \source{
-Generated from a mid-2014 KEGG release 
+Generated from a mid-2017 KEGG release 
 (\url{http://www.genome.jp/kegg/})
 }
 \usage{

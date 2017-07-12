@@ -1,3 +1,47 @@
+#' Add triangular shape to igraph plot
+#' 
+#' This function enables the usage of triangles as shape in 
+#' the function \code{\link[igraph]{plot.igraph}}. 
+#' 
+#' @param coords,v,params clipping arguments, see 
+#' \code{\link[igraph]{shapes}}
+#' 
+#' @return Plot symbols
+#' 
+#' @examples 
+#' ## This function is internal
+#' library(igraph)
+#' 
+#' add.vertex.shape(
+#' "triangle", clip = shapes("circle")$clip,
+#' plot = FELLA:::mytriangle)
+#' 
+#' g <- barabasi.game(10)
+#' plot(
+#' g, vertex.shape = "triangle", 
+#' vertex.color = rainbow(vcount(g)),
+#' vertex.size = seq(10, 20, length = vcount(g)))
+#' 
+#' @importFrom graphics symbols
+#' 
+#' @keywords internal
+mytriangle <- function(coords, v=NULL, params) {
+    vertex.color <- params("vertex", "color")
+    if (length(vertex.color) != 1 && !is.null(v)) {
+        vertex.color <- vertex.color[v]
+    }
+    vertex.size <- 1/200 * params("vertex", "size")
+    if (length(vertex.size) != 1 && !is.null(v)) {
+        vertex.size <- vertex.size[v]
+    }
+    
+    graphics::symbols(
+        x = coords[, 1], y = coords[, 2], bg = vertex.color,
+        stars = cbind(vertex.size, vertex.size, vertex.size),
+        add = TRUE, inches = FALSE)
+}
+
+
 #' Internal function to plot a solution graph
 #' 
 #' This function plots a solution graph, 
@@ -10,7 +54,7 @@
 #' @param input Character vector, compounds in the input to be highlighted
 #' @param graph.layout Two-column numeric matrix, if this argument is not null 
 #' then it is used as graph layout
-#' @param showLegend Logical, should the legend be plotted as well?
+#' @param plotLegend Logical, should the legend be plotted as well?
 #' @param plot.fun Character, can be either \code{plot.igraph} or \code{tkplot}
 #' @param ... Optional further arguments for the plotting function
 #' 
@@ -21,8 +65,6 @@
 #' 
 #' @examples 
 #' ## This function is internal
-#' attach(environment(FELLA:::plotGraph))
-#' 
 #' data(FELLA.sample)
 #' data(input.sample)
 #' ## Enrich input
@@ -35,15 +77,16 @@
 #' object = obj, 
 #' data = FELLA.sample)
 #' ## Plot it
-#' plotGraph(g)
+#' FELLA:::plotGraph(g)
 #' 
 #' @import igraph
+#' @keywords internal
 plotGraph <- function(
     graph = NULL, 
     input = NULL, 
     layout = FALSE,
     graph.layout = NULL, 
-    showLegend = TRUE, 
+    plotLegend = TRUE, 
     plot.fun = "plot.igraph", 
     NamesAsLabels = TRUE, 
     ...) {
@@ -62,27 +105,8 @@ plotGraph <- function(
     }
     
     # triangle vertex shape
-    ##########################
-    # Code from igraph examples (vertex.shapes documentation)
-    mytriangle <- function(coords, v=NULL, params) {
-        vertex.color <- params("vertex", "color")
-        if (length(vertex.color) != 1 && !is.null(v)) {
-            vertex.color <- vertex.color[v]
-        }
-        vertex.size <- 1/200 * params("vertex", "size")
-        if (length(vertex.size) != 1 && !is.null(v)) {
-            vertex.size <- vertex.size[v]
-        }
-        
-        graphics::symbols(
-            x = coords[, 1], y = coords[, 2], bg = vertex.color,
-            stars = cbind(vertex.size, vertex.size, vertex.size),
-            add = TRUE, inches = FALSE)
-    }
-    # clips as a circle
     add.vertex.shape(
-        "triangle", clip=vertex.shapes("circle")$clip,
-        plot=mytriangle)
+        "triangle", clip = vertex.shapes("circle")$clip, plot = mytriangle)
     #########################################################
     
     # Nodes in the input
@@ -188,7 +212,7 @@ plotGraph <- function(
     }
     
     # Plot the legend
-    if (showLegend) showLegend(GO.annot = TRUE)
+    if (plotLegend) plotLegend(GO.annot = GO.annot)
     
     mapPrefix <- c(
         "1" = "",

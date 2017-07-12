@@ -6,8 +6,8 @@
 #' an \code{\link[igraph]{igraph}} object 
 #' or a pdf report [under construction]
 #' 
-#' @param format Character, one of: \code{"csv"}, \code{"igraph"}, 
-#' \code{"png"}, [\code{"pdf"} soon] 
+#' @param format Character, one of: \code{"csv"}, \code{"igraph"} 
+#' or supported igraph formats, see \code{\link[igraph]{write.graph}}
 #' @param file Character specifying the output 
 #' directory for the exported files
 #' @inheritParams .params

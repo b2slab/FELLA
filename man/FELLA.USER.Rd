@@ -4,19 +4,20 @@
 \name{FELLA.USER-class}
 \alias{FELLA.USER-class}
 \alias{FELLA.USER}
-\alias{summary,FELLA.USER-method}
 \alias{show,FELLA.USER-method}
+\alias{summary,FELLA.USER-method}
 \alias{plot,FELLA.USER,missing-method}
 \title{An S4 class to save all the user analysis data}
 \usage{
-\S4method{summary}{FELLA.USER}(object)
-
 \S4method{show}{FELLA.USER}(object)
 
-\S4method{plot}{FELLA.USER,missing}(x = 1, method = "hypergeom",
-    threshold = 0.05, plimit = 15, nlimit = 250, layout = FALSE,
-    splitByConnectedComponent = FALSE, thresholdConnectedComponent = 0.05,
-    LabelLengthAtPlot = 22, data = NULL, ...)
+\S4method{summary}{FELLA.USER}(object)
+
+\S4method{plot}{FELLA.USER,missing}(x = new("FELLA.USER"),
+    method = "hypergeom", threshold = 0.05, plimit = 15, nlimit = 250,
+    layout = FALSE, splitByConnectedComponent = FALSE,
+    thresholdConnectedComponent = 0.05, LabelLengthAtPlot = 22, data = NULL,
+    ...)
 }
 \arguments{
 \item{object}{A \code{\link{FELLA.USER}} object}
@@ -52,9 +53,9 @@ The remaining characters will be truncated using "..."}
 \item{...}{Additional arguments passed to plotting functions}
 }
 \value{
-\code{summary} returns a list with the summary data
-
 \code{show} returns \code{invisible()}
+
+\code{summary} returns a list with the summary data
 
 \code{plot} returns a layout if \code{layout = T}, 
 otherwise \code{invisible()}
@@ -62,10 +63,10 @@ otherwise \code{invisible()}
 \description{
 An S4 class to save all the user analysis data
 
+\code{"show"} is an S4 method to show a FELLA.USER object
+
 \code{"summary"} is an S4 method to show a summary 
 of the FELLA.USER object
-
-\code{"show"} is an S4 method to show a FELLA.USER object
 
 \code{"plot"} is an S4 method to plot the results 
 from a FELLA.USER object

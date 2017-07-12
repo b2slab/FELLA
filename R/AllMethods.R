@@ -1,56 +1,3 @@
-#' \code{"summary"} is an S4 method to show a summary 
-#' of the FELLA.USER object
-#'
-# @param object A \code{\link{FELLA.USER}} object
-# Already in the show documentation
-#' 
-#' @return \code{summary} returns a list with the summary data
-#' 
-#' @rdname FELLA.USER
-#' @importFrom stats setNames
-#' @exportMethod summary
-setMethod("summary", signature = "FELLA.USER", function(object) {
-    breakline <- "\n---------------------------------------------------\n"
-    
-    lapply(
-        stats::setNames(listMethods(), listMethods()), 
-        function(method) {
-            ans <- list()
-            
-            valid <- getValid(object, method)
-            if (is.na(valid)) return("Not performed")
-            if (!valid) return("Failed")
-            
-            if (method == "hypergeom") {
-                pval <- getPscores(object, "hypergeom")
-                p.values <- head(sort(pval), 30)
-                
-                data.frame(
-                    "Description" = names(p.values), 
-                    "p.value" = signif(p.values, digits = 4))
-            } else {
-                psco <- sort(getPscores(object, method))
-                out.pscores <- signif(psco[psco < .05], digits = 3)
-                # Set a threshold
-
-                out.pscores <- format(out.pscores)
-                out.pscores[out.pscores < 1e-6] <- "<1e-6"
-                
-                out.names <- names(out.pscores)
-                out.order <- order(out.names)
-                
-                df <- data.frame(
-                    "KEGG id" = names(out.pscores), 
-                    "p.score" = out.pscores)
-                row.names(df) <- NULL
-                
-                df
-            }
-        }
-    )
-})
-
-
 #' \code{"show"} is an S4 method to show a FELLA.DATA object
 #'
 #' @param object A \code{\link[FELLA]{FELLA.DATA}} object
@@ -58,9 +5,10 @@ setMethod("summary", signature = "FELLA.USER", function(object) {
 #' @return \code{show} returns \code{invisible()}
 #' 
 #' @rdname FELLA.DATA
+#' @import igraph
 #' @exportMethod show
 setMethod("show", signature = "FELLA.DATA", function(object) {
-    breakline <- "\n---------------------------------------------------\n"
+    breakline <- "\n-----------------------------\n"
     
     cat("General data:\n")
     if (vcount(getGraph(object)) == 0) {
@@ -127,7 +75,7 @@ setMethod("show", signature = "FELLA.DATA", function(object) {
 setMethod("show", signature = "FELLA.USER", function(object) {
     breakline <- function() {
         cat(fill = TRUE)
-        cat("---------------------------------------------------", fill = TRUE)
+        cat("-----------------------------", fill = TRUE)
     }
     
     cat("Compounds in the input: ")
@@ -181,6 +129,148 @@ setMethod("show", signature = "FELLA.USER", function(object) {
     invisible()
 })
 
+#' \code{"summary"} is an S4 method to show a summary of a FELLA.DATA object
+#'
+# @param object A \code{\link[FELLA]{FELLA.DATA}} object
+# Already documented
+#' 
+#' @return \code{summary} returns \code{invisible()}
+#' 
+#' @rdname FELLA.DATA
+#' @import igraph
+#' @importFrom utils object.size
+#' @exportMethod summary
+setMethod("summary", signature = "FELLA.DATA", function(object) {
+    breakline <- "\n-----------------------------\n"
+    
+    cat("General data:\n")
+    g <- getGraph(object)
+    if (vcount(g) == 0) {
+        cat("- KEGG graph not loaded.\n")
+    } else {
+        cat("- KEGG graph:\n")
+        # To keep the original order, subset it
+        tab.com <- table(listCategories()[V(g)$com])[listCategories()]
+        tab.show <- paste0("    + ", names(tab.com), " [", tab.com, "]")
+        cat("  * Nodes: ", vcount(g), "\n")
+        cat("  * Edges: ", ecount(g), "\n")
+        cat("  * Density: ", graph.density(g), "\n")
+        cat("  * Categories:\n")
+        cat(tab.show, sep = "\n")
+        cat("  * Size: ", format(utils::object.size(g), "auto"), "\n")
+    }
+    if (length(object@keggdata@id2name) == 0) {
+        cat("- KEGG names not loaded.")
+    } else {
+        cat("- KEGG names are ready.")
+    }
+    
+    cat(breakline)
+    
+    cat("Hypergeometric test:\n")
+    mat <- getMatrix(object, "hypergeom")
+    if (prod(dim(mat)) == 1) {
+        cat("- Matrix not loaded.")
+    } else {
+        cat("- Matrix is ready\n")
+        cat("  * Dim: ", nrow(mat), "x", ncol(mat), "\n")
+        cat("  * Size: ", format(utils::object.size(mat), "auto"))
+    }
+    
+    cat(breakline)
+    
+    cat("Heat diffusion:\n")
+    mat <- getMatrix(object, "diffusion")
+    if (prod(dim(mat)) == 1) {
+        cat("- Matrix not loaded.\n")
+    } else {
+        cat("- Matrix is ready\n")
+        cat("  * Dim: ", nrow(mat), "x", ncol(mat), "\n")
+        cat("  * Size: ", format(utils::object.size(mat), "auto"), "\n")
+    }
+    if (length(getSums(object, "diffusion", squared = FALSE)) == 0 || 
+        length(getSums(object, "diffusion", squared = TRUE)) == 0) {
+        cat("- RowSums not loaded.")
+    } else {
+        cat("- RowSums are ready.")
+    }
+    
+    cat(breakline)
+    
+    cat("PageRank:\n")
+    mat <- getMatrix(object, "pagerank")
+    if (prod(dim(mat)) == 1) {
+        cat("- Matrix not loaded.\n")
+    } else {
+        cat("- Matrix is ready\n")
+        cat("  * Dim: ", nrow(mat), "x", ncol(mat), "\n")
+        cat("  * Size: ", format(utils::object.size(mat), "auto"), "\n")
+    }
+    if (length(getSums(object, "pagerank", squared = FALSE)) == 0 || 
+        length(getSums(object, "pagerank", squared = TRUE)) == 0) {
+        cat("- RowSums not loaded.\n")
+    } else {
+        cat("- RowSums are ready.\n")
+    }
+    
+    invisible()
+})
+
+#' \code{"summary"} is an S4 method to show a summary 
+#' of the FELLA.USER object
+#'
+# @param object A \code{\link{FELLA.USER}} object
+# Already in the show documentation
+#' 
+#' @return \code{summary} returns a list with the summary data
+#' 
+#' @rdname FELLA.USER
+#' @importFrom stats setNames
+#' @exportMethod summary
+setMethod("summary", signature = "FELLA.USER", function(object) {
+    breakline <- "\n-----------------------------\n"
+    
+    lapply(
+        stats::setNames(listMethods(), listMethods()), 
+        function(method) {
+            ans <- list()
+            
+            valid <- getValid(object, method)
+            if (is.na(valid)) return("Not performed")
+            if (!valid) return("Failed")
+            
+            if (method == "hypergeom") {
+                pval <- getPscores(object, "hypergeom")
+                p.values <- head(sort(pval), 30)
+                
+                data.frame(
+                    "Description" = names(p.values), 
+                    "p.value" = signif(p.values, digits = 4))
+            } else {
+                psco <- sort(getPscores(object, method))
+                out.pscores <- signif(psco[psco < .05], digits = 3)
+                # Set a threshold
+
+                out.pscores <- format(out.pscores)
+                out.pscores[out.pscores < 1e-6] <- "<1e-6"
+                
+                out.names <- names(out.pscores)
+                out.order <- order(out.names)
+                
+                df <- data.frame(
+                    "KEGG id" = names(out.pscores), 
+                    "p.score" = out.pscores)
+                row.names(df) <- NULL
+                
+                df
+            }
+        }
+    )
+})
+
+
+
+
 #' \code{"plot"} is an S4 method to plot the results 
 #' from a FELLA.USER object
 #'
@@ -197,7 +287,7 @@ setMethod(
     "plot", 
     signature(x = "FELLA.USER", y = "missing"), 
     function(
-        x = 1, 
+        x = new("FELLA.USER"), 
         method = "hypergeom", 
         threshold = 0.05, 
         plimit = 15, 

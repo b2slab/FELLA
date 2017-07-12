@@ -44,3 +44,4 @@ data = FELLA.sample)
 FELLA:::plotBipartite(g)
 
 }
+\keyword{internal}

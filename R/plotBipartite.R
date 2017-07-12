@@ -33,6 +33,8 @@
 #' FELLA:::plotBipartite(g)
 #' 
 #' @import igraph
+#' 
+#' @keywords internal
 plotBipartite <- function(
     graph = NULL, 
     layout = FALSE, 

@@ -5,7 +5,7 @@
 \title{Internal function to plot a solution graph}
 \usage{
 plotGraph(graph = NULL, input = NULL, layout = FALSE,
-    graph.layout = NULL, showLegend = TRUE, plot.fun = "plot.igraph",
+    graph.layout = NULL, plotLegend = TRUE, plot.fun = "plot.igraph",
     NamesAsLabels = TRUE, ...)
 }
 \arguments{
@@ -19,7 +19,7 @@ from diffusion or pagerank analysis}
 \item{graph.layout}{Two-column numeric matrix, if this argument is not null 
 then it is used as graph layout}
 
-\item{showLegend}{Logical, should the legend be plotted as well?}
+\item{plotLegend}{Logical, should the legend be plotted as well?}
 
 \item{plot.fun}{Character, can be either \code{plot.igraph} or \code{tkplot}}
 
@@ -41,8 +41,6 @@ analysis.
 }
 \examples{
 ## This function is internal
-attach(environment(FELLA:::plotGraph))
-
 data(FELLA.sample)
 data(input.sample)
 ## Enrich input
@@ -55,6 +53,7 @@ threshold = 0.1,
 object = obj, 
 data = FELLA.sample)
 ## Plot it
-plotGraph(g)
+FELLA:::plotGraph(g)
 
 }
+\keyword{internal}
