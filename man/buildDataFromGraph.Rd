@@ -7,7 +7,7 @@
 buildDataFromGraph(keggdata.graph = NULL, databaseDir = "myDatabase",
     internalDir = TRUE, matrices = c("hypergeom", "diffusion", "pagerank"),
     normality = c("diffusion", "pagerank"), dampingFactor = 0.85,
-    niter = 1000)
+    niter = 100)
 }
 \arguments{
 \item{keggdata.graph}{An \code{\link[igraph]{igraph}} 
@@ -69,7 +69,7 @@ niter = 10)
 g <- buildGraphFromKEGGREST()
 buildDataFromGraph(
 keggdata.graph = g, 
-outputDir = "myFirstDb", 
+databaseDir = "myFirstDb", 
 internalDir = TRUE, 
 matrices = c("hypergeom", "diffusion", "pagerank"), 
 normality = c("diffusion", "pagerank"), 

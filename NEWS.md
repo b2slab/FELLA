@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.4.5
+
+* Modified size p-value computation. Now it is more efficient and consistent
+
 ### Version 0.4.4
 
 * Fused `checkArguments` into `AllArguments.R`

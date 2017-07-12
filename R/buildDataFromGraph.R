@@ -52,7 +52,7 @@
 #' g <- buildGraphFromKEGGREST()
 #' buildDataFromGraph(
 #' keggdata.graph = g, 
-#' outputDir = "myFirstDb", 
+#' databaseDir = "myFirstDb", 
 #' internalDir = TRUE, 
 #' matrices = c("hypergeom", "diffusion", "pagerank"), 
 #' normality = c("diffusion", "pagerank"), 
@@ -69,7 +69,7 @@ buildDataFromGraph <- function(
     matrices = c("hypergeom", "diffusion", "pagerank"), 
     normality = c("diffusion", "pagerank"), 
     dampingFactor = 0.85, 
-    niter = 1e3) {
+    niter = 1e2) {
     
     # Checking the input #
     ######################
@@ -112,8 +112,8 @@ buildDataFromGraph <- function(
         stop("'niter' must be an integer greater than 10 and smaller than 1e4.")
     niter <- round(niter)
     
-    if (niter < 10 | niter > 1e4) 
-        stop("'niter' must be an integer between 10 and 1e4.")
+    if (niter < 10 | niter > 1e3) 
+        stop("'niter' must be an integer between 10 and 1e3.")
     
     ###################
     # Database directory 
@@ -145,35 +145,51 @@ buildDataFromGraph <- function(
     
     
     # See the probs of getting at least a connected component with a given size
-    subgraph.size <- 1:250
-    component.size <- 1:250
+    subgraph.size <- seq(250)
+    component.size <- seq(250)
     
     message(
         "Computing probabilities for random subgraphs... ", 
         "(this may take a while)")
-    keggdata.pvalues.size <- sapply(subgraph.size, function(k) {
-        if (k %% round(.1*tail(subgraph.size, 1)) == 0) 
-            message(round(k*100/tail(subgraph.size, 1)), "%")
-        
-        null <- sapply(1:niter, function(dummy) {
-            select <- sample(vcount(keggdata.graph), k)
-            sel.g <- induced.subgraph(graph = keggdata.graph, vids = select)
-            sel.c <- clusters(sel.g)
-            sel.t <- table(sel.c$csize)
-            
-            sapply(component.size, function(j) {
-                sum(sel.t[as.numeric(names(sel.t)) > j])
-            })
-            
-        })
-        
-        pvals <- apply(null, 1, function(row) {
-            mean(row > 0)
-        })
-        
-        pvals
-    })
     
+    # Run as many trials as specified
+    array.null <- plyr::laply(
+        seq(niter), 
+        function(dummy) {
+            # Sample the maximum amount of nodes 
+            select <- sample(
+                vcount(keggdata.graph), 
+                tail(subgraph.size, 1))
+            
+            # For each k.sub <= subgraph.size, see the distribution of CCs
+            plyr::laply(
+                subgraph.size, 
+                function(k.sub) {
+                    # sample a subgraph every time
+                    # it is important to use the head of the sampled values
+                    # without any further sorting to avoid introducing biases
+                    sel.g <- induced.subgraph(
+                        graph = keggdata.graph, 
+                        vids = head(select, k.sub))
+                    # largest cc
+                    csize.max <- max(clusters(sel.g)$csize)
+                    
+                    # sizes for which the random trial reported any 
+                    # cc as large as them
+                    component.size <= csize.max
+                }
+            )
+        }, 
+        .progress = "text"
+    )
+    keggdata.pvalues.size <- apply(
+        array.null, 
+        MARGIN = c(3, 2), # This ensures rows are component sizes
+        function(run) {
+            # empirical pvalue-like quantity
+            (sum(run) + 1)/(length(run) + 1)
+        }
+    )
     colnames(keggdata.pvalues.size) <- subgraph.size
     rownames(keggdata.pvalues.size) <- component.size
     
@@ -326,6 +342,6 @@ buildDataFromGraph <- function(
         
         rm(R, K, pagerank.matrix)
     }
-    return(invisible(TRUE))
+    invisible(TRUE)
 }
 
