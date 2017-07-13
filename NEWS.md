@@ -2,6 +2,17 @@
 
 ---
 
+### Version 0.4.7
+
+* Improved vignette text and added Bioconductor style
+* Added `BiocStyle` as a dependency
+
+To do:
+
+* General check of arguments and documentation
+* Quantitative input?
+* Elaborate on this vignette or build another one for publication
+
 ### Version 0.4.6
 
 * Removed the infamous `splitByCC` part (from `checkArguments`, 

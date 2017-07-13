@@ -1,21 +1,30 @@
 ---
-title: "An overview of FELLA: data enrichment for metabolomics"
-author: "Sergio Picart-Armada"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+title: "An overview of FELLA: data enrichment for metabolomics summary data"
+author: 
+-   name: Sergio Picart-Armada 
+    affiliation: B2SLab at Polytechnic University of Catalonia
+    email: sergi.picart@upc.edu
+-   name: Alexandre Perera-Lluna
+    affiliation: B2SLab at Polytechnic University of Catalonia
+    email: alexandre.perera@upc.edu
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('FELLA')`"
+output: BiocStyle::html_document
+bibliography: bibliography.bib
 vignette: >
-    %\VignetteIndexEntry{An overview of FELLA}
+    %\VignetteIndexEntry{Quick start}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 ---
 
-## Introduction
+# Introduction
 
 `FELLA` is an R package that brings a new concept 
 for metabolomics data interpretation. 
-In an experimental study, once the metabolite abundances 
-are determined it is _usually_ feasible to elaborate 
-a list of affected metabolites. This list, that may vary in size, 
+The starting point of this data enrichment is 
+a list of affected metabolites, which can stem from a 
+contrast between experimental groups. 
+This list, that may vary in size, 
 encompasses key role players from different 
 __biological pathways__ that generate a biological perturbation. 
 
@@ -24,8 +33,10 @@ is the __over representation analysis__.
 Each metabolic pathway has a statistic, 
 the number of affected metabolites in it, that yields a p-value. 
 After correcting for multiple testing, 
-a list of prioritised pathways helps identify 
-putative biological mechanisms. 
+a list of prioritised pathways helps 
+performing a quality check on the data and 
+suggesting novel biological mechanisms 
+related to the data. 
 Subsequent generations of __pathway analysis__ methods 
 attempt to include quantitative and/or topological data 
 in the statistics in order to improve power for subtle signals, 
@@ -34,40 +45,47 @@ but the interpretation of a prioritised pathway list remains a challenge.
 Package `FELLA`, on the other hand, 
 introduces a comprehensive output that encompasses 
 other biological entities that coherently relate 
-the top ranked pathways. The priorisation of the pathways 
-and other entiteis stems from a 
-holistic diffusion process on a __graph representation__ 
+the top ranked pathways. 
+The priorisation of the pathways and other entiteis stems from a 
+diffusion process on a holistic __graph representation__ 
 of the __KEGG database__. 
 `FELLA` needs:
 
 1. The KEGG graph and other complementary data files. 
 This is stored in a unique `FELLA.DATA` S4 object.
 2. A list of affected metabolites (KEGG compounds). 
-This is stored in a unique `FELLA.USER` S4 object, along with user analyses.
+This is stored in a unique `FELLA.USER` S4 object, 
+along with user analyses.
 
-## Loading the KEGG data
+# Loading the KEGG data
 
 This vignette makes use of sample data 
-that contains small subgraph of `FELLA`'s KEGG graph. 
+that contains small subgraph of `FELLA`'s KEGG graph
+(mid 2017 KEGG release). 
 All the necessary contextual data is stored 
 in an S4 data structure with class `FELLA.DATA`. 
 Several functions need access to the contextual data, 
 passed as an argument called `data`, 
 being the enrichment itself among them.
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-library(FELLA)
-```
-
 ```{r, warning=FALSE, message=FALSE}
+library(FELLA)
+
 data("FELLA.sample")
-
 class(FELLA.sample)
-
 show(FELLA.sample)
 ```
 
-## Loading the metabolomics summary data
+Keep in mind that `FELLA.DATA` objects need to 
+be constructed only once by using `buildGraphFromKEGGREST` 
+and `buildDataFromGraph`, in that precise order. 
+This will store them in a local path and they 
+should be loaded through `loadKEGGdata`. 
+The user is disadvised from manually modifying the database
+internal files and the `FELLA.DATA` object slots
+not to corrupt the database.
+
+# Loading the metabolomics summary data
 
 The second block of necessary data 
 is a list of affected metabolites, 
@@ -78,7 +96,6 @@ that do not map to the graph are added.
 
 ```{r, warning=FALSE, message=FALSE}
 data("input.sample")
-
 input.full <- c(input.sample, paste0("intruder", 1:10))
 
 show(input.full)
@@ -88,6 +105,9 @@ Compounds are introduced through the `defineCompounds`
 function and provide the first `FELLA.USER` 
 user data object containing the 
 mapped compounds and empty analyses slots. 
+The user should always build `FELLA.USER` objects 
+through `defineCompounds` instead of manipulating 
+the slots of the object manually - this might skip quality checks.
 
 ```{r, warning=TRUE, message=TRUE}
 myAnalysis <- defineCompounds(
@@ -123,13 +143,13 @@ defineCompounds(
     data = FELLA.sample)
 ```
 
-## Enriching the data
+# Enriching the data
 
 Once the `FELLA.DATA` and the `FELLA.USER` 
 with the affected metabolites are ready, 
 the data can be easily enriched. 
 
-### Enrichment methods
+## Enrichment methods
 
 There are three methods to enrich:
 
@@ -146,7 +166,7 @@ This subgraph can be plotted an interpreted
 analogous to `"diffusion"` but using the directed diffusion, 
 which matches the PageRank algorithm for web ranking.
 
-### Statistical approximations
+## Statistical approximations
 
 For methods `"diffusion"` and `"pagerank"`, 
 two statistical approximations are proposed:
@@ -162,17 +182,7 @@ of the random variables.
 This approximation requires computing the random trials, 
 governed by the `ntrials` argument. 
 
-Vignettes are long form documentation 
-commonly included in packages.
-Because they are part of the distribution of the package, 
-they need to be as compact as possible. 
-The `html_vignette` output type provides 
-a custom style sheet (and tweaks some options) 
-to ensure that the resulting html is 
-as small as possible. 
-The `html_vignette` format:
-
-### Enrichment: methods, approximations and wrapper function
+## Enrichment: methods, approximations and wrapper function
 
 The function `enrich` wraps the functions 
 `defineCompounds`, `runHypergeom`, `runDiffusion` and `runPagerank` 
@@ -193,18 +203,17 @@ Let's compare an empty `FELLA.USER` object
 
 ```{r, warning=TRUE, message=TRUE}
 show(new("FELLA.USER"))
-summary(new("FELLA.USER"))
 ```
 
 to the output of a processed one:
 
 ```{r, warning=TRUE, message=TRUE}
 show(myAnalysis)
-summary(myAnalysis)
 ```
 
 The wrapper function `enrich` can run the three analysis 
-at once with the option `method = "all"`:
+at once with the option `method = listMethods()`, or only 
+the desired ones providing them as a character vector:
 
 ```{r, warning=FALSE, message=FALSE}
 myAnalysis <- enrich(
@@ -227,13 +236,13 @@ myAnalysis_bis <- runDiffusion(
 show(myAnalysis_bis)
 ```
 
-## Visualising the results
+# Visualising the results
 
 The method `plot` for data from the package `FELLA` 
 allows a friendly visualisation of the relevant 
 part of the KEGG graph. 
 
-### Hypergeom
+## Hypergeom
 
 In the case `method = "hypergeom"` the plot encompasses 
 a bipartite graph that contains 
@@ -251,7 +260,7 @@ plot(
     data = FELLA.sample)
 ```
 
-### Diffusion
+## Diffusion
 
 For `method = "diffusion"` the graph contains 
 a richer representations involving
@@ -267,7 +276,7 @@ plot(
     data = FELLA.sample)
 ```
 
-### PageRank
+## PageRank
 
 For `method = "pagerank"` the concept is analogous to diffusion:
 
@@ -280,12 +289,12 @@ plot(
     data = FELLA.sample)
 ```
 
-## Exporting the results
+# Exporting the results
 
 `FELLA` offers several exporting alternatives, 
 both for the R environment and for external software.
 
-### Exporting inside R
+## Exporting inside R
 
 The appropriate functions to export the results 
 inside R are `generateResultsTable` for a __data.frame__ object:
@@ -313,7 +322,7 @@ myGraph <- generateResultsGraph(
 show(myGraph)
 ```
 
-### Exporting outside R
+## Exporting outside R
 
 Results can be saved as permanent files. 
 The __data.frame__ data format can be saved as a `.csv` file:
@@ -371,3 +380,12 @@ stopifnot("graph.pajek" %in% list.files(myTempDir))
 
 This option is toggled if the format 
 does not match any other predefined export option. 
+
+# Session info
+
+For reproducibility purposes, below is the `sessionInfo()` output:
+
+```{r}
+sessionInfo()
+```
+
