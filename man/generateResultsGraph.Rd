@@ -5,9 +5,8 @@
 \title{Generate graph objects from the enrichment results}
 \usage{
 generateResultsGraph(method = "diffusion", threshold = 0.05, plimit = 15,
-    nlimit = 250, splitByConnectedComponent = FALSE,
-    thresholdConnectedComponent = 0.05, LabelLengthAtPlot = 22,
-    object = NULL, data = NULL, ...)
+    nlimit = 250, thresholdConnectedComponent = 0.05,
+    LabelLengthAtPlot = 22, object = NULL, data = NULL, ...)
 }
 \arguments{
 \item{method}{Character, exactly one of: 
@@ -20,9 +19,6 @@ Applied when filtering KEGG nodes}
 
 \item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
 This limits the order of the solution graph}
-
-\item{splitByConnectedComponent}{Logical, 
-should the solution be split by CC?}
 
 \item{thresholdConnectedComponent}{Numeric value between 0 and 1. 
 Connected components that are below the threshold are kept, 
@@ -39,9 +35,7 @@ The remaining characters will be truncated using "..."}
 \item{...}{ignored arguments}
 }
 \value{
-An \code{\link{igraph}} object if 
-\code{splitByConnectedComponent = F}; 
-a list of \code{\link{igraph}} objects otherwise.
+An \code{\link{igraph}} object
 }
 \description{
 Function \code{generateResultsGraph} returns a graph object with class 

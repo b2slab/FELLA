@@ -12,9 +12,8 @@
 
 \S4method{plot}{FELLA.USER,missing}(x = new("FELLA.USER"),
     method = "hypergeom", threshold = 0.05, plimit = 15, nlimit = 250,
-    layout = FALSE, splitByConnectedComponent = FALSE,
-    thresholdConnectedComponent = 0.05, LabelLengthAtPlot = 22, data = NULL,
-    ...)
+    layout = FALSE, thresholdConnectedComponent = 0.05,
+    LabelLengthAtPlot = 22, data = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{FELLA.USER}} object}
@@ -33,9 +32,6 @@ Applied when filtering KEGG nodes}
 This limits the order of the solution graph}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
-
-\item{splitByConnectedComponent}{Logical, 
-should the solution be split by CC?}
 
 \item{thresholdConnectedComponent}{Numeric value between 0 and 1. 
 Connected components that are below the threshold are kept, 

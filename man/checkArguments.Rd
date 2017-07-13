@@ -7,7 +7,7 @@
 checkArguments(method = "diffusion", methods = "diffusion",
     approx = "normality", loadMatrix = NULL, threshold = 0.05,
     plimit = 15, nlimit = 250, niter = 1000, t.df = 10,
-    dampingFactor = 0.85, layout = FALSE, splitByConnectedComponent = FALSE,
+    dampingFactor = 0.85, layout = FALSE,
     thresholdConnectedComponent = 0.05, GOterm = NULL,
     GONamesAsLabels = TRUE, LabelLengthAtPlot = 22,
     object = new("FELLA.USER"), data = new("FELLA.DATA"), ...)
@@ -47,9 +47,6 @@ damping factor \code{d} for
 PageRank (\code{\link[igraph]{page_rank}})}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
-
-\item{splitByConnectedComponent}{Logical, 
-should the solution be split by CC?}
 
 \item{thresholdConnectedComponent}{Numeric value between 0 and 1. 
 Connected components that are below the threshold are kept, 

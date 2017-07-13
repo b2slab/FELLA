@@ -220,7 +220,6 @@ setMethod(
         plimit = 15, 
         nlimit = 250, 
         layout = FALSE, 
-        splitByConnectedComponent = FALSE, 
         thresholdConnectedComponent = 0.05, 
         LabelLengthAtPlot = 22, 
         data = NULL, 
@@ -232,7 +231,6 @@ setMethod(
             plimit = plimit, 
             nlimit = nlimit, 
             layout = layout, 
-            splitByConnectedComponent = splitByConnectedComponent, 
             thresholdConnectedComponent = thresholdConnectedComponent, 
             LabelLengthAtPlot = LabelLengthAtPlot, 
             object = x, 
@@ -267,50 +265,21 @@ setMethod(
         } else {
             # We have checked that "method" is in hypergeom, diffusion
             # and pagerank. Therefore, it's one of the last two
-            # That may be a list or a unique graph
-            if (!splitByConnectedComponent) {
-                graph <- generateResultsGraph(
-                    method = method, 
-                    threshold = threshold, 
-                    nlimit = nlimit,
-                    splitByConnectedComponent = FALSE, 
-                    LabelLengthAtPlot = LabelLengthAtPlot, 
-                    object = x, 
-                    data = data)
-                
-                ans.return <- plotGraph(
-                    graph = graph, 
-                    layout = layout, 
-                    ...)
-
-                return(invisible(ans.return))
-            } else {
-                graph.list <- generateResultsGraph(
-                    method = method, 
-                    threshold = threshold, 
-                    nlimit = nlimit,
-                    splitByConnectedComponent = TRUE, 
-                    LabelLengthAtPlot = LabelLengthAtPlot, 
-                    object = x, 
-                    data = data)
-                
-                ans <- lapply(1:length(graph.list), function(graph.id) {
-                    graph <- graph.list[[graph.id]]
-                    
-                    ans.layout <- plotGraph(
-                        graph = graph, 
-                        layout = layout, 
-                        ...)
-
-                    ans.layout
-                })
-
-                names(ans) <- names(graph.list)
-                
-                if (layout) return(invisible(ans))
-                return(invisible())
-            }
+            # It has to be one graph
+            graph <- generateResultsGraph(
+                method = method, 
+                threshold = threshold, 
+                nlimit = nlimit,
+                LabelLengthAtPlot = LabelLengthAtPlot, 
+                object = x, 
+                data = data)
+            
+            ans.return <- plotGraph(
+                graph = graph, 
+                layout = layout, 
+                ...)
+            
+            return(invisible(ans.return))
         }
-        
         return(invisible())
     })

@@ -143,16 +143,12 @@ shinyUI(fluidPage(
               step = 5, 
               value = 250), 
             #################################
-            checkboxInput(
-              "splitByConnectedComponent", 
-              label = "Split solution graph by connected components"), 
-            #################################
             sliderInput(
               "thresholdConnectedComponent", 
               label = h4(
                 "Threshold for the size of a connected component to be shown"), 
-              min = 0.001, 
-              max = 0.1, 
+              min = 0.01, 
+              max = 1, 
               step = 0.001,
               value = 0.05), 
             #################################
@@ -201,11 +197,6 @@ shinyUI(fluidPage(
         "3. Examine your results", 
         textOutput("graphSize", container = h2), 
         textOutput("hoverNode", container = h3), 
-        selectInput(
-          "selectGraphCC", 
-          label = "Select connected component to visualise:", 
-          choices = list("No graph available" =  1), 
-          selected = 1), 
         visNetworkOutput(
             "cytoscapePlot", 
             height = "800px"

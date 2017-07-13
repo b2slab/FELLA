@@ -128,63 +128,16 @@ shinyServer(function(input, output, session) {
           threshold = input$threshold, 
           plimit = 15, 
           nlimit = input$nlimit, 
-          splitByConnectedComponent = input$splitByConnectedComponent, 
           thresholdConnectedComponent = input$thresholdConnectedComponent, 
           LabelLengthAtPlot = input$LabelLengthAtPlot, 
           data = data))
     }
   })
-  
-  # This function tracks the number of CCs and 
-  # lets the user choose with an input text
-  #  inputText 'updateSelectInput' changes as the 
-  #  size of the graph list does.
-  observe({
-    if (input$method == "hypergeom") {
-      # Hypergeometric test has been chosen
-      updateSelectInput(
-        session = session, 
-        inputId = "selectGraphCC", 
-        choices = list("Whole graph (hypergeometric test)" =  1), 
-        selected = 1)
-    } else {
-      if (as.logical(input$splitByConnectedComponent)) {
-        #  If the result is split by cc... 
-        #  make a new selectInput! With all the cc's.
-        sizes <- sapply(generateGraph(), vcount)
-        pscores <- names(generateGraph())
-        outputNames <- paste0(sizes, " nodes (p = ", pscores, ")")
-        outputChoice <- as.list(1:length(outputNames))
-        names(outputChoice) <- outputNames
-        
-        updateSelectInput(
-            session = session, 
-            inputId = "selectGraphCC", 
-            choices = outputChoice, 
-            selected = 1)
-      } else {
-        # If it is not split.. there is only one cc...
-        updateSelectInput(
-            session = session, 
-            inputId = "selectGraphCC", 
-            choices = list("Whole graph (not split by CC)" =  1), 
-            selected = 1)
-      }
-    }
-  })
-  
+ 
   # This function returns the currently chosen graph connected component
   currentGraph <- reactive({
     if (!is.null(createUser())) {
-      if (input$method == "hypergeom") {
-        return(generateGraph())
-      } else {
-        if (!input$splitByConnectedComponent) {
-          return(generateGraph())
-        } else {
-          return(generateGraph()[[as.numeric(input$selectGraphCC)]])
-        }
-      }
+      return(generateGraph())
     }
     return(NULL)
   })

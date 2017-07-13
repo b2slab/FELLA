@@ -8,9 +8,7 @@
 #' @inheritParams .params
 #' @param ... ignored arguments
 #'
-#' @return An \code{\link{igraph}} object if 
-#' \code{splitByConnectedComponent = F}; 
-#' a list of \code{\link{igraph}} objects otherwise.
+#' @return An \code{\link{igraph}} object 
 #' 
 #' @examples 
 #' data(FELLA.sample)
@@ -33,7 +31,6 @@ generateResultsGraph <- function(
     threshold = 0.05, 
     plimit = 15, 
     nlimit = 250, 
-    splitByConnectedComponent = FALSE, 
     thresholdConnectedComponent = 0.05, 
     LabelLengthAtPlot = 22, 
     object = NULL, 
@@ -52,7 +49,6 @@ generateResultsGraph <- function(
         threshold = threshold, 
         plimit = plimit, 
         nlimit = nlimit, 
-        splitByConnectedComponent = splitByConnectedComponent, 
         thresholdConnectedComponent = thresholdConnectedComponent, 
         LabelLengthAtPlot = LabelLengthAtPlot, 
         object = object, 
@@ -161,8 +157,7 @@ generateResultsGraph <- function(
         V(graph)$label <- vertex.labels
         V(graph)$input <- V(graph)$name %in% input
         
-        if (!splitByConnectedComponent) return(graph)
-        
+        # Filter out small CCs
         n.nodes.graph <- vcount(graph)
         
         # Connected components
@@ -174,36 +169,35 @@ generateResultsGraph <- function(
             warning(
                 "The number of nodes of the whole solution, which is ", 
                 n.nodes.graph, 
-                ", exceeds 250. p-values will be computed ", 
-                "using 250 nodes instead.")
+                ", exceeds 250. Small connected components ", 
+                "will be filtered using 250 nodes instead.")
             
             n.nodes.graph <- 250
         }
         
+        # p-values of largest cc size (they are decreasing in 
+        # CC size)
         tab.significant <- getPvaluesSize(data)[, n.nodes.graph]
+        # Minimum size to consider "significant"
         csize.significant <- which(
-            tab.significant < thresholdConnectedComponent)[1]
+            tab.significant <= thresholdConnectedComponent)[1]
         if (length(csize.significant) == 0) {
             warning(
                 "None of the connected components are below the ", 
-                "'thresholdConnectedComponent'. Returning NULL...")
-            return(invisible())
+                "'thresholdConnectedComponent'. Returning empty graph...")
+            return(igraph::induced_subgraph(graph, NULL))
         } 
         
-        # Select the biggest ones only
+        # Graph is not empty 
+        # Select the biggest CCs only
         clust.select <- which(graph.clust$csize >= csize.significant)
         
-        graph.listed <- list()
-        for (i in 1:length(clust.select)) {
-            clust <- clust.select[i]
-            nodes.graph <- which(graph.clust$membership == clust)
-            graph.temp <- induced.subgraph(graph = graph, vids = nodes.graph)
-            graph.listed[[i]] <- graph.temp
-            names(graph.listed)[i] <- getPvaluesSize(data)[
-                vcount(graph.temp), n.nodes.graph]
-        }
+        graph.ans <- igraph::induced_subgraph(
+            graph, 
+            vids = which(graph.clust$membership %in% clust.select)
+        )
         
-        return(graph.listed)
+        return(graph.ans)
     }
     
 }

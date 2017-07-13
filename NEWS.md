@@ -2,6 +2,14 @@
 
 ---
 
+### Version 0.4.6
+
+* Removed the infamous `splitByCC` part (from `checkArguments`, 
+the conditional on the `plot` method and from the vignette)
+* Now the option is to filter out small CCs but still work with a single graph
+(`thresholdConnectedComponent` still exists). Therefore, function
+`generateResultsGraph` can only return a graph, being more intuitive.
+
 ### Version 0.4.5
 
 * Modified size p-value computation. Now it is more efficient and consistent

@@ -232,12 +232,6 @@ show(myAnalysis_bis)
 The method `plot` for data from the package `FELLA` 
 allows a friendly visualisation of the relevant 
 part of the KEGG graph. 
-The option `splitByConnectedComponent` plots the graph 
-connected component-wise, which can be displayed 
-by pressing the enter key if the argument 
-`askPlots` is set to `TRUE`. 
-For the small example in this vignette, 
-the subgraph will be plotted as a whole.
 
 ### Hypergeom
 

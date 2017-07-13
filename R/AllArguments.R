@@ -31,8 +31,6 @@
 #' for Monte Carlo ("simulation"), 
 #' must be a numeric value between 1e2 and 1e5
 #' @param layout Logical, should the plot be returned as a layout?
-#' @param splitByConnectedComponent Logical, 
-#' should the solution be split by CC?
 #' @param GOterm Character, GO entry to draw 
 #' semantic similarity in the solution graph. 
 #' @param GONamesAsLabels Logical, should GO names 
@@ -101,7 +99,6 @@ checkArguments <- function(
     t.df = 10, 
     dampingFactor = 0.85, 
     layout = FALSE, 
-    splitByConnectedComponent = FALSE, 
     thresholdConnectedComponent = 0.05, 
     GOterm = NULL,
     GONamesAsLabels = TRUE, 
@@ -348,22 +345,6 @@ checkArguments <- function(
         return(list(ans = NULL, valid = FALSE))
     }
     
-    # splitByConnectedComponent
-    ############################
-    if (!is.logical(splitByConnectedComponent)) {
-        message(
-            "'splitByConnectedComponent' must be logical. ", 
-            "Returning NULL...")
-        return(list(ans = NULL, valid = FALSE))
-    }
-    
-    if (length(splitByConnectedComponent) > 1) {
-        message(
-            "'splitByConnectedComponent' must be a length 1 logical. ", 
-            "Returning NULL...")
-        return(list(ans = NULL, valid = FALSE))
-    }
-    
     # thresholdConnectedComponent
     ###################################
     if (!is.numeric(thresholdConnectedComponent)) {
@@ -381,8 +362,8 @@ checkArguments <- function(
         return(list(ans = NULL, valid = FALSE))
     }
     
-    if (thresholdConnectedComponent <= 0 | 
-        thresholdConnectedComponent >= 1) {
+    if (thresholdConnectedComponent < 0 | 
+        thresholdConnectedComponent > 1) {
         message(
             "'thresholdConnectedComponent' must be numeric between 0 and 1.", 
             " Returning NULL...")
@@ -405,23 +386,6 @@ checkArguments <- function(
             "Returning NULL...")
         return(list(ans = NULL, valid = FALSE))
     }
-    
-    # splitByConnectedComponent
-    ###############################
-    if (!is.logical(splitByConnectedComponent)) {
-        message(
-            "'splitByConnectedComponent' must be logical. ", 
-            "Returning NULL...")
-        return(list(ans = NULL, valid = FALSE))
-    }
-    
-    if (length(splitByConnectedComponent) > 1) {
-        message(
-            "'splitByConnectedComponent' must be a length 1 logical. ", 
-            "Returning NULL...")
-        return(list(ans = NULL, valid = FALSE))
-    }
-    
     
     # GONamesAsLabels
     ################################
