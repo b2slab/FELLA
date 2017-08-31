@@ -1,16 +1,20 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and Enrichment for Metabolomics Data
-Version: 0.4.7
-Date: 2017-7-13
+Version: 0.4.8
+Date: 2017-8-31
 Authors@R: c(
     person(
         "Sergio", "Picart-Armada", role = c("aut", "cre"),
         email = "sergi.picart@upc.edu"), 
     person(
+        "Francesc", "Fernández-Albert", role = c("aut"),
+        email = "francesc.fernandez.albert@upc.edu"),
+    person(
         "Alexandre", "Perera-Lluna", role = c("aut"),
         email = "alexandre.perera@upc.edu"))
 Author: Sergio Picart-Armada [aut, cre],
+    Francesc Fernández-Albert [aut],
     Alexandre Perera-Lluna [aut]
 Maintainer: Sergio Picart-Armada <sergi.picart@upc.edu>
 Description: Enrichment of metabolomics data using KEGG entries. 

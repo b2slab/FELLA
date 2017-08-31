@@ -3,6 +3,9 @@
 #' This function eases parameter inheritance to centralise the 
 #' documentation
 #' 
+#' @param databaseDir Path for the KEGG RData files
+#' @param internalDir Logical, is the directory located 
+#' in the package directory?
 #' @param object FELLA.USER object
 #' @param data FELLA.DATA object
 #' @param type Character vector, containing entries in
@@ -88,6 +91,8 @@
 #' 
 #' @keywords internal
 checkArguments <- function(
+    databaseDir = "myDatabase", 
+    internalDir = TRUE, 
     method = "diffusion", 
     methods = "diffusion", 
     approx = "normality", 
@@ -106,6 +111,21 @@ checkArguments <- function(
     object = new("FELLA.USER"), 
     data = new("FELLA.DATA"), 
     ...) {
+    
+    # DIRECTORIES
+    ###########################
+    
+    if (!is.character(databaseDir) | length(databaseDir) > 1) {
+        message(
+            "'databaseDir' must be a length 1 character ", 
+            " of an existing directory.")
+        return(list(ans = NULL, valid = FALSE))
+    }
+    
+    if (!is.logical(internalDir) | is.na(internalDir)) {
+        message("'internalDir' must be a non-NA logical value")
+        return(list(ans = NULL, valid = FALSE))
+    }
     
     # METHOD
     ###########################
@@ -176,17 +196,10 @@ checkArguments <- function(
     
     # loadMatrix
     #################
-    if (!is.null(loadMatrix) & length(loadMatrix) > 1)  {
-        message(
-            "'loadMatrix' can only be a length 1 character ", 
-            "('diffusion', 'pagerank', 'all') or NULL.")
-        return(list(ans = NULL, valid = FALSE))
-    }
-    
     if (!is.null(loadMatrix) & !is.character(loadMatrix)) {
         message(
-            "'loadMatrix' can only be a length 1 character ", 
-            "('diffusion', 'pagerank', 'all') or NULL.")
+            "'loadMatrix' can only be a character vector containing some in: ", 
+            "'diffusion', 'pagerank', or NULL.")
         return(list(ans = NULL, valid = FALSE))
     }
     

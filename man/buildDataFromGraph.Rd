@@ -31,7 +31,7 @@ damping factor \code{d} for
 PageRank (\code{\link[igraph]{page_rank}})}
 
 \item{niter}{Numeric value, number of iterations to estimate the p-values 
-for the CC size. Between 10 and 1e4.}
+for the CC size. Between 10 and 1e3.}
 }
 \value{
 Return value is \code{invisible(TRUE)} if successful,

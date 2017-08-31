@@ -95,7 +95,7 @@ generateEnzymesTable <- function(
 
     out.df <- data.frame(
         "EC_number" = nodeIds,
-        "p.value" = nodePscores, 
+        "p.score" = nodePscores, 
         "EC_name" = nodeNames, 
         "Genes" = nodeGenes, 
         stringsAsFactors = FALSE)

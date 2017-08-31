@@ -121,6 +121,23 @@ getGraph <- function(data) {
     return(data@keggdata@graph)
 }
 
+#' Get KEGG version info
+#' 
+#' Extractor function for the info about the KEGG version used to 
+#' build the FELLA.DATA object
+#'
+#' @inheritParams .params
+#'
+#' @return Character containing the KEGG release details
+#' @examples 
+#' data(FELLA.sample)
+#' getInfo(FELLA.sample)
+#' 
+#' @export
+getInfo <- function(data) {
+    return(comment(getGraph(data)))
+}
+
 #' Get metabolites in the input
 #' 
 #' Extractor function for the metabolites 

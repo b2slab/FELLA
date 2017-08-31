@@ -2,6 +2,22 @@
 
 ---
 
+### Version 0.4.8
+
+* Fixed the `FELLA.sample` file so that it contains the metadata
+* Added the `getInfo` function for getting the metabata, with corresponding
+unit testing
+* Fixed minor writing mistakes
+* `loadMatrix` can no longer be `"all"`
+* `AllArguments.R` now has `loadMatrix`, `databaseDir`, `internalDir`
+* Shiny app:
+  - Fixed the database error when no database is present
+  - Fixed table error when the graph was empty (e.g. hypergeom)
+  - Adding a GO term is now functional again. Added several biomaRt/GO options.
+  - GO term changes plot legend
+  - Changes in the UI (text, new widgets for GO term)
+  - GO example autofills all the new widgets
+
 ### Version 0.4.7
 
 * Improved vignette text and added Bioconductor style

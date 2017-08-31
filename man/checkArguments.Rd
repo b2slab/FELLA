@@ -4,15 +4,20 @@
 \alias{checkArguments}
 \title{Internal function to check arguments and give personalised errors}
 \usage{
-checkArguments(method = "diffusion", methods = "diffusion",
-    approx = "normality", loadMatrix = NULL, threshold = 0.05,
-    plimit = 15, nlimit = 250, niter = 1000, t.df = 10,
-    dampingFactor = 0.85, layout = FALSE,
+checkArguments(databaseDir = "myDatabase", internalDir = TRUE,
+    method = "diffusion", methods = "diffusion", approx = "normality",
+    loadMatrix = NULL, threshold = 0.05, plimit = 15, nlimit = 250,
+    niter = 1000, t.df = 10, dampingFactor = 0.85, layout = FALSE,
     thresholdConnectedComponent = 0.05, GOterm = NULL,
     GONamesAsLabels = TRUE, LabelLengthAtPlot = 22,
     object = new("FELLA.USER"), data = new("FELLA.DATA"), ...)
 }
 \arguments{
+\item{databaseDir}{Path for the KEGG RData files}
+
+\item{internalDir}{Logical, is the directory located 
+in the package directory?}
+
 \item{method}{Character, exactly one of: 
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 

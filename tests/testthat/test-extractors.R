@@ -33,6 +33,7 @@ test_that("getCom extractor", {
 
 test_that("getGraph extractor", {
     expect_is(FELLA:::getGraph(FELLA.sample), "igraph")
+    expect_is(FELLA:::getInfo(FELLA.sample), "character")
 })
 
 test_that("getMatrix extractor", {

@@ -5,9 +5,6 @@
 #' to perform any kind of enrichment using \code{\link[FELLA]{FELLA}}.
 #'
 #' @inheritParams .params
-#' @param databaseDir Path for the KEGG RData files
-#' @param internalDir Logical, is the directory located 
-#' in the package directory?
 #'
 #' @return The \code{\link[FELLA]{FELLA.DATA}} object 
 #' that contains the KEGG representation
@@ -46,23 +43,12 @@ loadKEGGdata <- function(
     
     # Checking the input
     ########################
-    if (!is.null(loadMatrix) & length(loadMatrix) > 1)
-        stop(
-            "'loadMatrix' can only be a length 1 character ", 
-            " ('diffusion', 'pagerank', 'all') or NULL.")
-    
-    if (!is.null(loadMatrix) & !is.character(loadMatrix))
-        stop(
-            "'loadMatrix' can only be a length 1 character ", 
-            "('diffusion', 'pagerank', 'all') or NULL.")
-    
-    if (!is.character(databaseDir) | length(databaseDir) > 1) 
-        stop(
-            "'databaseDir' must be a length 1 character ", 
-            " of an existing directory.")
-    
-    if (!is.logical(internalDir) | is.na(internalDir))
-        stop("'internalDir' must be a non-NA logical value")
+    checkArgs <- checkArguments(
+        loadMatrix = loadMatrix, 
+        databaseDir = databaseDir, 
+        internalDir = internalDir)
+    if (!checkArgs$valid)
+        stop("Bad argument when calling function 'runDiffusion'.")  
     
     ##########################
     assign("F.DATA", new("FELLA.DATA"))
@@ -136,13 +122,12 @@ loadKEGGdata <- function(
     # Load matrix for diffusion 
     message("Loading diffusion data...")
     message("Loading matrix...")
-    if (identical(loadMatrix, "diffusion") || 
-        identical(loadMatrix, "all")) {
+    if ("diffusion" %in% loadMatrix) {
         if (!file.exists(paste0(path, "diffusion.matrix.RData"))) {
             message(
                 "'diffusion.matrix.RData' not present in:", 
                 paste0(path, "diffusion.matrix.RData"), 
-                ". Simulated p-values may execute slower for diffusion.")
+                ". Simulated permutations may execute slower for diffusion.")
         } else {
             load(paste0(path, "diffusion.matrix.RData"))
             diffusion.matrix <- get("diffusion.matrix")
@@ -153,7 +138,7 @@ loadKEGGdata <- function(
     } else {
         message(
             "'diffusion.matrix.RData' not loaded. ", 
-            "Simulated p-values may execute slower for diffusion.")
+            "Simulated permutations may execute slower for diffusion.")
     }
     message("Done.")
     
@@ -177,13 +162,12 @@ loadKEGGdata <- function(
     # Load matrix for pagerank
     message("Loading pagerank data...")
     message("Loading matrix...")
-    if (identical(loadMatrix, "pagerank") || 
-        identical(loadMatrix, "all")) {
+    if ("pagerank" %in% loadMatrix) {
         if (!file.exists(paste0(path, "pagerank.matrix.RData"))) {
             message(
                 "'pagerank.matrix.RData' not present in:", 
                 paste0(path, "pagerank.matrix.RData"), 
-                ". Simulated p-values may execute slower for pagerank.")
+                ". Simulated permutations may execute slower for pagerank.")
         } else {
             load(paste0(path, "pagerank.matrix.RData"))
             pagerank.matrix <- get("pagerank.matrix")
@@ -194,7 +178,7 @@ loadKEGGdata <- function(
     } else {
         message(
             "'pagerank.matrix.RData' not loaded. ", 
-            "Simulated p-values may execute slower for pagerank.")  
+            "Simulated permutations may execute slower for pagerank.")  
     }
     message("Done.")
     

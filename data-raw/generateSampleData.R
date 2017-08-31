@@ -1,11 +1,14 @@
 library(igraph)
 
 # path <- "~/Datasets/FELLAdataslim/"
-matrices <- "hypergeom"
+matrices <- c("hypergeom")
 
 # Only the graph is needed, then using FELLA's functions we will
 # generate the data from a toy graph
-keggdata.graph <- buildGraphFromKEGGREST()
+db <- loadKEGGdata()
+keggdata.graph <- getGraph(db)
+metadata <- comment(keggdata.graph)
+# keggdata.graph <- buildGraphFromKEGGREST()
 # load(paste0(path, "keggdata.graph.RData"))
 
 #############################################
@@ -42,6 +45,7 @@ input.sample <- sample(any.firstpath, 30)
 
 # Leave original weights
 graph.sample <- graph.reverse(induced.subgraph(keggdata.graph, newnodes))
+comment(graph.sample) <- metadata
 
 # Use a temporary directory to save the data and reload it later
 tmpdir <- paste0(tempdir(), "/databuild/")
@@ -53,7 +57,7 @@ FELLA::buildDataFromGraph(
     databaseDir = tmpdir, 
     internalDir = FALSE, 
     matrices = matrices, 
-    niter = 11)
+    niter = 100)
 
 list.files(tmpdir)
 e.temp <- new.env(parent = globalenv())
@@ -61,6 +65,7 @@ sapply(
     list.files(tmpdir, full.names = T), 
     function(link) load(link, envir = e.temp))
 # save(list = ls(e), file = "data-raw/test.RData", envir = e.temp)
+
 FELLA.sample <- FELLA::loadKEGGdata(tmpdir, internalDir = FALSE)
 
 # test it...

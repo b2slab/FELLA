@@ -88,7 +88,7 @@ shinyUI(fluidPage(
           12, 
           h2("Adjust arguments (optional)"), 
           column(
-            3,
+            4,
             h3("The database"), 
             selectInput(
               "database", 
@@ -172,13 +172,35 @@ shinyUI(fluidPage(
                The GO cellular component of the best hit will be appended 
                to the node label and the node shape will become triangular. 
                If GO annotations are unavailable for an enzyme, it will 
-               be left with a circular shape."), 
+               be left with a circular shape."),
+            h4("Adding a GO term takes some time, please be patient"), 
             #################################
             textInput(
               "GOTermInput", 
               label = h4(
-                "Specify a GO term  
-                (optional and slower)"), 
+                "Specify a GO term"), 
+              value = NULL), 
+            h3("GO data options"), 
+            textInput(
+              "GOorgDb", 
+              label = h4("GO orgDb"), 
+              value = NULL
+            ),
+            selectInput(
+              "GOOntology", 
+              label = h4("GO ontology"), 
+              choices = c("CC", "MF", "BP")
+            ),
+            h3("biomaRt options"), 
+            textInput(
+              "GObiomart", 
+              label = h4(
+                "Specify a biomaRt"), 
+              value = NULL), 
+            textInput(
+              "GOdataset", 
+              label = h4(
+                "Specify a dataset"), 
               value = NULL), 
             actionButton("exampleGOCC", label = "GO CC example"), 
             #################################

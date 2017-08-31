@@ -34,7 +34,8 @@ test_that("The database can be built (external)", {
             loadKEGGdata(
                 databaseDir = dir.tmp, 
                 internalDir = FALSE, 
-                loadMatrix = "all")
+                loadMatrix = c("diffusion", "pagerank")
+            )
     }, NA)
   
     expect_true(FELLA.test.external)
@@ -58,7 +59,7 @@ test_that("The database can be built and listed (internal)", {
         read.test.internal <- loadKEGGdata(
             databaseDir = "eraseme", 
             internalDir = TRUE, 
-            loadMatrix = "all"
+            loadMatrix = c("diffusion", "pagerank")
         )
     }, NA)
 
