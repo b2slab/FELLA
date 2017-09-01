@@ -24,8 +24,7 @@ plotLegend <- function(
     cex = 0.75) {
     # In the left side, legend for node categories
     graphics::legend(
-        #       x = -1.5, y = -1, 
-        text.width = .2, 
+        text.width = .25, 
         "bottomleft", 
         title = "Categories for each node", 
         title.col = "black", 
@@ -39,7 +38,7 @@ plotLegend <- function(
         pch = c(21, 21, 21, 21, 21, 22), 
         col = "black", 
         cex = cex, 
-        pt.cex = c(1.3, 1.3, 1.3, 1.3, 1.3, 1.3), 
+        pt.cex = c(1.1, 1.1, 1.1, 1.1, 1.1, 1.1), 
         pt.lwd = 1, 
         x.intersp = .3, 
         box.col = "grey", 
@@ -57,27 +56,25 @@ plotLegend <- function(
             "#8DB6CD", 
             "#548B54", 
             "#548B54"), 
-        # horiz = T, 
         ncol = 3
     )
     
     # In the right side, enzyme for cellular component
     if (GO.annot) {
         graphics::legend(
-            #         x = 0.5, y = -1,
             text.width = .2, 
             "bottomright", 
-            title = "Homo sapiens enzymes with CC similarity", 
+            title = "Enzymes with CC similarity", 
             title.col = "black", 
             legend = c(
-                "Similarity < 0.5", 
-                "Similarity < 0.7", 
-                "Similarity < 0.9", 
-                "Similarity = 1"), 
+                "Simil < 0.5", 
+                "Simil < 0.7", 
+                "Simil < 0.9", 
+                "Simil <= 1"), 
             pch = c(24, 24, 24, 24), 
             col = "black", 
             cex = cex, 
-            pt.cex = c(1.3, 1.3, 1.3, 1.3), 
+            pt.cex = c(1.1, 1.1, 1.1, 1.1), 
             pt.lwd = 1, 
             x.intersp = .3, 
             box.col = "grey", 
@@ -91,7 +88,6 @@ plotLegend <- function(
                 "#FF5500", 
                 "#FF0000", 
                 "#B300FF"), 
-            # horiz = T, 
             ncol = 2
         )
     }

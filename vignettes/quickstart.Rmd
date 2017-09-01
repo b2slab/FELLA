@@ -172,12 +172,12 @@ For methods `"diffusion"` and `"pagerank"`,
 two statistical approximations are proposed:
 
 1. __Normal approximation__ (`approx = "normality"`): 
-p-values are computed through z-scores 
+scores are computed through z-scores 
 based on analytical expected value and covariance matrix 
 of the null model for diffusion. 
 This approximation is deterministic and fast.
 1. __Monte Carlo trials__ (`approx = "simulation"`): 
-p-values are computed through Monte Carlo trials 
+scores are computed through Monte Carlo trials 
 of the random variables. 
 This approximation requires computing the random trials, 
 governed by the `ntrials` argument. 

@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.4.9
+
+* Small changes in plotting functions
+
 ### Version 0.4.8
 
 * Fixed the `FELLA.sample` file so that it contains the metadata

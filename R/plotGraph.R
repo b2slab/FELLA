@@ -208,7 +208,7 @@ plotGraph <- function(
     }
     
     # Plot the legend
-    if (plotLegend) plotLegend(GO.annot = GO.annot)
+    if (plotLegend) plotLegend(GO.annot = GO.annot, cex = 0.5)
     
     mapPrefix <- c(
         "1" = "",
