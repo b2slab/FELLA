@@ -1,9 +1,61 @@
-# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+# .travis.yml using container-based infrastructure
+# Based on:
+# https://github.com/jtilly/R-travis-container-example/blob/master/.travis.yml
 
-language: R
-sudo: true
-cache: packages
+# use c as catch-all language
+language: c
 
-repos:
-  CRAN: https://cloud.r-project.org
-  ropensci: http://packages.ropensci.org
+# use containers
+sudo: false
+
+# only run for pushes to master branch
+branches:
+  only:
+   - master
+
+# install R: use r-packages-trusty 
+# (https://cran.r-project.org/bin/linux/ubuntu/trusty/) 
+addons:
+  apt:
+    sources:
+    - r-packages-trusty
+    packages:
+    - r-base-dev	
+    - r-recommended
+    - pandoc
+
+# cache local R libraries directory:
+cache:
+  directories:
+    - ~/Rlib
+
+# install the package and dependencies:
+# - create directory for R libraries (if not already exists)
+# - create .Renviron with location of R libraries
+# - define R repository in .Rprofile
+# - add .travis.yml to .Rbuildignore
+# - install devtools if not already installed
+# - install testthat if not already installed
+# - update all installed packages
+# - install package with dependencies
+install:
+  - mkdir -p ~/Rlib
+  - echo 'R_LIBS=~/Rlib' > .Renviron
+  - echo 'options(repos = "http://cran.rstudio.com")' > .Rprofile
+  - echo '.travis.yml' > .Rbuildignore
+  - Rscript -e 'if(!"devtools" %in% rownames(installed.packages())) { install.packages("devtools", dependencies = TRUE) }'
+  - Rscript -e 'if(!"testthat" %in% rownames(installed.packages())) { install.packages("testthat", dependencies = TRUE) }'
+  - Rscript -e 'update.packages(ask = FALSE, instlib = "~/Rlib")'
+  - Rscript -e 'devtools::install_deps(pkg = ".", dependencies = TRUE)'
+
+# Build and check package
+script:
+  - R CMD build . --no-build-vignettes --no-manual
+  - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
+  - R CMD check "${PKG_FILE_NAME}" --as-cran 
+
+# send e-mails if stuff changes
+notifications:
+  email:
+    on_success: change
+    on_failure: change
