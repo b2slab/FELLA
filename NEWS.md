@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.4.10
+
+* Trying Travis 
+
 ### Version 0.4.9
 
 * Small changes in plotting functions

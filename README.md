@@ -1,5 +1,6 @@
 # Enriching metabolomics data through diffusion
 
+[![Travis-CI Build Status](https://travis-ci.org/b2slab/FELLA.svg?branch=master)](https://travis-ci.org/b2slab/FELLA)
 
 This repository contains the `FELLA` package. `FELLA` is a metabolomics data enrichment tool that contextualises the experimental results using KEGG reactions, enzymes, modules and pathways. 
 

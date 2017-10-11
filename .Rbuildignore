@@ -5,3 +5,4 @@
 .Rprofile
 data-raw
 man-roxygen
+^\.travis\.yml$
