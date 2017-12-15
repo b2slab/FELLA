@@ -13,18 +13,13 @@ library(xtable)
 library(visNetwork)
 library(DT)
 
-# Path to FELLA database with KEGG objects
-# pathData <- "~/all/devel/big/metabolomics/FELLAdataKEGGREST/"
-# pathData <- "~/all/devel/big/metabolomics/FELLAdata/"
+# Find internal directory
 pathDBs <- paste0(
   system.file(package = "FELLA"), 
   "/database/"
 )
+# Find all local databases
 pathData <- setNames(
   list.dirs(pathDBs, full.names = TRUE, recursive = FALSE), 
   list.dirs(pathDBs, full.names = FALSE, recursive = FALSE)
 )
-# pathBIMS <- "BiMS/index.html"
-
-# Shared object for all users
-# FELLA.DATA <- 

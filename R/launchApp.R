@@ -13,13 +13,8 @@
 #' r <- try(launchApp())
 #' }
 #' 
-#' 
-launchApp <- function(
-    port = 8888, 
-    host = "localhost", 
-    launch.browser = FALSE, 
-    ...
-) {
+#' @export
+launchApp <- function(...) {
     if (!requireNamespace("shiny", quietly = TRUE)) {
         stop(
             "The 'shiny' package must be installed ", 
@@ -29,9 +24,6 @@ launchApp <- function(
     
     dir.app <- system.file("shiny", package = "FELLA")
     
-    if (host == "eko") host <- "147.83.71.87"
-    if (host == "localhost") host <- "127.0.0.1"
-    
     if (dir.app == "") {
         warning(
             "Something went wrong and the shiny app is not in the ", 
@@ -39,12 +31,7 @@ launchApp <- function(
         return(invisible())
     }
     
-    shiny::runApp(
-        appDir = dir.app, 
-        launch.browser = launch.browser, 
-        port = port, 
-        host = host, 
-        ...)
+    shiny::runApp(appDir = dir.app, ...)
     
     invisible()
 }
