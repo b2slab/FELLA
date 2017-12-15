@@ -22,7 +22,7 @@
 #' 
 #' @examples 
 #' ## Load the internal database. This one is a toy example!
-#' ## Do not use as a regular database)
+#' ## Do not use as a regular database
 #' data(FELLA.sample)
 #' ## Load a list of compounds to enrich
 #' data(input.sample)

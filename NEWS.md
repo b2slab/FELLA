@@ -2,6 +2,14 @@
 
 ---
 
+### Version 0.4.12
+
+* Travis modification
+
+### Version 0.4.11
+
+* Small changes on functions and DESCRIPTION
+
 ### Version 0.4.10
 
 * Trying Travis 
