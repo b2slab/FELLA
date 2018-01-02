@@ -2,6 +2,15 @@
 
 ---
 
+### Version 0.4.13
+
+* Temporarily downgraded R dependency to version 4.3
+* Bug on the `biomaRt` query was actually due to their package being outdated. 
+Updating fixed it. 
+* Small changes in functions (exports) to pass `check()`
+* Small fixes on Shiny App
+* Added vignette
+
 ### Version 0.4.12
 
 * Travis modification

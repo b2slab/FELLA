@@ -4,13 +4,10 @@
 \alias{launchApp}
 \title{Launch a shiny app with FELLA}
 \usage{
-launchApp(port = 8888, host = "localhost", launch.browser = FALSE, ...)
+launchApp(...)
 }
 \arguments{
-\item{port, host, launch.browser}{Port and host to launch the app, 
-and whether to launch browser or not}
-
-\item{...}{Additional parameters passed to \code{\link[shiny]{runApp}}}
+\item{...}{Parameters passed to \code{\link[shiny]{runApp}}}
 }
 \value{
 \code{invisible()}, but as a side effect the app will be launched
@@ -22,6 +19,5 @@ Launch a shiny application to perform the metabolomics data enrichment.
 \dontrun{
 r <- try(launchApp())
 }
-
 
 }

@@ -53,4 +53,3 @@ data = FELLA.sample)
 FELLA:::plotGraph(g)
 
 }
-\keyword{internal}

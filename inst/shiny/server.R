@@ -15,13 +15,14 @@ shinyServer(function(input, output, session) {
   output$databaseInfo <- renderText({
     data <- FELLA.DATA()
     if (is.null(data)) {
-        c(
-            "Database directory is empty...", 
-            "\nMake you executed:", 
-            "\nbuildGraphFromKEGGREST", 
-            "\nbuildDataFromGraph")
+      c(
+        "Database directory is empty...", 
+        "\nMake sure you executed the following", 
+        "\nat least once after installing FELLA:", 
+        "\nbuildGraphFromKEGGREST", 
+        "\nbuildDataFromGraph")
     } else {
-        comment(FELLA:::getGraph(data))
+      comment(FELLA:::getGraph(data))
     }
   })
   

@@ -47,6 +47,7 @@
 #' 
 #' @import igraph
 #' @import plyr
+#' @export
 addGOToGraph <- function(
     graph = NULL, 
     GOterm = NULL, 

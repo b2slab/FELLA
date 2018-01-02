@@ -79,7 +79,7 @@ mytriangle <- function(coords, v=NULL, params) {
 #' FELLA:::plotGraph(g)
 #' 
 #' @import igraph
-#' @keywords internal
+#' @export
 plotGraph <- function(
     graph = NULL, 
     layout = FALSE,

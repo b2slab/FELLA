@@ -1,0 +1,1173 @@
+%\textwidth=6.2in \textheight=8.5in
+%\parskip=.3cm \oddsidemargin=.1in \evensidemargin=.1in
+%\headheight=-.3in
+%\VignetteIndexEntry{FELLA}
+%\VignettePackage{BiocStyle}
+%\VignetteEngine{utils::Sweave}
+
+\documentclass[12pt]{article}
+
+<<style-Sweave, echo=FALSE, results=tex>>=
+BiocStyle::latex2()
+@
+
+\usepackage{dsfont}
+\usepackage{booktabs}
+\usepackage{fixltx2e} %subscripts
+\usepackage{multirow}
+\usepackage{adjustbox}
+%\usepackage{hyperref}
+
+
+\newcommand{\textq}[1]{``#1''}
+% \newcommand{\Rcode}[1]{{\texttt{#1}}}
+% \newcommand{\Robject}[1]{{\texttt{#1}}}
+% \newcommand{\Rfunction}[1]{{\texttt{#1}}}
+% \newcommand{\Rpackage}[1]{{\textit{#1}}}
+% \newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\textit{#1}}}
+
+\newcommand{\fella}{{\Rpackage{FELLA}}}
+\newcommand{\metaboanalyst}{{\href{www.metaboanalyst.ca}{MetaboAnalyst}}}
+\newcommand{\impala}{{\href{http://impala.molgen.mpg.de}{IMPaLA}}}
+\newcommand{\warnkegg}{{\footnote{
+This analysis is subject to KEGG release 83.0, from August 17th, 2017. 
+Posterior KEGG releases might alter the reported sub-network
+}}}
+
+\begin{document}
+
+\SweaveOpts{concordance=TRUE, include=TRUE, echo=TRUE, results=hide}
+%\SweaveOpts{fig=FALSE, results=hide, prefix.string=fella_latexfiles/}
+%\setkeys{Gin}{width=1\textwidth}
+\bioctitle[The FELLA R package]{An R package to enrich 
+metabolomics data: FELLA}
+\author[1,2]{Sergio Picart-Armada\thanks{\email{sergi.picart@upc.edu}}}
+\author[3]{Francesc Fern\'andez-Albert}
+\author[4,5,6]{Maria Vinaixa}
+\author[4,5]{Oscar Yanes}
+\author[1,2]{Alexandre Perera-Lluna}
+\affil[1]{B2SLab, Departament d'Enginyeria de Sistemes,
+Autom\`atica i Inform\`atica Industrial,
+Universitat Polit\`ecnica de Catalunya, CIBER-BBN, Barcelona, 08028, Spain}
+\affil[2]{Institut de Recerca Pedi\`atrica
+Hospital Sant Joan de D\'eu, Esplugues de Llobregat, Barcelona, 08950, Spain}
+\affil[3]{Boehringer Ingelheim Pharmaceuticals Inc, Germany}
+\affil[4]{Centre for Omic Sciences, Department of Electronic Engineering, 
+Rovira i Virgili University, Reus, 43204, Spain}
+\affil[5]{Metabolomics Platform, Spanish Biomedical Research Centre in 
+Diabetes and Associated Metabolic Disorders, Madrid, 28029, Spain}
+\affil[6]{Manchester Synthetic Biology Research Centre for Fine and 
+Speciality Chemicals, University of Manchester, 
+Manchester, M1 7DN, United Kingdom}
+
+%\small{\author{Sergio Picart-Armada,
+%Wesley K. Thompson, \\
+%Alfonso Buil and Alexandre Perera-Lluna}}
+\maketitle
+
+\section{Abstract}
+
+Pathway enrichment techniques are useful for giving 
+context to experimental metabolomics data.
+The primary analysis of the raw metabolomics data leads to 
+annotated metabolites with abundance measures. 
+These metabolites are compared between experimental conditions, 
+in order to find discriminative molecular signatures. 
+The secondary analysis of the dataset aims at giving context 
+to the affected metabolites in terms of the 
+prior biological knowledge gathered in metabolic pathways. 
+Several statistical approaches are available to derive 
+a list of prioritised metabolic pathways that relate to 
+the underlying changes in metabolite abundances.
+However, the interpretation of a prioritised pathway list 
+remains challenging, as pathways are not disjoint and 
+show overlap and cross talk effects. 
+Furthermore, it is not straightforward to automatically propose 
+novel enzymatic targets given a pathway enrichment. 
+
+We introduce \fella, an R package to perform a 
+network-based enrichment of a list of affected metabolites. 
+\fella~builds a hierarchical network representation of 
+the organism of choice using the Kyoto Encyclopedia of Genes and Genomes, 
+which contains pathways, modules, enzymes, reactions and metabolites. 
+The enrichment is accomplished by applying 
+diffusion algorithms in the knowledge network. 
+Flow is introduced in the metabolites from the input list 
+and propagates to the rest of nodes, 
+resulting in diffusion scores for all the nodes in the network. 
+The top scoring nodes contain not only relevant pathways, 
+but also the intermediate entities that build a plausible explanation 
+on how the input metabolites translate into reported pathways. 
+The highlighted sub-network can shed light on 
+pathway cross talk under the experimental condition 
+and potential enzymatic targets for further study.
+
+The implementation and the programmatic use of \fella~is hereby described, 
+along with a graphical user interface that wraps the package functionality. 
+The algorithmic part in \fella~was previously validated on 
+the study of an uncharacterised mitochondrial protein. 
+The functionality of \fella~has been demonstrated on 
+three public human metabolomics studies, respectively on 
+(a) ovarian cancer cells, (b) dry eye and (c) malaria 
+and other febrile illnesses. 
+\fella~has been able to reproduce findings 
+from the original publications and to report sub-network representations 
+that can be manually handled. 
+
+\section{Introduction}
+
+Metabolomics is the science that studies the chemical reactions 
+in living organisms by quantifying their lightweight molecules, 
+called metabolites.
+The utilities of metabolomics range from disease diagnosis 
+through biomarkers and personalised medicine 
+to the generation of biological knowledge \cite{metaboreview}. 
+
+Metabolomics data is mainly acquired through technologies such as, 
+but not limited to, Nuclear Magnetic Resonance (NMR) 
+and Mass Spectrometry (MS). 
+MS is usually preceded by Liquid Chromatography (LC) or 
+Gas Chromatography (GC) \cite{metabolomicstechnologiescomplete}. 
+The primary analysis of the raw metabolomics data 
+can be achieved through publicly available tools: 
+the R packages \Biocpkg{xmcs} \cite{xcms} for peak identification 
+and \Biocpkg{CAMERA} \cite{camera} for peak annotation.
+There are pipelines that cover the whole process, 
+for example the online tool 
+\href{https://meltdb.cebitec.uni-bielefeld.de}{MeltDB} \cite{meltdb} 
+or the R package \Biocpkg{MAIT} \cite{mait}. 
+Metabolites found in samples are mapped to specral databases 
+such as the Human Metabolome Database \cite{hmdb}. 
+
+The secondary analysis, or data interpretation, 
+starts when the metabolites are mapped to a database and 
+their abundances are available \cite{reviewsecondary}. 
+The existence of experimental conditions enables a 
+statistical differential analysis that yields a set of 
+metabolites that exhibit changes in the intervention. 
+It is, however, increasingly important to understand the 
+underlying biological perturbation by giving context to the 
+affected metabolites rather than focusing on the ability to 
+classify samples through them \cite{metaboreview}. 
+Pathway analysis is a fundamental methodology for data interpretation 
+\cite{review10years} that enriches the affected metabolites with 
+current knowledge on biology, available in pathway databases 
+including the Kyoto Encyclopedia of Genes and Genomes 
+or KEGG \cite{kegg}, Reactome \cite{reactome} 
+and WikiPathways \cite{wikipathways}. 
+Enrichment techniques will be discussed in three categories 
+or generations, according to the classification 
+proposed in the review \cite{review10years}. 
+Commercial pathway analysis products such as \software{IPA} 
+(QIAGEN Inc., 
+\url{https://www.qiagenbioinformatics.com/products/ingenuitypathway-analysis}) 
+are out of the scope of this work.
+
+The first generation of methods, 
+named over representation analysis (ORA), 
+are based on testing if the proportion of 
+affected metabolites within a pathway is statistically meaningful. 
+ORA is based in statistical tests on probability distribution 
+like the hypergeometric, binomial or chi-squared \cite{review10years}. 
+ORA is available in tools like the web servers 
+\metaboanalyst~\cite{metaboanalyst} and \impala~\cite{impala} 
+and the R package \Biocpkg{clusterProfiler} \cite{clusterprofiler}. 
+The online resource 
+\href{http://www.bio-bigdata.com/SubpathwayMiner/}{SubPathwayMiner} 
+identifies sub-pathways from KEGG pathways 
+by mining $k$-cliques in each metabolic pathway prior to ORA. 
+With this strategy, significant sub-regions can be spotted 
+even if the whole pathway is not significant \cite{subpathwayminer}. 
+
+The second generation of methods, functional class scoring (FCS), 
+uses quantitative data instead and seeks 
+subtle but coordinated changes in the metabolites belonging to a pathway.
+MSEA \cite{msea} in \metaboanalyst~\cite{metaboanalyst} 
+and \impala~\cite{impala} contain implementations of FCS for metabolomics. 
+The R package \Biocpkg{PAPi} calculates pathways activity scores 
+per sample, based on the number of metabolites identified 
+from each pathway and their relative abundances.
+Significantly affected pathways are found by applying an ANOVA 
+or a t-test on those scores \cite{papi}. 
+On the other hand, there is an ensemble approach relying on 
+several pathway-based statistical tests \cite{egsea} 
+and is available in the R pacakge \Biocpkg{EGSEA}. 
+
+The third generation, known as pathway topology-based (PT) methods, 
+further includes topological measures of the metabolites 
+in the statistic, accounting for their inequivalence 
+in the metabolic network. 
+PT analyses can be performed using \metaboanalyst~\cite{metaboanalyst}, 
+where metabolites are weighted by their centrality within the pathway. 
+The R package \CRANpkg{MPINet} builds a pathway-level statistic 
+that accounts for metabolite inequivalence in the 
+global metabolic network and for bias in technical equipment \cite{mpinet}. 
+
+Another perspective for understanding metabolomics data is 
+through the construction and inquiry of metabolic networks. 
+The \software{MetScape} plugin \cite{metscape} within the 
+\software{Cytoscape} environment \cite{cytoscape} is useful for 
+representing metabolite-reaction-enzyme-gene networks. 
+\Biocpkg{KEGGGraph} is an R package for constructing 
+metabolic networks from the KEGG pathways \cite{kegggraph}.
+\Biocpkg{MetaboSignal} is an R package for 
+building and examining the topology of 
+gene-metabolite networks \cite{metabosignal}. 
+The R package \Githubpkg{dgrapov/MetaMapR} helps reduce sparsity 
+in metabolic networks by integrating biochemical transformations, 
+structural similarity, mass spectral similarity and 
+empirical correlation information \cite{metamapr}.
+
+Here, we introduce the R package \fella~for 
+metabolomics data interpretation that combines concepts from 
+pathway enrichment and network analysis. 
+The main objective of \fella~is providing the user with a 
+biological explanation involving biological pathways. 
+\fella~starts from a single, comprehensive network 
+consisting of metabolites, reactions, 
+enzymes, modules and pathways as nodes.
+The list of affected metabolites and the pathways 
+highlighted by \fella~are connected through intermediate entities 
+-reactions, enzymes and KEGG modules- and returned as a sub-network.
+The intermediate entities suggest how the perturbation spreads 
+from metabolites to pathways and how pathways cross talk. 
+The provided enzymes are candidates for further examination, 
+whereas new metabolites might be reported as well. 
+\fella~is publicly available in 
+\url{https://github.com/b2slab/FELLA} under the GPL-3 license. 
+
+\section{Methodology}
+
+\subsection{Implementation details}
+
+\fella~is written entirely in R \cite{r} and relies on 
+the \Biocpkg{KEGGREST} R package \cite{keggrest} for retreiving KEGG, 
+the \CRANpkg{igraph} R package \cite{igraph} for network analysis and 
+the \CRANpkg{shiny} R package \cite{shiny} for providing 
+a graphical user interface.
+
+\fella~defines two S4 classes for handling its main purposes: 
+a \Rclass{FELLA.DATA} object that encompasses the knowledge model 
+from KEGG and a \Rclass{FELLA.USER} object that contains 
+the current analysis by the user.
+Table \ref{tab:classes} contains further details about 
+the slots and sub-slots in each one of these classes, 
+whereas figure \ref{fig:workflow} depicts the package 
+workflow and main functions. 
+
+\begin{table}[h]
+%\centering
+%\begin{adjustbox}{width=\linewidth,center}
+% \begin{adjustbox}{center}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllll}
+\hline
+Custom class & Slot & Sub-slot & Class & Description \\
+\hline
+\multirow{12}{*}{\texttt{FELLA.DATA}} & \multirow{5}{*}{\texttt{@keggdata}} & 
+\texttt{@graph} & igraph & Knowledge graph object \\
+  & & \texttt{@id2name} & list & Dictionary from KEGG ID to common name \\
+  & & \texttt{@pvalues.size} & matrix & Matrix with largest 
+  CC size probabilities \\
+  & & \texttt{@id} & list & Correspondence between IDs and category \\
+  & & \texttt{@status} & character & Status indicator 
+  of the object \\ \cline{2-5}
+  & \multirow{1}{*}{\texttt{@hypergeom}} & \texttt{@matrix} & 
+  Matrix & Metabolite-pathway binary relationship \\ \cline{2-5}
+  & \multirow{3}{*}{\texttt{@diffusion}} & \texttt{@matrix} & 
+  matrix & Matrix to compute diffusion as a matrix-vector product \\
+  & & \texttt{@rowSums} & vector & Internal data to compute the z-scores \\
+  & & \texttt{@squaredRowSums} & vector & Internal data to compute 
+  the z-scores \\ \cline{2-5}
+  & \multirow{3}{*}{\texttt{@pagerank}} & \texttt{@matrix} & 
+  matrix & Matrix to compute PageRank as a matrix-vector product \\
+  & & \texttt{@rowSums} & vector & Internal data to compute the z-scores \\
+  & & \texttt{@squaredRowSums} & vector & Internal data 
+  to compute the z-scores \\ \hline
+\multirow{17}{*}{\texttt{FELLA.USER}} & \multirow{3}{*}{\texttt{@userinput}} & 
+\texttt{@metabolites} & vector & KEGG IDs that map to the knowledge graph \\
+  & & \texttt{@metabolitesbackground} & vector & Background KEGG IDs \\
+  & & \texttt{@excluded} & vector & Input IDs not mapping to the 
+  knowledge graph \\ \cline{2-5}
+  & \multirow{6}{*}{\texttt{@hypergeom}} & \texttt{@valid} & logical & 
+  Indicator of analysis validity \\
+  & & \texttt{@pvalues} & vector & Pathway p-values \\
+  & & \texttt{@pathhits} & vector & Number of hits in each pathway \\
+  & & \texttt{@pathbackground} & vector & Number of metabolites 
+  in each pathway \\
+  & & \texttt{@nbackground} & numeric & Number of compounds 
+  in the background \\
+  & & \texttt{@ninput} & numeric & Number of compounds 
+  in the input \\ \cline{2-5}
+  & \multirow{4}{*}{\texttt{@diffusion}} & \texttt{@valid} & 
+  logical & Indicator of analysis validity \\
+  & & \texttt{@pscores} & vector & P-scores for each node in the network \\
+  & & \texttt{@approx} & character & Chosen approximation \\
+  & & \texttt{@niter} & numeric & Chosen iterations \\ \cline{2-5}
+  & \multirow{4}{*}{\texttt{@parerank}} & \texttt{@valid} & logical & 
+  Indicator of analysis validity \\
+  & & \texttt{@pscores} & vector & P-scores for each node in the network \\
+  & & \texttt{@approx} & character & Chosen approximation \\
+  & & \texttt{@niter} & numeric & Chosen iterations \\ \hline
+\end{tabular}
+}\caption{Summary of the S4 classes defined in \fella.}
+\label{tab:classes}
+\end{table}
+
+\begin{figure}[!tpb]%figure1
+\centerline{\includegraphics[width=\linewidth]{workflow3.eps}}
+\caption{Design of the R package \fella.
+Block \textbf{I} covers the creation of a graph object from an 
+organism code and its database, which can be loaded 
+into a \Rclass{FELLA.DATA} object.
+This object is needed in all the following blocks.
+Block \textbf{II} requires block \textbf{I} and shows 
+how to map the KEGG identifiers to the database 
+in a \Rclass{FELLA.USER} object and run the propagation algorithms 
+(diffusion, PageRank) to score all the entities in the graph.
+Block \textbf{III} requires blocks \textbf{I} and \textbf{II} and 
+exports the results as a sub-network or as a table.}
+\label{fig:workflow}
+\end{figure}
+
+
+\fella~contains two vignettes that illustrate its capabilities: 
+(1) a quick-start example with the main functions applied to 
+a toy dataset, and (2) this document, an in-depth 
+demonstration on three real studies. 
+This vignette requires an internet connection 
+and can take up some time and memory to build, 
+as it builds the internal KEGG representation 
+for Homo sapiens on the fly.
+
+\subsection{Database and knowledge model}
+
+A distinctive feature of \fella~is its unique knowledge model. 
+Instead of using individual pathway representations, 
+either as a list of metabolites (ORA) or as a metabolic network (TP), 
+\fella~builds a unique network that encompasses 
+all the pathways at once: the KEGG graph.
+Figure \ref{fig:kegggraph} shows the hierarchical representation 
+of the KEGG database, ranging from the small, specific 
+molecular level (metabolite) to the large, complex unit (pathway). 
+Intermediate levels contain, from bottom to top: 
+reactions relating the metabolites, enzymes catalising the 
+reactions and KEGG modules containing the enzymes.
+More details on the construction and curation of this structure, 
+resemblant to the one used by MetScape \cite{metscape}, 
+can be found in \cite{metabopicart}.
+The enrichment is therefore achieved by finding a sub-network 
+from the whole KEGG graph that is statistically 
+relevant for a list of input metabolites.
+
+\begin{figure}[!tpb]%figure1
+\centerline{\includegraphics[width=\linewidth]{kegggraph.eps}}
+\caption{Internal knowledge representation from KEGG. 
+The scheme outlines the KEGG graph, a heterogeneous network 
+whose nodes belong to a category in KEGG: 
+compound, reaction, enzyme, module or pathway. 
+Lower levels are expected to be more specific entities, 
+while top levels are broader concepts. 
+The enrichment procedure starts from input metabolites and 
+extracts a relevant sub-network from the KEGG graph. 
+Figure extractred from \cite{metabopicart}}
+\label{fig:kegggraph}
+\end{figure}
+
+As shown in the block (I) of figure \ref{fig:workflow}, 
+the first step is to build a KEGG graph from an organism 
+in KEGG -Homo sapiens by default- using the 
+\Rfunction{buildGraphFromKEGGREST} command. 
+Afterwards, a local database can be built from 
+the KEGG graph through the \Rfunction{buildDataFromGraph} command. 
+The main purposes of \Rfunction{buildDataFromGraph} are to 
+save (1) the matrices that allow computing diffusion and 
+PageRank as a matrix-vector product, and (2) the null distribution 
+of the largest connected component of a $k$-th order subgraph, 
+with uniformly chosen nodes. 
+Point (1) is required to compute the diffusion scores, 
+whereas (2) is useful for filtering small connected components 
+in the reported subgraphs.
+
+The user should be aware that KEGG is frequently updated and 
+therefore the derived KEGG graph can change between KEGG releases.
+The metadata from the KEGG version used to build a 
+\Rclass{FELLA.DATA} object can be retrieved through \Rfunction{getInfo}.
+
+\subsection{Enrichment analysis}
+
+Once the database is ready as a \Rclass{FELLA.DATA} object 
+and the input is formatted as a list of KEGG compounds, 
+the enrichment can be performed. 
+The results of the enrichment are stored in a 
+\Rclass{FELLA.USER} object, possibly using three 
+methodologies described below. 
+
+\subsubsection{Hypergeometric test}
+
+For completeness purposes, the hypergeometric test is 
+included in \fella~in the function \Rfunction{runHypergeom}. 
+As in several ORA implementations, the hypergeometric distribution 
+is used to assess whether a biological pathway contains 
+more hits within the input list than expected from chance given its size. 
+Pathways are ranked according to their p-value 
+after multiple testing correction. 
+
+Note that the results from this test will differ from 
+a hypergeometric test using the original KEGG pathways, 
+because metabolite-pathway connections are inferred from the KEGG graph. 
+A metabolite is included in a pathway if the pathway 
+can be reached from the metabolite in the upwards-directed 
+KEGG graph, depicted in figure \ref{fig:pr}. 
+In consequence, metabolites related to the enzymes 
+within a pathway will belong to the pathway, 
+even if they were not in the original definition of the KEGG pathway. 
+
+\subsubsection{Diffusion}\label{sec:hd}
+
+Diffusion algorithms have been extensively used in computational biology. 
+For instance, HotNet is an algorithm for finding 
+sub-networks with a large amount of mutated genes \cite{hotnet}, 
+whereas TieDIE attemps to link a source set and 
+a target set of molecular entities through 
+two diffusion processes \cite{tiedie}.
+Other applications include the prioritisation of 
+disease genes \cite{gwadata} and the prediction of 
+gene function \cite{genemania}.
+
+In \fella, diffusion is a natural way to score all the nodes 
+in the KEGG graph given an input list of metabolites, 
+available using \Rcode{method = "diffusion"} 
+in the function \Rfunction{runDiffusion}.
+The input metabolites introduce unitary flow in the network.
+Flow can only leave the network through pathway nodes, 
+forcing it to propagate through the intermediate entities 
+as well (reactions, enzymes and modules), see figure \ref{fig:hd}. 
+Further details can found in \cite{metabopicart}. 
+
+\begin{figure}[!tpb]
+\centerline{\includegraphics[width=.8\linewidth]{HD_contour.pdf}}
+\caption{Network setup for the diffusion process. 
+nput metabolites (in black rings) introduce a unitary flow 
+in the network and only the pathway nodes (blue rings) 
+can leak the flow. The final score of the nodes reflects 
+the \textq{temperature} of a stationary state. 
+Figure extractred from \cite{metabopicart}.}
+\label{fig:hd}
+\end{figure}
+
+However, the diffusion scores are biased due to 
+the network topology \cite{metabopicart} and therefore a 
+normalisation step is required. 
+\fella~offers a normalisation through a z-score 
+(\Rcode{approx = "normality"}) or through an empirical p-value 
+(\Rcode{approx = "simulation"}), both assessing whether 
+the diffusion score of a node is likely to be reached 
+in a permutation analysis, i.e. if the input is random. 
+
+The normalisation through the z-scores leads to p-scores, defined as:
+
+$$ ps_i = 1 - \Phi(z_i) $$
+
+Where $ps_i$ is the p-score of node $i$, $z_i$ is 
+its z-score \cite{metabopicart} and $\Phi$ is the 
+cumulative distribution function of the standard gaussian distribution. 
+Under this definition, nodes are ranked using increasing p-scores. 
+
+For completeness, two alternative parametric scores have been added. 
+The heavier-tailed \textbf{t}-distribution can be used 
+instead of the gaussian by choosing \Rcode{approx = "t"} 
+and supplying the desired degrees of freedom $\nu$. 
+
+Similarly, the \textbf{gamma} distribution 
+can be used through \Rcode{approx = "gamma"}. 
+The p-score is obtained with
+
+$$ ps_i = 1 - F_i(T_i) $$
+
+Being $T_i$ the raw temperature of node $i$ and $F_i$ 
+the cumulative distribution function of a gamma distribution, 
+adjusted by its shape ($\frac{\mu_i^2}{\sigma_i^2}$) and scale 
+($\frac{\sigma_i^2}{\mu_i}$) parameters. 
+The quantities $\mu_i$ and $\sigma_i^2$ are the mean 
+and variance of the null temperatures and are analytically known 
+from the null model formulation \cite{metabopicart}. 
+
+\subsubsection{PageRank}
+
+PageRank \cite{pagerank} offers a scoring method for 
+the nodes in the KEGG graph, based on a random walks approach.
+The random walks start at the input metabolites and 
+are forced to explore their reachable nodes, see figure \ref{fig:pr}. 
+As random walks take into account the direction of the edges, 
+PageRank is applied to the upwards-directed KEGG graph 
+(figure \ref{fig:kegggraph}) in order to force 
+the walks to reach pathway nodes. 
+Nodes that are frequently visited by the random walks 
+earn a higher PageRank, analogously to the diffusion scores. 
+More details about this particular formulation, 
+implemented in \Rfunction{runPagerank}, 
+can be found in \cite{metabopicart}.
+
+\begin{figure}[!tpb]
+\centerline{\includegraphics[width=.8\linewidth]{PR_contour.pdf}}
+\caption{Network setup for PageRank. 
+Input metabolites (in black rings) are the source of random walks 
+that must climb through the graph levels, up to the pathway nodes. 
+Figure extractred from \cite{metabopicart}.}
+\label{fig:pr}
+\end{figure}
+
+The PageRank scores are statistically normalised, 
+providing the same options as in the diffusion scores in section \ref{sec:hd}. 
+Therefore, the argument \Rfunarg{approx} can be set 
+to \Rcode{"simulation"} for the permutation analysis, 
+or to \Rcode{"normality"}, \Rcode{"t"} or \Rcode{"gamma"} 
+for the parametric alternatives.
+
+\subsection{Enrichment wrapper}
+
+\fella~contains the wrapper \Rfunction{enrich} 
+that maps the KEGG ids and runs the desired enrichment 
+procedure with a single call. 
+This can be convenient for producing compact scripts 
+and running quick analyses.
+
+\subsection{Limitations}
+
+\fella~currently starts the statistical analysis 
+from a list of affected metabolites. 
+Therefore, it inherits a limitation from ORA methods: 
+the need of choosing a cutoff to derive the list of 
+affected metabolites, assuming that the metabolites 
+stem from a differential abundance analysis. 
+
+Another limitation, shared among network-based models, 
+is the incomplete biological knowledge from which the network is built. 
+The knowledge model in \fella~might also constraint 
+the complexity of the mechanisms that can be found through it.
+Processes such as genetic and epigenetic events, 
+or the type and directionality of regulatory events, 
+are not considered at the moment. 
+
+The user should be aware that \fella~neither builds 
+a dynamic model of the biochemical reactions in the metabolism, 
+nor relies on flux balance analysis.  
+Conversely, \fella~is built on a knowledge representation 
+from the biology in KEGG that focuses on offering 
+interpretability to the final user.
+
+\section{Case studies}
+
+The functionalities of \fella~are demonstrated by (1) 
+building a Homo sapiens database and (2) 
+enriching summary metabolomics data from three public datasets. 
+
+\subsection{Building the database}\label{sec:builddb}
+
+\fella~requires a database built from KEGG to perform any data enrichment. 
+\fella~contains a small example database as a 
+\Rclass{FELLA.DATA} object, accessible via 
+\Rcode{data("FELLA.sample")}, but this is a toy example 
+for demonstration purposes, not suited for regular analyses. 
+
+Therefore, the database for the corresponding organism 
+has to be built before any analysis is run. 
+The first step is to build the KEGG graph from the current 
+KEGG release with the function \Rfunction{buildGraphFromKEGGREST}. 
+Note that the user can force specific KEGG pathways to be 
+excluded from the graph - the following code removes 
+\textq{overview} metabolic pathways based on 
+\href{http://www.genome.jp/kegg/brite.html}{KEGG brite}. 
+
+
+<<01_graph, eval=TRUE>>=
+set.seed(1)
+# Filter overview pathways
+graph <- buildGraphFromKEGGREST(
+    organism = "hsa", 
+    filter.path = c("01100", "01200", "01210", "01212", "01230"))
+@
+
+Once the KEGG graph is ready, the database will be saved 
+locally using \Rfunction{buildDataFromGraph}. 
+The user can choose which matrices shall be stored 
+using the \Rfunarg{matrices} argument - saving both 
+\Rcode{"diffusion"} and \Rcode{"pagerank"} 
+might take up to 1GB of disk space. 
+
+If the user plans on using the z-score approximation, 
+it is advisable to set the \Rfunarg{normality} 
+argument to \Rcode{c("diffusion", "pagerank")} 
+in order to speed up future computations. 
+Using the z-scores with a custom metabolite background 
+will require the matrices to be saved as well. 
+
+Finally, the argument \Rfunarg{niter} controls how many 
+random trials are performed in the estimation of the 
+null distribution of the largest connected component 
+of a $k$-th order random subgraph. 
+As this is a property of the KEGG graph, 
+it is performed once and reused in each analysis. 
+This finds application when filtering 
+small connected components from the reported sub-network, 
+see section \ref{sec:export}.
+
+<<01_database, eval=TRUE>>=
+tmpdir <- tempdir()
+buildDataFromGraph(
+    keggdata.graph = graph, 
+    databaseDir = tmpdir, 
+    internalDir = FALSE, 
+    matrices = "diffusion", 
+    normality = "diffusion", 
+    niter = 50)
+@
+
+When the database is available in local, it can be loaded 
+in an \R{} session and assigned to a \Rclass{FELLA.DATA} 
+object using the function \Rfunction{loadKEGGdata}. 
+This should be the only procedure for creating any \Rclass{FELLA.DATA} object.
+The user is given the choice of loading the diffusion 
+and pagerank matrices to ease memory saving. 
+
+<<01_loadkegg, eval=TRUE>>=
+fella.data <- loadKEGGdata(
+    databaseDir = tmpdir, 
+    internalDir = FALSE, 
+    loadMatrix = "diffusion"
+)
+@
+
+The contents of the \Rclass{FELLA.DATA} object can be summarised as well:
+
+<<01_summary, eval=TRUE, results=verbatim>>=
+fella.data
+@
+
+The function \Rfunction{getInfo} provides the KEGG 
+release and organism that generated a \Rclass{FELLA.DATA} object:
+
+<<01_info, eval=TRUE, results=verbatim>>=
+getInfo(fella.data)
+@
+
+Please note that the database built for this vignette is 
+stored in a temporary folder and will not be persistent.  
+The user should build his or her own database and save it 
+in a persistent location, either in the package 
+installation directory (\Rcode{internalDir = TRUE}) 
+or in a custom folder (\Rcode{internalDir = FALSE}). 
+Internal databases can be listed using \Rfunction{listInternalDatabases}.
+
+A cautionary note if the user is relying on the 
+internal directory: reinstalling \fella~will wipe 
+existent databases because its internal directory is overwritten.
+Also, if the database name already exists when saving 
+a new database, the existing database will be renamed by 
+appending \Rcode{\_old} in order to avoid overwriting.
+
+\subsection{Epithelial cells dataset}
+
+This example data is extracted from the epithelial 
+cancer cells dataset \cite{epithelial}, an in vitro model 
+of dry eye in which the human epithelial cells IOBA-NHC 
+are put under hyperosmotic stress. 
+The list of metabolites hereby used reflects 
+metabolic changes in \textq{Treatment 1} (24 hours in 
+serum-free media at 380 mOsm) against control (24 hours at 280 mOsm). 
+The metabolites have been extracted 
+from \textq{Table 1} in the original manuscript and mapped to KEGG ids. 
+
+
+\subsubsection{Mapping the input metabolites}
+
+The input metabolites should be provided as 
+\href{http://www.genome.jp/kegg/compound/}{KEGG compound} identifiers. 
+If the user starts from another source (common names, 
+\href{http://www.hmdb.ca/}{HMDB} identifiers), tools like the 
+\textq{compound ID conversor} from 
+\metaboanalyst~can be useful for the ID conversion. 
+
+<<02_compounds, eval=TRUE>>=
+compounds.epithelial <- c(
+    "C02862", "C00487", "C00025", "C00064", 
+    "C00670", "C00073", "C00588", "C00082", "C00043")
+@
+
+The first step is to map the input metabolites 
+to the KEGG graph with \Rfunction{defineCompounds}. 
+This step requires the \Rclass{FELLA.DATA} object, 
+loaded in section \ref{sec:builddb}. 
+The user can impose a custom metabolite background 
+with the \Rfunarg{compoundsBackground} argument. 
+By default, all the KEGG compounds in the graph are used. 
+
+<<02_mapcompounds, eval=TRUE>>=
+analysis.epithelial <- defineCompounds(
+    compounds = compounds.epithelial, 
+    data = fella.data)
+@
+
+Notice that \Rfunction{defineCompounds} throws a 
+warning if any of the input metabolites does not map to the graph. 
+The user can retrieve the mapped and unmapped identifiers 
+through \Rfunction{getInput} and \Rfunction{getExcluded}, respectively.
+
+<<02_mapped, results=verbatim, eval=TRUE>>=
+getInput(analysis.epithelial)
+getExcluded(analysis.epithelial)
+@
+
+The status of a \Rclass{FELLA.USER} object 
+can be checked by printing the object.
+
+<<02_print, results=verbatim, eval=TRUE>>=
+analysis.epithelial
+@
+
+\subsubsection{Enriching using diffusion}
+
+Having mapped the compounds, the enrichment can be performed. 
+In this vignette, only the diffusion method 
+in \Rfunction{runDiffusion} will be applied, 
+although PageRank has an almost identical usage in \Rfunction{runPagerank}.
+
+If the user prefers an explicit permutation analysis, 
+the option \Rcode{approx = "simulation"} performs 
+the amount of iterations specified in the \Rfunarg{niter} argument.
+
+Conversely, if the desired approximation is 
+the z-score (\Rcode{approx = "normality"}), 
+the process does not require permutations. 
+The z-scores are converted to \Rcode{p.scores} using 
+the \Rcode{pnorm} routine. 
+Likewise, \Rcode{approx = "t"} and \Rcode{approx = "gamma"} 
+respectively rely on \Rcode{pt} and \Rcode{pgamma}. 
+Section \ref{sec:hd} contains further details on the scores.
+
+This example applies \Rcode{approx = "normality"}, a fast option. 
+For a comparison between prioritisations using 
+Monte Carlo trials or the parametric z-score, 
+the user can is referred to \cite{metabopicart}.
+
+<<03_enrich, eval=TRUE>>=
+analysis.epithelial <- runDiffusion(
+    object = analysis.epithelial, 
+    data = fella.data, 
+    approx = "normality")
+@
+
+The \Rclass{FELLA.USER} object has been updated 
+with the \Rcode{p.scores} from the diffusion results:
+
+<<03_summary, results=verbatim, eval=TRUE>>=
+analysis.epithelial
+@
+
+At this point, the subgraph consisting of top scoring nodes 
+can be plotted in a heterogeneous network layout. 
+In the presence of signal, this subgraph will exhibit 
+large connected components and contain nodes from 
+all the levels in the KEGG graph. 
+It is also expected that the algorithm gives a high priority 
+to the metabolites specified in the input, 
+although not all of them must necessarily be top ranked. 
+
+Therefore, the user should expect to find 
+the presence of intermediate entities 
+(reactions, enzymes and modules) that connect 
+the input to relevant KEGG pathways. 
+Note that \fella~can also pinpoint new KEGG 
+compounds as potentially relevant.
+
+In this example, the plot is limited to $150$ nodes 
+using the \Rfunarg{nlimit} argument from \Rfunction{plot}. 
+
+<<03_plot, fig=TRUE, fig.wide=TRUE, fig.asp=1, eval=TRUE>>=
+nlimit <- 150
+vertex.label.cex <- .5
+plot(
+    analysis.epithelial, 
+    method = "diffusion", 
+    data = fella.data, 
+    nlimit = nlimit, 
+    vertex.label.cex = vertex.label.cex)
+@
+
+In the original work \cite{epithelial}, the activation of 
+the \textbf{glycerophosphocholine synthesis} rather than 
+the \textbf{carnitine} response is a main result. 
+\fella~highlights\warnkegg~the related pathway 
+\textit{choline metabolism in cancer} and the 
+\textit{choline} metabolite as well. 
+Another key process is the \textbf{O-linked glycosilation}, 
+which is close to the KEGG module 
+\textit{O-glycan biosynthesis, mucin type core} and to 
+the KEGG pathway \textit{Mucin type O-glycan biosynthesis}.
+Finally, \fella~reproduces the finding of \textbf{UAP1} 
+by reporting the enzyme \textit{2.7.7.23}, named 
+\textit{UDP-N-acetylglucosamine diphosphorylase}. 
+\textbf{UAP1} is a key protein in the study, 
+pinpointed by iTRAQ and validated via western blot. 
+
+
+\subsubsection{Exporting the results}\label{sec:export}
+
+After an initial exploration of the results, 
+these can be exported using three functions that 
+lead to network and tabular formats. 
+
+The top scoring nodes can be exported as a network in 
+\CRANpkg{igraph} with the function \Rfunction{generateResultsGraph}. 
+The number $k$ of nodes in the subgraph is controlled 
+by the most stringent filter between \Rfunarg{nlimit} 
+(limit on the number of nodes) and \Rfunarg{threshold} 
+(limit on the \Rcode{p.score}). 
+
+Once $k$ is determined, the argument \Rfunarg{thresholdConnectedComponent} 
+further filters small connected components from the subgraph, 
+implying that the resulting subgraph can have less than $k$ nodes. 
+A connected component of order $r$ will be kept only if 
+the probability that a random subgraph of order $k$ contains 
+a connected component of order at least $r$ is smaller than 
+the specified threshold.
+In other words, small connected components can arise 
+from random sampling of the subgraph, whereas larger 
+connected components are highly unlikely under a uniform sampling. 
+The user can filter connected components that are 
+too small to be meaningful in that sense. 
+
+Lastly, the argument \Rfunarg{LabelLengthAtPlot} allows to 
+truncate the KEGG names at the given number of 
+characters for visualisation purposes.
+
+<<04_graph, results=verbatim, eval=TRUE>>=
+g <- generateResultsGraph(
+    object = analysis.epithelial, 
+    method = "diffusion", 
+    nlimit = nlimit, 
+    data = fella.data)
+g
+@
+
+The exported (sub)graph can be further complemented with 
+data from GO, the \href{www.geneontology.org}{Gene Ontology} 
+\cite{geneontology}. 
+Specifically, the enzymes can be equipped with annotations 
+from their underlying genes in any ontology from GO. 
+Note that this requires additional packages: \Biocpkg{biomaRt} 
+and \Biocpkg{org.Hs.eg.db}.
+The latter should be changed in case the analysis and 
+the database are not from Homo sapiens.
+
+The function \Rfunction{addGOToGraph} achieves this by 
+accepting a query GO term and computing the semantic similarity of 
+all the genes within each enzyme to the query GO term. 
+The semantic similarity is detailed and implemented in the 
+package \Biocpkg{GOSemSim} \cite{gosemsim}.
+
+In the current example, enzymes are going to be compared to 
+the GO cellular component term 
+\href{http://amigo.geneontology.org/amigo/term/GO:0005739}{mitochondrion}.
+Enzymes that contain genes whose cellular component is 
+closer or coincident with the mitochondrion will be highlighted.
+
+<<04_go, results=verbatim, eval=TRUE>>=
+# GO:0005739 is the term for mitochondrion
+g.go <- addGOToGraph(
+    graph = g, 
+    GOterm = "GO:0005739", 
+    godata.options = list(
+        OrgDb = "org.Hs.eg.db", ont = "CC"), 
+    mart.options = list(
+        biomart = "ensembl", dataset = "hsapiens_gene_ensembl"))
+g.go
+@
+
+Plotting the graph with the function \Rfunction{plotGraph} 
+reveals the addition of the GO term due to 
+a slight change in the plotting legend. 
+Enzyme nodes have a different shape and their colour scale 
+reflects their degree of similarity to the queried GO term. 
+
+<<04_plot_go, fig=TRUE, eval=TRUE>>=
+plotGraph(
+  g.go, 
+  vertex.label.cex = vertex.label.cex)
+@
+
+The second way to export the enrichment results is to 
+write the data from the KEGG entries in the top $k$ 
+p.scores using \Rfunction{generateResultsTable}. 
+This function accepts arguments similar to those 
+in \Rfunction{generateResultsTable}. 
+
+<<04_table, eval=TRUE>>=
+tab.all <- generateResultsTable(
+    method = "diffusion", 
+    nlimit = 100, 
+    object = analysis.epithelial, 
+    data = fella.data)
+# Show head of the table
+knitr::kable(head(tab.all), format = "latex")
+@
+
+The last exporting option, \Rfunction{generateEnzymesTable}, 
+is to a tabular format with details from the enzymes 
+reported among the top $k$ KEGG entries. 
+In particular, the table contains the genes that belong to 
+each enzyme family, separated by semicolons.
+
+<<04_enzyme, results=tex, eval=TRUE>>=
+tab.enzyme <- generateEnzymesTable(
+    method = "diffusion", 
+    nlimit = 100, 
+    object = analysis.epithelial, 
+    data = fella.data)
+# Show head of the table
+knitr::kable(head(tab.enzyme, 10), format = "latex")
+@
+
+The three exporting options shown above are included in 
+the wrapper function \Rfunction{exportResults}, 
+using \Rcode{format = "csv"} for the general tabular data, 
+\Rcode{format = "enzyme"} for the enzyme tabular data and 
+\Rcode{format = "igraph"} for saving an \Rcode{.RData} 
+object with the igraph sub-network object. 
+
+For instance, the general tabular data:
+
+<<04_file, eval=TRUE>>=
+tmpfile <- tempfile()
+exportResults(
+    format = "csv", 
+    file = tmpfile, 
+    method = "diffusion", 
+    object = analysis.epithelial, 
+    data = fella.data)
+@
+
+If the argument \Rfunarg{format} is none of the former, 
+\fella~saves the sub-network using \Rfunction{write.graph} 
+from the \CRANpkg{igraph} package with the desired format.
+
+<<04_pajek, eval=TRUE>>=
+tmpfile <- tempfile()
+exportResults(
+    format = "pajek", 
+    file = tmpfile, 
+    method = "diffusion", 
+    object = analysis.epithelial, 
+    data = fella.data)
+@
+
+\subsubsection{Deploying the graphical user interface}
+
+\fella~is equipped with a graphical user interface that 
+eases data analysis without learning the package syntax. 
+The app is divided in the following tabs:
+
+\begin{itemize}
+
+\item Compounds upload: contains a general description of 
+the tabs and a handle to submit the input metabolite list 
+as a text file. Examples are provided as well. 
+The right panel shows the mapped and the mismatching 
+compounds with regard to the default database.
+\item Advanced options: widgets that contain the main 
+function arguments for customising the enrichment procedure. 
+Allows database choice from the internal package directory, 
+method and approximation choice and parameter tweaking. 
+It also allows defining a GO label for the semantic similarity 
+analysis on the reported enzymes.
+\item Results: interactive plot with the sub-graph with the 
+top $k$ KEGG entries. Nodes can be selected, 
+queried and link to the KEGG entries when hovered. 
+Below the network lies an interactive table with the graph nodes, 
+allowing the user to look into particular entries.
+\item Export: several tabular and network exporting options.
+
+\end{itemize}
+
+The app is based on \CRANpkg{shiny} \cite{shiny} and can 
+be launched through \Rfunction{launchApp}.
+
+\subsubsection{Helper functions}
+
+\fella~is equipped with helper functions that ease the 
+user experience and avoid direct manipulation of the S4 classes. 
+Some of them have been already introduced - a complete 
+enumeration of the exported functions is hereby provided. 
+
+Functions of the type \Rcode{get-} ease object and slot 
+retrieval, with the following possibilities: 
+\Rfunction{getBackground}, \Rfunction{getExcluded}, 
+\Rfunction{getInfo}, \Rfunction{getInput}, 
+\Rfunction{getName}, \Rfunction{getPscores}. 
+
+On the other hand, functions starting by \Rcode{list-} 
+provide general purpose data about the package 
+(\Rfunction{listMethods}, \Rfunction{listApprox}, 
+\Rfunction{listCategories}) and a listing of the available 
+internal databases (\Rfunction{listInternalDatabases}).
+
+Finally, functions starting by \Rcode{is-} check if 
+an object belongs to a certain class: \Rfunction{is.FELLA.DATA} 
+and \Rfunction{is.FELLA.USER}.
+
+
+\subsection{Epithelial cells dataset}
+
+The next example has been extracted from the study on 
+metabolic responses of ovarian cancer cells \cite{ovarian}. 
+OCSCs are isogenic ovarian cancer stem cells derived from 
+the OVCAR-3 ovarian cancer cells.
+The abundances of six metabolites are affected by the 
+exposure to several environmental conditions: 
+glucose deprivation, hypoxia and ischemia 
+(column \textq{All} in \textq{Figure 3} from their main manuscript).
+
+The common names have been converted to KEGG ids prior to applying \fella. 
+The analysis is performed using the wrapper \Rfunction{enrich} 
+that maps the compounds to the internal representation 
+and runs the desired methods.
+
+<<05, fig=TRUE, eval=TRUE>>=
+compounds.ovarian <- c(
+    "C00275", "C00158", "C00042", 
+    "C00346", "C00122", "C06468")
+analysis.ovarian <- enrich(
+    compounds = compounds.ovarian, 
+    data = fella.data, 
+    methods = "diffusion")
+
+plot(
+    analysis.ovarian, 
+    method = "diffusion", 
+    data = fella.data, 
+    nlimit = 150, 
+    vertex.label.cex = vertex.label.cex, 
+    plotLegend = FALSE)
+@
+
+The resulting subnetwork\warnkegg~reports several 
+\textbf{TCA cycle}-related entities, also reported by 
+the authors and by previous work \cite{ovarian_tca_fumarate_succinate}. 
+It also mentions \textit{sphingosine degradation}, 
+closely related to the reported \textbf{sphingosine metabolism} 
+in the original work. 
+Enzymes that have been formerly related to 
+cancer are suggested within the TCA cycle, 
+like \textit{fumarate hydratase} 
+\cite{ovarian_fumarate_pithukpakorn,ovarian_4_2_1_2_lehtonen, 
+ovarian_tca_fumarate_succinate} 
+\textit{succinate dehydrogenase} 
+\cite{ovarian_succinate_dehydrogenase_ni,ovarian_tca_fumarate_succinate} 
+and \textit{acotinase} \cite{ovarian_4_2_1_3_singh}.
+Another suggestion is \textit{lysosome} - 
+lysosomes suffer changes in cancer cells and directly affect 
+apoptosis \cite{ovarian_lysosome_kirkegaard}. 
+Finally, the graph contains several \textit{hexokinases}, 
+potential targets to disrupt glycolysis, a fundamental need 
+in cancer cells \cite{ovarian_hexokinase_kaelin}.
+
+\subsection{Malaria dataset}
+
+The metabolites in the last example are related to 
+the distinction between malaria and other febrile ilnesses in \cite{malaria}. 
+Specifically, the list of KEGG identifiers has been 
+extracted from the supplementary data spreadsheet, 
+using all the possible KEGG matches for the 
+\textq{non malaria} patient group. 
+
+<<06, fig=TRUE, eval=TRUE>>=
+compounds.malaria <- c(
+    "C05471", "C14831", "C02686", "C06462", "C00735", "C14833", 
+    "C18175", "C00550", "C01124", "C05474", "C05469")
+
+analysis.malaria <- enrich(
+    compounds = compounds.malaria, 
+    data = fella.data, 
+    methods = "diffusion")
+
+plot(
+    analysis.malaria, 
+    method = "diffusion", 
+    data = fella.data, 
+    nlimit = 50, 
+    vertex.label.cex = vertex.label.cex, 
+    plotLegend = FALSE)
+@
+
+In this case, the depicted subnetwork\warnkegg~contains 
+the modules \textit{C21-Steroid hormone biosynthesis, 
+progesterone => corticosterone/aldosterone} and 
+\textit{C21-Steroid hormone biosynthesis, progesterone => cortisol/cortisone}, 
+related to the \textbf{corticosteroids} as a main 
+pathway reported in the original text.  
+This is part of the also reported 
+\textit{Aldosterone synthesis and secretion}; 
+aldosterone is known to show changes related to 
+fever as a metabolic response to infection \cite{mala_nonmala_aldosterone}.
+Another plausible hit in the sub-network is 
+\textit{linoleic acid metabolism}, as erythrocytes infected 
+by various malaria parasytes can be enriched in 
+linoleic acid \cite{mala_nonmala_linoleic}. 
+In addition, the pathway \textit{sphingolipid metabolism} 
+can play a role in the immune response 
+\cite{mala_nonmala_sphingo, mala_nonmala_sphingo2}. 
+As for the enzymes, \textit{3alpha-hydroxysteroid 3-dehydrogenase 
+(Si-specific)} and \textit{Delta4-3-oxosteroid 5beta-reductase} 
+are related to three input metabolites each 
+and might be candidates for further examination. 
+
+\section{Conclusions}
+
+The \fella~R package provides a simple, programmatic 
+and intuitive enrichment tool for metabolomics summary data.
+Starting from a list of metabolites, \fella~not only 
+pinpoints relevant pathways but also intermediate reactions, 
+enzymes and modules that links the input metabolites to the pathways.
+The reported entries have a network structure focused on 
+interpretability and new hypotheses generation, 
+giving a richer perspective than classical pathway enrichment tools.
+This comprehensive layout can also suggest potential 
+enzymes and new metabolites for further study.
+Finally, \fella~comes equipped with a graphical user interface 
+that promotes its usage to a wider audience and offers 
+interactive sub-network examination.
+
+\section{Funding}
+This work was supported by the Spanish
+Ministry of Economy and Competitiveness (MINECO)
+[TEC2014-60337-R to A.P.].
+A.P. and S.P. thank for funding the
+Spanish Biomedical Research Centre in Diabetes
+and Associated Metabolic Disorders (CIBERDEM)
+and the Networking Biomedical Research Centre
+in the subject area of Bioengineering,
+Biomaterials and Nanomedicine (CIBER-BBN),
+both initiatives of Instituto de Investigaci\'on Carlos III (ISCIII).
+SP. thanks the AGAUR FI-scholarship programme.
+
+\newpage
+
+\bibliography{bibliography}
+
+\newpage
+
+\appendix
+
+\section{Session info}
+
+Here is the output of \Rfunction{sessionInfo()} on the system that
+compiled this vignette:
+
+<<sessioninfo, results=tex, echo=FALSE>>=
+toLatex(sessionInfo())
+@
+
+\end{document}

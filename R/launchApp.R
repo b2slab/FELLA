@@ -2,9 +2,7 @@
 #' 
 #' Launch a shiny application to perform the metabolomics data enrichment. 
 #'
-#' @param port,host,launch.browser Port and host to launch the app, 
-#' and whether to launch browser or not
-#' @param ... Additional parameters passed to \code{\link[shiny]{runApp}}
+#' @param ... Parameters passed to \code{\link[shiny]{runApp}}
 #'
 #' @return \code{invisible()}, but as a side effect the app will be launched
 #' 
