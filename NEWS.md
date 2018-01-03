@@ -2,6 +2,17 @@
 
 ---
 
+### Versin 0.5.0
+
+* Fixed bibliography in vignette
+* Fixed missing table in vignette
+* Changed mechanisms when handling existing directories. 
+Now the writing is stopped instead of overwriting and the 
+automatic names are more meaningful.
+* New naming convention for databases. 
+Meaningful names with creation date, organism and KEGG version.
+* Updated unit testing and argument checking accordingly
+
 ### Version 0.4.13
 
 * Temporarily downgraded R dependency to version 4.3

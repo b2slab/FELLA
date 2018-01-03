@@ -115,10 +115,11 @@ checkArguments <- function(
     # DIRECTORIES
     ###########################
     
-    if (!is.character(databaseDir) | length(databaseDir) > 1) {
+    if ((!is.character(databaseDir) & !is.null(databaseDir))  | 
+        length(databaseDir) > 1) {
         message(
             "'databaseDir' must be a length 1 character ", 
-            " of an existing directory.")
+            " or NULL.")
         return(list(ans = NULL, valid = FALSE))
     }
     

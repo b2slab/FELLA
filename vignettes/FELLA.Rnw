@@ -8,7 +8,7 @@
 \documentclass[12pt]{article}
 
 <<style-Sweave, echo=FALSE, results=tex>>=
-BiocStyle::latex2()
+BiocStyle::latex()
 @
 
 \usepackage{dsfont}
@@ -268,49 +268,49 @@ Custom class & Slot & Sub-slot & Class & Description \\
 \hline
 \multirow{12}{*}{\texttt{FELLA.DATA}} & \multirow{5}{*}{\texttt{@keggdata}} & 
 \texttt{@graph} & igraph & Knowledge graph object \\
-  & & \texttt{@id2name} & list & Dictionary from KEGG ID to common name \\
-  & & \texttt{@pvalues.size} & matrix & Matrix with largest 
-  CC size probabilities \\
-  & & \texttt{@id} & list & Correspondence between IDs and category \\
-  & & \texttt{@status} & character & Status indicator 
-  of the object \\ \cline{2-5}
-  & \multirow{1}{*}{\texttt{@hypergeom}} & \texttt{@matrix} & 
-  Matrix & Metabolite-pathway binary relationship \\ \cline{2-5}
-  & \multirow{3}{*}{\texttt{@diffusion}} & \texttt{@matrix} & 
-  matrix & Matrix to compute diffusion as a matrix-vector product \\
-  & & \texttt{@rowSums} & vector & Internal data to compute the z-scores \\
-  & & \texttt{@squaredRowSums} & vector & Internal data to compute 
-  the z-scores \\ \cline{2-5}
-  & \multirow{3}{*}{\texttt{@pagerank}} & \texttt{@matrix} & 
-  matrix & Matrix to compute PageRank as a matrix-vector product \\
-  & & \texttt{@rowSums} & vector & Internal data to compute the z-scores \\
-  & & \texttt{@squaredRowSums} & vector & Internal data 
-  to compute the z-scores \\ \hline
+& & \texttt{@id2name} & list & Dictionary from KEGG ID to common name \\
+& & \texttt{@pvalues.size} & matrix & Matrix with largest 
+CC size probabilities \\
+& & \texttt{@id} & list & Correspondence between IDs and category \\
+& & \texttt{@status} & character & Status indicator 
+of the object \\ \cline{2-5}
+& \multirow{1}{*}{\texttt{@hypergeom}} & \texttt{@matrix} & 
+Matrix & Metabolite-pathway binary relationship \\ \cline{2-5}
+& \multirow{3}{*}{\texttt{@diffusion}} & \texttt{@matrix} & 
+matrix & Matrix to compute diffusion as a matrix-vector product \\
+& & \texttt{@rowSums} & vector & Internal data to compute the z-scores \\
+& & \texttt{@squaredRowSums} & vector & Internal data to compute 
+the z-scores \\ \cline{2-5}
+& \multirow{3}{*}{\texttt{@pagerank}} & \texttt{@matrix} & 
+matrix & Matrix to compute PageRank as a matrix-vector product \\
+& & \texttt{@rowSums} & vector & Internal data to compute the z-scores \\
+& & \texttt{@squaredRowSums} & vector & Internal data 
+to compute the z-scores \\ \hline
 \multirow{17}{*}{\texttt{FELLA.USER}} & \multirow{3}{*}{\texttt{@userinput}} & 
 \texttt{@metabolites} & vector & KEGG IDs that map to the knowledge graph \\
-  & & \texttt{@metabolitesbackground} & vector & Background KEGG IDs \\
-  & & \texttt{@excluded} & vector & Input IDs not mapping to the 
-  knowledge graph \\ \cline{2-5}
-  & \multirow{6}{*}{\texttt{@hypergeom}} & \texttt{@valid} & logical & 
-  Indicator of analysis validity \\
-  & & \texttt{@pvalues} & vector & Pathway p-values \\
-  & & \texttt{@pathhits} & vector & Number of hits in each pathway \\
-  & & \texttt{@pathbackground} & vector & Number of metabolites 
-  in each pathway \\
-  & & \texttt{@nbackground} & numeric & Number of compounds 
-  in the background \\
-  & & \texttt{@ninput} & numeric & Number of compounds 
-  in the input \\ \cline{2-5}
-  & \multirow{4}{*}{\texttt{@diffusion}} & \texttt{@valid} & 
-  logical & Indicator of analysis validity \\
-  & & \texttt{@pscores} & vector & P-scores for each node in the network \\
-  & & \texttt{@approx} & character & Chosen approximation \\
-  & & \texttt{@niter} & numeric & Chosen iterations \\ \cline{2-5}
-  & \multirow{4}{*}{\texttt{@parerank}} & \texttt{@valid} & logical & 
-  Indicator of analysis validity \\
-  & & \texttt{@pscores} & vector & P-scores for each node in the network \\
-  & & \texttt{@approx} & character & Chosen approximation \\
-  & & \texttt{@niter} & numeric & Chosen iterations \\ \hline
+& & \texttt{@metabolitesbackground} & vector & Background KEGG IDs \\
+& & \texttt{@excluded} & vector & Input IDs not mapping to the 
+knowledge graph \\ \cline{2-5}
+& \multirow{6}{*}{\texttt{@hypergeom}} & \texttt{@valid} & logical & 
+Indicator of analysis validity \\
+& & \texttt{@pvalues} & vector & Pathway p-values \\
+& & \texttt{@pathhits} & vector & Number of hits in each pathway \\
+& & \texttt{@pathbackground} & vector & Number of metabolites 
+in each pathway \\
+& & \texttt{@nbackground} & numeric & Number of compounds 
+in the background \\
+& & \texttt{@ninput} & numeric & Number of compounds 
+in the input \\ \cline{2-5}
+& \multirow{4}{*}{\texttt{@diffusion}} & \texttt{@valid} & 
+logical & Indicator of analysis validity \\
+& & \texttt{@pscores} & vector & P-scores for each node in the network \\
+& & \texttt{@approx} & character & Chosen approximation \\
+& & \texttt{@niter} & numeric & Chosen iterations \\ \cline{2-5}
+& \multirow{4}{*}{\texttt{@parerank}} & \texttt{@valid} & logical & 
+Indicator of analysis validity \\
+& & \texttt{@pscores} & vector & P-scores for each node in the network \\
+& & \texttt{@approx} & character & Chosen approximation \\
+& & \texttt{@niter} & numeric & Chosen iterations \\ \hline
 \end{tabular}
 }\caption{Summary of the S4 classes defined in \fella.}
 \label{tab:classes}
@@ -616,7 +616,7 @@ small connected components from the reported sub-network,
 see section \ref{sec:export}.
 
 <<01_database, eval=TRUE>>=
-tmpdir <- tempdir()
+tmpdir <- paste0(tempdir(), "/my_database")
 buildDataFromGraph(
     keggdata.graph = graph, 
     databaseDir = tmpdir, 
@@ -895,8 +895,8 @@ reflects their degree of similarity to the queried GO term.
 
 <<04_plot_go, fig=TRUE, eval=TRUE>>=
 plotGraph(
-  g.go, 
-  vertex.label.cex = vertex.label.cex)
+    g.go, 
+    vertex.label.cex = vertex.label.cex)
 @
 
 The second way to export the enrichment results is to 
@@ -905,7 +905,7 @@ p.scores using \Rfunction{generateResultsTable}.
 This function accepts arguments similar to those 
 in \Rfunction{generateResultsTable}. 
 
-<<04_table, eval=TRUE>>=
+<<04_table, results=tex, eval=TRUE>>=
 tab.all <- generateResultsTable(
     method = "diffusion", 
     nlimit = 100, 

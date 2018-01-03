@@ -39,7 +39,7 @@ generateResultsTable <- function(
     plimit = 15, 
     nlimit = 250, 
     LabelLengthAtPlot = 45, 
-    capPscores = 1e-10, 
+    capPscores = 1e-6, 
     object = NULL, 
     data = NULL, 
     ...) {
