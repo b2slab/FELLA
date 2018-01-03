@@ -13,7 +13,7 @@
 #' is.FELLA.DATA(FELLA.sample)
 #' is.FELLA.DATA(42)
 is.FELLA.DATA <- function(x = NULL) {
-    return(is(x, "FELLA.DATA"))
+    return(inherits(x, "FELLA.DATA"))
 }
 
 #' Check FELLA.USER class
@@ -39,5 +39,5 @@ is.FELLA.DATA <- function(x = NULL) {
 #' 
 #' @export
 is.FELLA.USER <- function(x = NULL) {
-    return(is(x, "FELLA.USER"))
+    return(inherits(x, "FELLA.USER"))
 }

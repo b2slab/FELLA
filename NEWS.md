@@ -2,6 +2,10 @@
 
 ---
 
+### Versin 0.5.1
+
+* Small modifications on Travis and `is-.R`
+
 ### Versin 0.5.0
 
 * Fixed bibliography in vignette

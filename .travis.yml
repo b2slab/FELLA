@@ -1,8 +1,21 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
 language: r
-r: bioc-devel
+r: 
+  - bioc-release
+  - bioc-devel
+
+warnings_are_errors: false
+
+r_build_args: "--no-build-vignettes"
+r_check_args: "--no-vignettes"
 
 sudo: false
 cache: packages
+
+# BiocCheck
+bioc_packages:
+  - BiocCheck
 
 # code coverage
 r_github_packages:
@@ -10,4 +23,4 @@ r_github_packages:
 
 after_success:
   - Rscript -e 'library(covr);codecov()'
-
+  - R CMD BiocCheck .
