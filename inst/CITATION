@@ -1,0 +1,27 @@
+utils::citHeader("To cite 'FELLA' in publications use:")
+utils::citEntry(
+    entry = "article",
+    title = "Null diffusion-based enrichment for metabolomics data",
+    author = utils::personList(
+        utils::as.person("Sergio Picart-Armada"),
+    		utils::as.person("Francesc Fernandez-Albert"), 
+    		utils::as.person("Maria Vinaixa"), 
+    		utils::as.person("Miguel A. Rodriguez"), 
+    		utils::as.person("Suvi Aivio"), 
+    		utils::as.person("Travis H. Stracker"), 
+    		utils::as.person("Oscar Yanes"), 
+    		utils::as.person("Alexandre Perera-Lluna")),
+	  journal = "PLOS ONE",
+    volume = "12",
+    number = "12",
+    pages = "e0189012",
+    year = "2017",
+    doi = "10.1371/journal.pone.0189012",
+    textVersion = paste0(
+        "Sergio Picart-Armada, Francesc Fernandez-Albert, Maria Vinaixa, ", 
+        "Miguel A. Rodriguez, Suvi Aivio, Travis H. Stracker, ", 
+        "Oscar Yanes, Alexandre Perera-Lluna. Null diffusion-based ", 
+        "enrichment for metabolomics data. ", 
+        "PLOS ONE, 12(12), e0189012. ", 
+        "https://doi.org/10.1371/journal.pone.0189012")
+)

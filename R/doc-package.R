@@ -1,17 +1,61 @@
 #' The FELLA package
 #' 
 #' \code{FELLA} is a metabolomics data enrichment tool that contextualises 
-#' the experimental results using KEGG reactions, 
-#' enzymes, modules and pathways. 
-#' The input is introduced as a list of affected metabolites (KEGG IDs), 
-#' while the output contains a comprehensive biological network layout 
-#' that relates to the affected metabolites.
+#' a list of metabolites using KEGG reactions, 
+#' enzymes, modules and pathways [Picart-Armada, 2017]. 
+#' 
+#' The input is introduced as a list of affected metabolites (KEGG IDs, 
+#' [Kanehisa, 2017]).
+#' The output contains a comprehensive biological network layout 
+#' that relates relevant pathways to the affected metabolites. 
+#' 
+#' \code{FELLA} is equipped with a simple graphical interface 
+#' for the lay user, deployed through \link[FELLA]{launchApp}.
+#' 
+#' \code{FELLA} relies mainly on the following packages: 
+#' \link[KEGGREST]{KEGGREST} for the queries 
+#' to the KEGG server [Tenenbaum, 2013], 
+#' \link[igraph]{igraph} for the network support [Csardi, 2006] and 
+#' \link[shiny]{shiny} for the graphical user interface [Chang, 2017].
 #' 
 #' @examples 
 #' browseVignettes("FELLA")
 #' ?FELLA.sample
 #' ?input.sample
 #' ?enrich
+#' 
+#' @references 
+#' Methodology:
+#' 
+#' Picart-Armada, S., Fernandez-Albert, F., Vinaixa, 
+#' M., Rodriguez, M. A., Aivio, S., Stracker, 
+#' T. H., Yanes, O., & Perera-Lluna, A. (2017). 
+#' Null diffusion-based enrichment for metabolomics data. 
+#' PLOS ONE, 12(12), e0189012.
+#' 
+#' 
+#' Database: 
+#' 
+#' Kanehisa, M., Furumichi, M., Tanabe,
+#' M., Sato, Y., & Morishima, K. (2017).
+#' KEGG: new perspectives on genomes, pathways, diseases and drugs.
+#' Nucleic acids research, 45(D1), D353-D361.
+#' 
+#' 
+#' Main dependencies:
+#' 
+#' Tenenbaum, D. (2013). KEGGREST: Client-side REST access 
+#' to KEGG. R package version, 1(1).
+#' 
+#' Csardi, G., & Nepusz, T. (2006). The igraph software package 
+#' for complex network research. 
+#' InterJournal, Complex Systems, 1695(5), 1-9.
+#' 
+#' Chang, W., Cheng, J., Allaire, JJ., 
+#' Xie, Y., & McPherson, J. (2017).
+#' shiny: Web Application Framework for R. R package version 1.0.5.
+#' https://CRAN.R-project.org/package=shiny
+#' 
 #' 
 #' @docType package
 #' @name FELLA

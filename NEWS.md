@@ -2,6 +2,11 @@
 
 ---
 
+### Version 0.5.3
+
+* Added `CITATION` file
+* Added some cites to doc
+
 ### Version 0.5.2
 
 * Shiny app
