@@ -4,52 +4,56 @@ shinyUI(fluidPage(
   titlePanel(
     title = h1(
       a(href = "http://b2slab.upc.edu/", 
-        img(src='b2slab_small.png', align = "center")), 
-      "Pathway enrichment from KEGG compounds", 
+        img(src='b2slab_small.png', align = "center", height = "50px")), 
+      "SHELLA: pathway analysis for metabolomics data", 
       a(href = "http://www.creb.upc.edu/", 
-        img(src='creb_upc.png', align = "center"), 
+        img(src='creb_upc.png', align = "center", height = "50px"), 
         align = "center")),  
-    windowTitle = "SHELLA: enrichment tool for Metabolomics"
+    windowTitle = "SHELLA: enriching metabolomics data"
   ),
   
   fluidRow(
     tabsetPanel(
       tabPanel(
-        "1. Upload your compounds", 
+        "1. Upload compounds", 
         column(
           12, 
           column(
             3, 
-            h2("Overview and instructions"), 
-            h5("SHELLA online tool allows you to perform 
-               a pathway enrichment for Metabolomics using KEGG database."), 
-            h3("1. Upload your compounds"), 
-            h5("You can upload your data in terms of affected 
-               compounds, alternatively you can use our sample data. 
-               Once your compounds are uplodaded, you will be shown 
-               the matches and the mismatches (excluded compounds)."), 
+            h2("Overview"), 
+            h4("SHELLA is an interface to the FELLA R package. 
+               SHELLA allows the user to perform 
+               a pathway enrichment on metabolomics data 
+               using the KEGG database."), 
+            h3("1. Upload compounds"), 
+            h5("The user can upload a list of metabolites as a text file 
+               containing KEGG ids.  
+               Three sample lists show the app functionalities. 
+               Once the metabolites are defined,  
+               the matches and the mismatches are displayed."), 
             h3("2. Advanced options"), 
-            h5("This tab allows you to adjust methodological and 
-               graphical parameters. You can specify your algorithm 
-               of preference, the thresholds and the maximum nodes 
-               allowed in the solution graph. You can also apply 
-               a visual filter using GO cellular component 
-               for the enzymes in the solution."), 
-            h3("3. Examine your results"), 
-            h5("This tab depicts your solution and lets you jump 
-               though the connected components of the solution graph. 
-               In addition, a table gathers the represented nodes 
-               along with additional data."), 
-            h3("4. Export your results"), 
-            h5("A variety of output formats is available 
-               for downloading your results.")
+            h5("This tab lets the user adjust methodological and 
+               graphical parameters. For instance, 
+               the algorithm to prioritise the nodes, 
+               the thresholds and the maximum amount of nodes 
+               to display. Furthermore, the enzymes in the solution can 
+               be overlaid with their similarity to a user-defined 
+               GO label."), 
+            h3("3. Interactive results"), 
+            h5("This tab draws the solution and lets the user zoom, move, 
+               search and highlight nodes in the solution graph. 
+               Below, a table describes the depicted nodes 
+               and links to their KEGG entries in their website."), 
+            h3("4. Export results"), 
+            h5("A variety of output formats are available 
+               for downloading the results.")
             ), 
           column(
             3,
-            h2("Upload your compounds"), 
+            h2("Upload compounds"), 
             radioButtons(
               "radioInput", 
-              label = h4("Define your significant compounds:"),
+              label = h4("List of metabolites to enrich:"),
               choices = list("Example 1" = 1, 
                              "Example 2" = 2, 
                              "Example MetaboAnalyst" = 3, 
@@ -60,24 +64,29 @@ shinyUI(fluidPage(
             
             br(), 
             h2("Example file"), 
-            h5("If you are willing to upload your results, here is the format 
-               that you should use in your file."), 
-            h4("This is the content of the data for 'Example 2'. 
+            h5("Here is a sample of the format understood by SHELLA.
+               This is the content of the data for 'Example 2'. 
                KEGG identifiers can be quoted as well, but this is not 
                necessary. The file extension is irrelevant (.txt, .csv) 
-               as long as the format is correct. 
-               Make sure your compounds are parsed as expected."),  
-            verbatimTextOutput("exampleInput"), 
-            downloadButton("downloadExample", "Download Example 2")
+               as long as the format is correct."), 
+            h6("Make sure the KEGG compounds are parsed as expected 
+               in the right column. For instance, seek mismatches due to 
+               whitespaces."), 
+            downloadButton("downloadExample", "Download Example 2"), 
+            h5("Contents of the file:"), 
+            verbatimTextOutput("exampleInput")
             ),
           
           column(
             5,
-            h2("Check your uploaded compounds"), 
-            h5("Remember to place your compounds as a column in the csv file."), 
-            h6("The mapped compounds should appear below:"), 
+            h2("Check the uploaded compounds"), 
+            h5("Successfully mapped KEGG ids:"), 
             tableOutput("tableCompounds"), 
-            h6("Excluded compounds:"),
+            h5("Mismatching compounds:"),
+            h6("Note: due to the graph curation, 
+               not every KEGG compound is within the SHELLA database,
+               Even if the KEGG id exists, 
+               a mismatch can take place."), 
             tableOutput("tableExcluded") 
           )
         )
@@ -163,17 +172,18 @@ shinyUI(fluidPage(
           ), 
           column(
             4,
-            h3("GO Cellullar Component for enzymes"), 
-            h5("You can add a cellular component filter for the 
-               enzymes in your output. For example, if you decide 
-               to filter by 'mitochondrion', use the example GO label. 
-               For each enzyme family, its GO term will be determined by 
-               the best semantic similarity using the genes in that family. 
-               The GO cellular component of the best hit will be appended 
-               to the node label and the node shape will become triangular. 
-               If GO annotations are unavailable for an enzyme, it will 
-               be left with a circular shape."),
-            h4("Adding a GO term takes some time, please be patient"), 
+            h3("GO labels for enzymes"), 
+            h4("Adding a GO term takes some time, please be patient"),
+            h5("The user can add a GO label visual filter for the 
+               enzymes in the output. For example, we can decide 
+               to filter by 'mitochondrion' by clicking the following button:"),
+            actionButton("exampleGOCC", label = "GO: mitochondrion example"), 
+            h6("The GO term for each enzyme family is determined by 
+               the best semantic similarity using the genes in it.  
+               The GO term of the best hit is appended 
+               to the node label and the node shape becomes triangular. 
+               If GO annotations are unavailable for an enzyme, it is 
+               left with a circular shape."),
             #################################
             textInput(
               "GOTermInput", 
@@ -202,7 +212,7 @@ shinyUI(fluidPage(
               label = h4(
                 "Specify a dataset"), 
               value = NULL), 
-            actionButton("exampleGOCC", label = "GO CC example"), 
+            
             #################################
             selectInput(
               "GONamesAsLabels", 
@@ -216,20 +226,23 @@ shinyUI(fluidPage(
       ), 
       #################################
       tabPanel(
-        "3. Examine your results", 
-        textOutput("graphSize", container = h2), 
-        textOutput("hoverNode", container = h3), 
-        visNetworkOutput(
-            "cytoscapePlot", 
-            height = "800px"
-            # width = "1200px"
-            ), 
-        DT::dataTableOutput("tableSolution")
+        "3. Interactive results", 
+        column(
+          12,
+          textOutput("graphSize", container = h2), 
+          textOutput("hoverNode", container = h3), 
+          visNetworkOutput(
+              "cytoscapePlot", 
+              height = "800px"
+              # width = "1200px"
+              ), 
+          DT::dataTableOutput("tableSolution")
+        )
         
       ), 
       #################################
       tabPanel(
-        "4. Export your results", 
+        "4. Export results", 
         h2("Export tables"),
         h4("Export the whole results table as csv"),
         downloadButton(

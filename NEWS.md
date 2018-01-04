@@ -2,11 +2,21 @@
 
 ---
 
-### Versin 0.5.1
+### Version 0.5.2
+
+* Shiny app
+    - Fixed bug: table not showing up
+    - Documentation has been improved
+    - Fixed bug: empty network led to error
+    - Now exporting a network takes into account `thresholdConnectedComponent` 
+    as well (it did not until now)
+    - Modified logo size and title
+
+### Version 0.5.1
 
 * Small modifications on Travis and `is-.R`
 
-### Versin 0.5.0
+### Version 0.5.0
 
 * Fixed bibliography in vignette
 * Fixed missing table in vignette

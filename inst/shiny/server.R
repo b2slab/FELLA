@@ -199,7 +199,7 @@ shinyServer(function(input, output, session) {
     user <- createUser()
     g <- currentGraph()
     if (!is.null(data) & !is.null(g) & is.igraph(g)) {
-      if (vcount(g) > 0) return(NULL)
+      if (vcount(g) == 0) return(NULL)
       wholeTable <- generateResultsTable(
         object = user, 
         method = input$method, 
@@ -221,7 +221,9 @@ shinyServer(function(input, output, session) {
         "\">", outTable$"KEGG.id", "</a>")
       escape <- which(colnames(outTable) == "KEGG.id")
       
-      DT::datatable(outTable, escape = escape) %>%
+      DT::datatable(outTable, 
+                    escape = escape, 
+                    options = list(pageLength = 100)) %>%
         DT::formatSignif(columns = "p.score", digits = 2)
     }
   })
@@ -301,6 +303,7 @@ shinyServer(function(input, output, session) {
       nodeLink <- paste0(
         "<a href=\"http://www.genome.jp/dbget-bin/www_bget?",
         V(g)$name, "\"", "\ target=\"_blank", "\">", V(g)$name, "</a>")
+      if(vcount(g) == 0) nodeLink <- character(0)
 
       nodes$title <- nodeLink
       
@@ -414,6 +417,7 @@ shinyServer(function(input, output, session) {
           object = createUser(), 
           method = input$method, 
           threshold = input$threshold,
+          thresholdConnectedComponent = input$thresholdConnectedComponent, 
           nlimit = input$nlimit, 
           plimit = 15, 
           data = data)
