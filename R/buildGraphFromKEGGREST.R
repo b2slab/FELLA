@@ -43,7 +43,7 @@ sanitise <- function(x, category, organism) {
 
 #' Infer connections to EC 
 #' 
-#' This function infers network connections to KEGG EC 
+#' Function \code{infere.con2ec} infers network connections to KEGG EC 
 #' families by passing through genes. This assumes that the category being 
 #' mapped to enzymes is above them.
 #'
@@ -85,7 +85,8 @@ infere.con2ec <- function(ids, ent, ent2gene, gene2enzyme) {
 
 #' Extract largest CC
 #' 
-#' Largest connected component of an igraph object
+#' Function \code{largestcc} extracts the 
+#' largest connected component of an igraph object
 #'
 #' @param graph Igraph object
 #' 
@@ -104,38 +105,48 @@ largestcc <- function(graph) {
 }
 
 
-#' Generate the KEGG graph 
+#' @title Parse, build and load the KEGG knowledge model
 #' 
-#' Function \code{buildGraphFromKEGG} returns the 
-#' curated KEGG graph, necessary 
-#' to build the other KEGG RData files and, ultimately, build the 
-#' \code{\link[FELLA]{FELLA.USER}} object. 
-#' This procedure should only be used once, and 
-#' might take some amount of time.
+#' @description 
+#' Function \code{buildGraphFromKEGGREST} makes use of the KEGG 
+#' REST API (requires internet connection) 
+#' to build and return the curated KEGG graph. 
+#' 
+#' @details
+#' In function \code{buildGraphFromKEGG}, 
+#' The user specifies (i) an organism, and (ii) patterns matching 
+#' pathways that should not be included as nodes. 
+#' A graph object, as described in [Picart-Armada, 2017], 
+#' is built from the comprehensive 
+#' KEGG database [Kanehisa, 2017]. 
+#' As described in the main vignette, accessible through 
+#' \code{browseVignettes("FELLA")}, this graph has five levels that 
+#' represent categories of KEGG nodes. 
+#' From top to bottom: pathways, modules, enzymes, reactions and compounds.
+#' This knowledge representation is resemblant to the one formerly 
+#' used by MetScape [Karnovsky, 2011], in which enzymes connect 
+#' to genes instead of modules and pathways.
+#' The necessary KEGG annotations 
+#' are retrieved through KEGGREST R package [Tenenbaum, 2013]. 
+#' Connections between pathways/modules and enzymes are inferred through 
+#' organism-specific genes, i.e. an edge is added if a gene 
+#' connects both entries. 
+#' However, in order to enrich metabolomics data, the user has to 
+#' pass the graph object to \code{buildDataFromGraph}  
+#' to obtain the \code{\link[FELLA]{FELLA.USER}} object. 
+#' All the networks are handled with the igraph R package [Csardi, 2006].
+#' 
 #' 
 #' @param organism Character, KEGG code for the organism of interest
 #' @param filter.path Character vector, pathways to filter. 
-#' This is a pattern 
-#' matched using regexp. E.g: \code{"01100"} to filter 
+#' This is a pattern matched using regexp. 
+#' E.g: \code{"01100"} to filter 
 #' the overview metabolic pathway in any species
 #' 
-#' @return Curated KEGG graph (class \code{\link[igraph]{igraph}})
+#' @return \code{buildGraphFromKEGG} returns the 
+#' curated KEGG graph (class \code{\link[igraph]{igraph}})
 #' 
-#' @examples 
-#' ## These examples take several seconds to compute and require an 
-#' ## active internet conenction to connect to the KEGG API
-#' 
-#' \dontrun{
-#' ## Graph for Homo sapiens using all the pathways
-#' library(igraph)
-#' g <- buildGraphFromKEGGREST()
-#' summary(g)}
-#' 
-#' \dontrun{
-#' ## Graph for Mus musculus discarding the mmu01100 pathway
-#' g <- buildGraphFromKEGGREST(
-#' organism = "mmu", 
-#' filter.path = "mmu01100")}
+#' @describeIn loadKEGGdata builds graph, needs internet
 #' 
 #' @import igraph
 #' @import Matrix

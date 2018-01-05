@@ -1,7 +1,7 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and Enrichment for Metabolomics Data
-Version: 0.5.4
+Version: 0.5.5
 Date: 2018-1-5
 Authors@R: c(
     person(
@@ -58,3 +58,29 @@ biocViews:
     Pathways, 
     Network, 
     NetworkEnrichment
+Collate: 
+    'AllArguments.R'
+    'AllClasses.R'
+    'AllMethods.R'
+    'addGOToGraph.R'
+    'buildGraphFromKEGGREST.R'
+    'buildDataFromGraph.R'
+    'defineCompounds.R'
+    'doc-data.R'
+    'doc-package.R'
+    'enrich.R'
+    'exportResults.R'
+    'generateEnzymesTable.R'
+    'generateResultsGraph.R'
+    'generateResultsTable.R'
+    'get-.R'
+    'is-.R'
+    'launchApp.R'
+    'list-.R'
+    'loadKEGGdata.R'
+    'plotBipartite.R'
+    'plotGraph.R'
+    'plotLegend.R'
+    'runDiffusion.R'
+    'runHypergeom.R'
+    'runPagerank.R'

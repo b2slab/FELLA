@@ -20,7 +20,7 @@ that relates relevant pathways to the affected metabolites.
 for the lay user, deployed through \link[FELLA]{launchApp}.
 
 \code{FELLA} relies mainly on the following packages: 
-\link[KEGGREST]{KEGGREST} for the queries 
+KEGGREST for the queries 
 to the KEGG server [Tenenbaum, 2013], 
 \link[igraph]{igraph} for the network support [Csardi, 2006] and 
 \link[shiny]{shiny} for the graphical user interface [Chang, 2017].

@@ -2,6 +2,13 @@
 
 ---
 
+### Version 0.5.5
+
+* Improved doc in `FELLA.DATA` object creation
+    - Fused 3 functions
+    - Added references
+    - Expanded details
+
 ### Version 0.5.4
 
 * Added progress bars to shiny app for:

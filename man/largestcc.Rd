@@ -13,7 +13,8 @@ largestcc(graph)
 Connected igraph object
 }
 \description{
-Largest connected component of an igraph object
+Function \code{largestcc} extracts the 
+largest connected component of an igraph object
 }
 \examples{
 library(igraph)

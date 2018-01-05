@@ -25,7 +25,7 @@ Two-column data frame. Column \code{"from"} contains the
 KEGG enzyme families whereas \code{"to"} contains the entity \code{ent}.
 }
 \description{
-This function infers network connections to KEGG EC 
+Function \code{infere.con2ec} infers network connections to KEGG EC 
 families by passing through genes. This assumes that the category being 
 mapped to enzymes is above them.
 }
