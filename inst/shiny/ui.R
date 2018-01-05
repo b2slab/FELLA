@@ -229,8 +229,8 @@ shinyUI(fluidPage(
         "3. Interactive results", 
         column(
           12,
-          textOutput("graphSize", container = h2), 
-          textOutput("hoverNode", container = h3), 
+          shiny::br(), 
+          column(6, verbatimTextOutput("graphSize")), 
           visNetworkOutput(
               "cytoscapePlot", 
               height = "800px"

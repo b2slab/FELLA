@@ -2,6 +2,14 @@
 
 ---
 
+### Version 0.5.4
+
+* Added progress bars to shiny app for:
+    - Loading database
+    - Enriching 
+    - Adding GO similarity
+* Added simple legend for GO similarity
+
 ### Version 0.5.3
 
 * Added `CITATION` file

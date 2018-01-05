@@ -4,11 +4,15 @@ shinyServer(function(input, output, session) {
   # Database of choice
   FELLA.DATA <- reactive({
     if (input$database != "") {
-      loadKEGGdata(
-        databaseDir = input$database, 
-        internalDir = FALSE, 
-        loadMatrix = c("diffusion", "pagerank")
-      )
+      withProgress(message = "Loading database", value = .5, {
+        ans <- loadKEGGdata(
+          databaseDir = input$database, 
+          internalDir = FALSE, 
+          loadMatrix = c("diffusion", "pagerank")
+        )
+        incProgress(amount = .5, message = "Done")
+      })
+      ans
     }
   })
   # database summary
@@ -52,14 +56,18 @@ shinyServer(function(input, output, session) {
       }
     }
     data <- FELLA.DATA()
-    if (is.null(data)) return(data)
+    if (is.null(data)) return(NULL)
     
-    result <- enrich(
-      compounds = read.comp, 
-      method = input$method, 
-      approx =input$approx, 
-      niter = input$niter, 
-      data = data)
+    withProgress(message = "Running enrichment", value = .5, {
+      result <- enrich(
+        compounds = read.comp, 
+        method = input$method, 
+        approx =input$approx, 
+        niter = input$niter, 
+        data = data)
+      
+      incProgress(amount = .5, message = "Done")
+    })
     
     return(result)
   })
@@ -161,8 +169,9 @@ shinyServer(function(input, output, session) {
           !is.null(ont) & 
           !is.null(biomart) & 
           !is.null(dataset)) {
-        return(
-          addGOToGraph(
+        
+        withProgress(message = "Adding GO term legend", value = .5, {
+          g_go <- addGOToGraph(
             graph = g, 
             GOterm = input$GOTermInput, 
             godata.options = list(
@@ -174,7 +183,11 @@ shinyServer(function(input, output, session) {
               dataset = dataset
             )
           )
-        )
+          
+          incProgress(amount = .5, message = "Done")
+        })
+        
+        return(g_go)
       }
       return(g)
     }
@@ -186,7 +199,17 @@ shinyServer(function(input, output, session) {
     if (!is.null(createUser())) {
       g <- currentGraph()
       if (!is.null(g))  {
-        return(paste0("Number of nodes: ", vcount(g)))
+        txt <- paste0("Number of nodes: ", vcount(g))
+        
+        if (input$GOTermInput != "") {
+          txt <- paste(
+            txt, 
+            "Legend for GO term similarity:", 
+            "  (low) yellow < orange < red < purple (high)", 
+            sep = "\n"
+          )
+        }
+        return(txt)
       } else {
         return("Graph is NULL! No significant pathways have been found.")
       }
@@ -259,7 +282,8 @@ shinyServer(function(input, output, session) {
       
       map.com <- c("pathway", "module", "enzyme", "reaction", "compound")
       map.color <- c("#E6A3A3", "#E2D3E2", "#DFC1A3", "#D0E5F2", "#A4D4A4")
-      map.labelcolor <- c("#CD0000", "#CD96CD", "#CE6700", "#8DB6CD", "#548B54")
+      map.labelcolor <- c("#CD0000", "#CD96CD", "#CE6700", 
+                          "#8DB6CD", "#548B54")
       map.nodeWidth <- c(40, 30, 25, 22, 22)
 
       nodeShape <- ifelse(
