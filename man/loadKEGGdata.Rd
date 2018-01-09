@@ -80,6 +80,14 @@ and writes the KEGG knowledge model in the desired permanent directory.
 
 Function \code{loadKEGGdata} loads the internal files 
 containing the KEGG knowledge model into a 
+\code{\link[FELLA]{FELLA.DATA}} object. 
+
+In general, \code{generateGraphFromKEGGREST} and 
+\code{generateDataFromGraph} are one-time executions 
+for a given organism and knowledge model, 
+in this precise order. 
+On the other hand, the user needs to run \code{loadKEGGdata} 
+in every new R session to load such model into a 
 \code{\link[FELLA]{FELLA.DATA}} object.
 }
 \details{
@@ -173,7 +181,9 @@ myFELLA.DATA
 
 ######################
 
+\dontrun{
 ## Full example
+
 ## First step: graph for Mus musculus discarding the mmu01100 pathway
 ## (an analog example can be built from human using organism = "hsa")
 g.mmu <- buildGraphFromKEGGREST(
@@ -182,7 +192,6 @@ filter.path = "mmu01100")
 summary(g.mmu)
 cat(comment(g.mmu))
 
-\dontrun{
 ## Second step: build internal files for this graph
 ## (consumes some time and memory, especially if we compute 
 "diffusion" and "pagerank" matrices)

@@ -1,36 +1,32 @@
-#' Pathway enrichment through hypergeometric test 
+#' @include defineCompounds.R
 #' 
-#' Function \code{runHypergeom} performs the over representation analysis 
-#' through the hypergeometric test on a 
-#' \code{\link[FELLA]{FELLA.USER}} object. 
+#' @details
+#' Function \code{runHypergeom} performs an over representation analysis 
+#' through the hypergeometric test [Fisher, 1935] on a 
+#' \code{\link[FELLA]{FELLA.USER}} object with mapped metabolites 
+#' and a \code{\link[FELLA]{FELLA.DATA}} object. 
 #' If a custom background was specified, it will be used. 
-#' By default, this test has smaller background than 
-#' \code{\link[FELLA]{runDiffusion}}
-#' and \code{\link[FELLA]{runPagerank}}.
+#' This approach is included for completeness and it is not the 
+#' main purpose behind the \code{\link[FELLA]{FELLA}} package. 
+#' Importantly, \code{runHypergeom} is not a hypergeometric test using the 
+#' original KEGG pathways. 
+#' Instead, a compound "belongs" to a "pathway" if 
+#' it can reach the original pathway in the 
+#' upwards-directed KEGG graph. 
+#' This is a way to evaluate enrichment including indirect connections 
+#' to a pathway, e.g. through an enzymatic family. 
+#' New "pathways" are expected to be larger than the original pathways
+#' in this analysis and therefore the results can differ from the 
+#' standard over representation.
 #'
 #' @inheritParams .params
 #'
-#' @return The \code{\link[FELLA]{FELLA.USER}} object 
-#' with the hypergeometric test results
+#' @return \code{runHypergeom} returns a 
+#' \code{\link[FELLA]{FELLA.USER}} object 
+#' updated with the hypergeometric test results
 #' 
-#' @examples 
-#' data(FELLA.sample)
-#' ## Load a list of compounds to enrich
-#' data(input.sample)
-#' obj.empty <- defineCompounds(
-#' compounds = input.sample, 
-#' data = FELLA.sample)
-#' obj.diff <- runHypergeom(
-#' object = obj.empty, 
-#' data = FELLA.sample)
-#' obj.diff
-#' 
-#' ## Note that the enrich wrapper can do this in a compact way
-#' obj.diff <- enrich(
-#' compounds = input.sample, 
-#' method = "hypergeom", 
-#' data = FELLA.sample)
-#' obj.diff
+#' @describeIn enrich classical hypergeometric test using 
+#' compound-pathway connections from the network
 #' 
 #' @importFrom stats phyper p.adjust
 #' @import Matrix

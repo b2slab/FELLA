@@ -1,8 +1,8 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and Enrichment for Metabolomics Data
-Version: 0.5.5
-Date: 2018-1-5
+Version: 0.5.6
+Date: 2018-1-9
 Authors@R: c(
     person(
         "Sergio", "Picart-Armada", role = c("aut", "cre"),
@@ -68,6 +68,9 @@ Collate:
     'defineCompounds.R'
     'doc-data.R'
     'doc-package.R'
+    'runHypergeom.R'
+    'runDiffusion.R'
+    'runPagerank.R'
     'enrich.R'
     'exportResults.R'
     'generateEnzymesTable.R'
@@ -81,6 +84,3 @@ Collate:
     'plotBipartite.R'
     'plotGraph.R'
     'plotLegend.R'
-    'runDiffusion.R'
-    'runHypergeom.R'
-    'runPagerank.R'

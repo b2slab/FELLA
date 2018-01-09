@@ -1,37 +1,74 @@
-#' Pathway enrichment through heat diffusion
+#' @include runHypergeom.R
 #' 
+#' @details
 #' Function \code{runDiffusion} performs 
 #' the diffusion-based enrichment on a 
-#' \code{\link[FELLA]{FELLA.USER}} object. 
-#' If a custom background was specified, 
-#' it will be used. 
+#' \code{\link[FELLA]{FELLA.USER}} object with mapped metabolites 
+#' and a \code{\link[FELLA]{FELLA.DATA}} object [Picart-Armada, 2017]. 
+#' If a custom background was specified, it will be used. 
+#' The idea behind the heat diffusion is the usage of the 
+#' finite difference formulation of the heat equation to 
+#' propagate labels from the metabolites to the rest of the graph.
 #' 
-#' @template approxTemplate
+#' Following the notation in [Picart-Armada, 2017], 
+#' the temperatures (diffusion scores) 
+#' are computed as:
+#' 
+#' \deqn{
+#' T = -KI^{-1} \cdot G 
+#' }{
+#' T = -KI^(-1)*G 
+#' }
+#' 
+#' \code{G} is an indicator vector of the input metabolites 
+#' (\code{1} if input metabolite, \code{0} otherwise).
+#' \code{KI} is the matrix \code{-KI = L + B}, being 
+#' \code{L} the unnormalised graph Laplacian and 
+#' \code{B} the diagonal matrix with \code{B[i,i] = 1} if 
+#' node \code{i} is a pathway and \code{B[i,i] = 0} otherwise.
+#' 
+#' Equivalently, with the notation in the HotNet approach [Vandin, 2011], 
+#' the stationary temperature is named \code{fs}:
+#' 
+#' \deqn{
+#' f^s = L_{\gamma}^{-1} \cdot b^s 
+#' }{
+#' fs = Lgamma^(-1)*bs 
+#' }
+#'
+#' \code{bs} is the indicator vector \code{G} from above. 
+#' \code{Lgamma}, on the other hand, is found as 
+#' \code{Lgamma = L + gamma*I}, where \code{L} is the unnormalised 
+#' graph Laplacian, \code{gamma} is the first order leaking rate 
+#' and \code{I} is the identity matrix. 
+#' In our formulation, only the pathway nodes are allowed to leak, 
+#' therefore \code{I} is switched to \code{B}. 
+#' The parameter \code{gamma} is set to \code{gamma = 1}.
+#'
+#' The input metabolites are forced to stay warm, 
+#' propagating flow to all the nodes in the network. 
+#' However, only pathway nodes are allowed to evacuate 
+#' this flow, so that its directionality is bottom-up. 
+#' Further details on the setup of the diffusion process can be 
+#' found in the supplementary file S2 from [Picart-Armada, 2017].
+#' 
+#' Finally, the warmest nodes in the graph are reported as 
+#' the relevant sub-network. 
+#' This will probably include some input metabolites and 
+#' also reactions, enzymes, modules and pathways. 
+#' Other metabolites can be suggested as well. 
+#' 
+#' 
+#' 
+# ' @template approxTemplate
 #'
 #' @inheritParams .params
 #'
-#' @return The \code{\link[FELLA]{FELLA.USER}} object 
-#' with the diffusion enrichment results
+#' @return \code{runDiffusion} returns a 
+#' \code{\link[FELLA]{FELLA.USER}} object 
+#' updated with the diffusion enrichment results
 #' 
-#' @examples
-#' data(FELLA.sample)
-#' ## Load a list of compounds to enrich
-#' data(input.sample)
-#' obj.empty <- defineCompounds(
-#' compounds = input.sample, 
-#' data = FELLA.sample)
-#' obj.diff <- runDiffusion(
-#' object = obj.empty, 
-#' approx = "normality", 
-#' data = FELLA.sample)
-#' obj.diff
-#' 
-#' ## Note that the enrich wrapper can do this in a compact way
-#' obj.diff <- enrich(
-#' compounds = input.sample, 
-#' method = "diffusion", 
-#' data = FELLA.sample)
-#' obj.diff
+#' @describeIn enrich prioritise nodes through heat diffusion
 #' 
 #' @importFrom stats ecdf pnorm pgamma pt
 #' @import Matrix
@@ -94,21 +131,21 @@ runDiffusion <- function(
             
             # Load the graph as undirected and its Laplacian
             graph <- as.undirected(getGraph(data))
-            KI <- graph.laplacian(
+            minusKI <- graph.laplacian(
                 graph = graph, 
                 normalized = FALSE, 
                 sparse = TRUE)
             # Connect pathways to boundary
-            Matrix::diag(KI)[getCom(data, "pathway", "id")] <- 
-                Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
+            Matrix::diag(minusKI)[getCom(data, "pathway", "id")] <- 
+                Matrix::diag(minusKI)[getCom(data, "pathway", "id")] + 1
             
             # Heat generation vector
-            generation <- numeric(dim(KI)[1])
+            generation <- numeric(dim(minusKI)[1])
             names(generation) <- V(graph)$name
             
             # Current temperatures
             generation[comp.input] <- 1
-            current.temp <- as.vector(solve(KI, generation))
+            current.temp <- as.vector(solve(minusKI, generation))
             generation[comp.input] <- 0
             
             # Null model
@@ -117,7 +154,7 @@ runDiffusion <- function(
                     message(round(dummy*100/niter),"%")
                 
                 generation[sample(comp.background, n.input)] <- 1
-                as.vector(solve(KI, generation)) 
+                as.vector(solve(minusKI, generation)) 
             })
             
             n.nodes <- length(current.temp)
@@ -200,21 +237,21 @@ runDiffusion <- function(
         # Compute current temperature
         # Load the graph as undirected and its Laplacian
         graph <- as.undirected(getGraph(data))
-        KI <- graph.laplacian(
+        minusKI <- graph.laplacian(
             graph = graph, 
             normalized = FALSE, 
             sparse = TRUE)
         # Connect pathways to boundary
-        Matrix::diag(KI)[getCom(data, "pathway", "id")] <- 
-            Matrix::diag(KI)[getCom(data, "pathway", "id")] + 1
+        Matrix::diag(minusKI)[getCom(data, "pathway", "id")] <- 
+            Matrix::diag(minusKI)[getCom(data, "pathway", "id")] + 1
         
         # Heat generation vector
-        generation <- numeric(nrow(KI))
+        generation <- numeric(nrow(minusKI))
         names(generation) <- V(graph)$name
         
         # Current temperatures
         generation[comp.input] <- 1
-        current.temp <- as.vector(solve(KI, generation))
+        current.temp <- as.vector(solve(minusKI, generation))
         
         # Statistical moments
         temp.means <- RowSums*n.input/n.comp

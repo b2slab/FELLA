@@ -1,30 +1,31 @@
-#' Define the list of input compounds
+#' @description 
+#' Function \code{defineCompounds} creates a 
+#' \code{\link[FELLA]{FELLA.USER}} object from a list of 
+#' compounds and a \code{\link[FELLA]{FELLA.DATA}} object.
 #' 
-#' This function maps the specficied list of compounds, usually from an 
-#' experimental metabolomics study, in the graph contained in the
+#' @details
+#' Function \code{defineCompounds} maps the 
+#' specficied list of KEGG compounds [Kanehisa, 2017], usually from an 
+#' experimental metabolomics study, to the graph contained in the
 #' \code{\link[FELLA]{FELLA.DATA}} object. 
+#' Importantly, the names must be KEGG ids, so other formats 
+#' (common names, HMDB ids, etc) must be mapped to KEGG first. 
+#' For example, through the "Compound ID Conversion" 
+#' tool in MetaboAnalyst [Xia, 2015].
+#' The user can also define a personalised background as a 
+#' list of KEGG compound ids, which should be more extensive than 
+#' the list of input metabolites. 
 #' Once the compounds are mapped, the enrichment 
-#' can be performed. There is also the option 
-#' to define a personalised background.
+#' can be performed through \code{\link[FELLA]{runHypergeom}}, 
+#' \code{\link[FELLA]{runDiffusion}} and \code{\link[FELLA]{runPagerank}}.
 #'
 #' @inheritParams .params
 #'
-#' @return The \code{\link[FELLA]{FELLA.USER}} object 
-#' to perform the user analysis
+#' @return \code{defineCompounds} returns 
+#' the \code{\link[FELLA]{FELLA.USER}} object 
+#' with the mapped metabolites, ready to be enriched.
 #' 
-#' @examples 
-#' data(FELLA.sample)
-#' obj <- defineCompounds(
-#' compounds = c("C00010", "C00011", "C00000"), 
-#' data = FELLA.sample)
-#' obj
-#' 
-#' ## If no compounds are mapped an error is thrown
-#' \dontrun{
-#' data(FELLA.sample)
-#' obj <- defineCompounds(
-#' compounds = c("C00049", "C00050"), 
-#' data = FELLA.sample)}
+#' @describeIn enrich map the metabolites to the knowledge model
 #' 
 #' @export
 defineCompounds <- function(

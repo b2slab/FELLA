@@ -2,6 +2,17 @@
 
 ---
 
+### Version 0.5.6
+
+* Improved doc in enrichment techniques: 
+    - Merged 5 functions: `defineCompounds`, `runHypergeom`, 
+    `runDiffusion`, `runPagerank`, `enrich`
+    - Expanded details: formulation, how to compute scores, 
+    null model.
+    - Added references
+    - Centralised examples
+* References are now in template files
+
 ### Version 0.5.5
 
 * Improved doc in `FELLA.DATA` object creation

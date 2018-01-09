@@ -1,37 +1,82 @@
-#' Pathway enrichment through PageRank
+#' @include runDiffusion.R
 #' 
+#' @details
 #' Function \code{runPagerank} performs the random walk 
 #' based enrichment on a 
-#' \code{\link[FELLA]{FELLA.USER}} object, making use of igraph function 
-#' \code{\link[igraph]{page.rank}}. 
+#' \code{\link[FELLA]{FELLA.USER}} object with mapped metabolites 
+#' and a \code{\link[FELLA]{FELLA.DATA}} object.
 #' If a custom background was specified, it will be used. 
+#' PageRank was originally conceived as a scoring system for websites 
+#' [Page, 1999]. 
+#' Intuitively, PageRank favours nodes that 
+#' (1) have a large amount of nodes pointing 
+#' at them, and (2) whose pointing nodes also have high scores. 
+#' Classical PageRank is formulated in terms of a random walker -  
+#' the PageRank of a given node is the stationary probability 
+#' of the walker visiting it. 
 #' 
-#' @template approxTemplate
+#' The walker chooses, in each step, 
+#' whether to continue the random walk with probability 
+#' \code{dampingFactor} or to restart it with probability 
+#' \code{1 - dampingFactor}. 
+#' In the original publication, \code{dampingFactor = 0.85}, 
+#' which is the value used in \code{\link[FELLA]{FELLA}} by default. 
+#' If he or she continues, an edge is picked from the outgoing edges 
+#' in the current node with a probability proportional to its weight. 
+#' If he or she restarts it, a node is uniformly picked from the 
+#' whole graph. 
+#' The "personalised PageRank" variant allows a user-defined 
+#' distribution as the source of new random walks. 
+#' The R package \code{igraph} contains such variant in its 
+#' \code{\link[igraph]{page.rank}} function [Csardi, 2006].
+#' 
+#' As described in the supplement S3 from [Picart-Armada, 2017], 
+#' the PageRank \code{PR} can be computed as 
+#' a column vector by imposing a stationary 
+#' state in the probability.
+#' With a damping factor \code{d} and the user-defined 
+#' distribution \code{p} as a column vector:
+#' 
+#' \deqn{
+#' \textrm{PR} = d\cdot M\cdot \textrm{PR} + (1 - d)\cdot p
+#' }{
+#' PR = d*M*PR + (1 - d)*p
+#' }
+#' 
+#' \code{M} is the matrix whose element \code{M[i,j]} is the 
+#' probability of transitioning from \code{j} to \code{i}. 
+#' If node \code{j} has outgoing edges, their probability is proportional 
+#' to their weight - all weights must be positive. 
+#' If node \code{j} has no outgoing edges, the probability is 
+#' uniform over all the nodes, i.e. \code{M[i,j] = 1/nrow(M)} 
+#' for every \code{i}. 
+#' Note that all the columns from \code{M} sum up exactly \code{1}.
+#' This leads to an expression to compute PageRank:
+#' 
+#' \deqn{
+#' \textrm{PR} = (1 - d)p \cdot(I - dM)^{-1}
+#' }{
+#' PR = (1 - d)*p*(I - d*M)^(-1)
+#' }
+#' 
+#' The idea behind the method \code{"pagerank"} is closely related 
+#' to \code{"diffusion"}. 
+#' Relevant metabolites are the sources of new random walks and 
+#' nodes are scored through their PageRank. 
+#' Specifically, \code{p} is set to a uniform probability on the 
+#' input metabolites. 
+#' More details on the setup can be found in 
+#' the supplementary file S3 from [Picart-Armada, 2017].
+#' 
+# ' @template approxTemplate
 #'
 #' @inheritParams .params
 #'
-#' @return The \code{\link[FELLA]{FELLA.USER}} object 
-#' with the PageRank enrichment results
+#' @return \code{runPagerank} returns a 
+#' \code{\link[FELLA]{FELLA.USER}} object 
+#' updated with the PageRank enrichment results
 #' 
-#' @examples 
-#' data(FELLA.sample)
-#' ## Load a list of compounds to enrich
-#' data(input.sample)
-#' obj.empty <- defineCompounds(
-#' compounds = input.sample, 
-#' data = FELLA.sample)
-#' obj.diff <- runPagerank(
-#' object = obj.empty, 
-#' approx = "normality", 
-#' data = FELLA.sample)
-#' obj.diff
-#' 
-#' ## Note that the enrich wrapper can do this in a compact way
-#' obj.diff <- enrich(
-#' compounds = input.sample, 
-#' method = "pagerank", 
-#' data = FELLA.sample)
-#' obj.diff
+#' @describeIn enrich prioritise nodes through PageRank
 #' 
 #' @importFrom stats ecdf pnorm pgamma pt
 #' @import Matrix
@@ -135,9 +180,10 @@ runPagerank <- function(
             
         } else {
             # Calculate current scores.
-            # Warning: each score vector should be divided by n.input. 
-            # It won't, as it just rescales all the scores 
-            # and becomes irrelevant for the test.
+            # Warning: each score vector should be divided by n.input 
+            # to be consistent with the rest of this function.
+            # This is not done, because it just rescales all the scores 
+            # and becomes irrelevant when computing the empirical p-value.
             message(
                 "Using pagerank matrix. ", 
                 "Damping factor will be the one with which the database ",
@@ -230,6 +276,11 @@ runPagerank <- function(
         
         # p-scores
         # statistical moments
+        # note that, compared to runDiffusion, these 
+        # moments are divided by n.input (means) 
+        # and by n.input**2 (vars)
+        # This is becasue igraph takes as input the indicator
+        # vector divided by its sum, which is indeed n.input
         score.means <- RowSums/n.comp
         score.vars <- (n.comp - n.input)/(n.input*n.comp*(n.comp - 1))*
             (squaredRowSums - (RowSums^2)/n.comp)

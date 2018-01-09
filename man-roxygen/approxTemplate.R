@@ -1,18 +1,42 @@
-#' This function gives statistically normalised diffusion scores
-#' for each node and allows 
-#' the extraction of a subgraph according to a fixed threshold.
-#' The p-scores are in the range [0,1], where lower scores are better, and 
-#' can be computed using two kinds of approximations: 
-#' the stochastic Monte Carlo trials (\code{"simulation"}) and the parametric 
-#' scores (\code{"normality"}, \code{"gamma"}, \code{"t"}). 
-#' Using \code{"simulation"} will perform random resampling of the 
-#' input and will compute a score between 0 and 1 based on an empirical 
-#' p-value calculation. 
-#' On the other hand, the parametric approaches use the theoretical
-#' first and second order statistics of the permuted distributions to 
-#' normalise the scores. In particular, \code{"normality"} computes a 
-#' z-score and maps to the [0,1] scale through \code{\link[stats]{pnorm}}. 
-#' \code{"t"} does the same but using \code{\link[stats]{pt}} instead.
-#' \code{"gamma"} uses the mean and variance to define the shape 
+#' @details
+#' There is an important detail for \code{"diffusion"} 
+#' and \code{"pagerank"}: the scores are statistically normalised. 
+#' Omitting this normalisation leads to a systematic bias, 
+#' especially in pathway nodes, as described in [Picart-Armada, 2017]. 
+#' 
+#' Therefore, in both cases, scores undergo a normalisation 
+#' through permutation analysis. 
+#' The score of a node \code{i} is compared to its null distribution 
+#' under input permutation, leading to their p-scores. 
+#' As described in [Picart-Armada, 2017], two alternatives are offered: 
+#' a parametric and deterministic approach 
+#' and a non-parametric, stochastic one.
+#' 
+#' Stochastic Monte Carlo trials (\code{"simulation"}) imply 
+#' randomly permuting the input \code{niter} times and counting, 
+#' for each node \code{i}, how many trials 
+#' led to an equally or more extreme value than the original score. 
+#' An empirical p-value is returned [North, 2002].
+#' 
+#' On the other hand, the parametric 
+#' scores (\code{approx = "normality"}) 
+#' give a z-score for such permutation analysis. 
+#' The expected value and variance of such null distributions 
+#' are known quantities, see supplementary 
+#' file S4 from [Picart-Armada, 2017].
+#' To work in the same range \code{[0,1]}, z-scores are 
+#' transformed using the routine \code{\link[stats]{pnorm}}. 
+#' The user can also choose the Student's t using 
+#' \code{approx = "t"} and choosing a number of degrees of freedom 
+#' through \code{t.df}. 
+#' This uses the function \code{\link[stats]{pt}} instead.
+#' Alternatively, a gamma distribution can be used by setting 
+#' \code{approx = "gamma"}. 
+#' The theoretical mean (E) and variance (V) 
+#' are used to define the shape 
 #' (E^2/V) and scale (V/E) of the gamma distribution, and 
 #' \code{\link[stats]{pgamma}} to map to [0,1].
+#' 
+#' Any sub-network prioritised by \code{"diffusion"} 
+#' and \code{"pagerank"} is selected by applying 
+#' a threshold on the p-scores.
