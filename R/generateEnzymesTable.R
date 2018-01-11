@@ -1,37 +1,52 @@
-#' Generate enzyme tables with genes and GO annotations
+#' @include generateResultsTable.R
 #' 
-#' Function \code{generateEnzymesTable} returns a table 
-#' that contains the selected enzymes (with additional data) 
-#' of a \code{\link[FELLA]{FELLA.USER}} object 
+#' @description 
+#' In general, \code{generateResultsTable}, \code{generateEnzymesTable} 
+#' and \code{generateResultsGraph} provide the results of an enrichment 
+#' in several formats. 
+#' 
+#' Function \code{generateResultsTable} returns a table 
+#' that contains the best hits from
+#' a \code{\link[FELLA]{FELLA.USER}} object 
 #' with a successful enrichment analysis.
+#' Similarly, \code{\link[FELLA]{generateEnzymesTable}} returns 
+#' a data frame with the best scoring enzyme families and their 
+#' annotated genes.
+#' 
+#' @details 
+#' Functions \code{\link[FELLA]{generateResultsTable}} and 
+#' \code{\link[FELLA]{generateEnzymesTable}} need a 
+#' \code{\link[FELLA]{FELLA.DATA}} object and a 
+#' \code{\link[FELLA]{FELLA.USER}} object with a successful enrichment.
+#' \code{\link[FELLA]{generateResultsTable}} provides the entries 
+#' whose p-score is below the chosen \code{threshold} in a tabular format. 
+#' \code{\link[FELLA]{generateEnzymesTable}} returns a table 
+#' that contains (1) the enzymes that are below the user-defined 
+#' p-score threshold, along with (2) the genes that belong to 
+#' the enzymatic families in the organism defined in the database, 
+#' and (3) GO labels of such enzymes, if \code{mart.options} is 
+#' not \code{NULL} and points to the right database.
 #' 
 #' @inheritParams .params
 #' @param method one in \code{"diffusion"}, \code{"pagerank"}
-#' @param ... ignored arguments
 #'
-#' @return A table that contains the enzymes 
-#' along with genes and GO labels
+#' @return \code{\link[FELLA]{generateEnzymesTable}} returns a 
+#' data.frame that contains the enzymes below the \code{p.score} threshold,
+#' along with their genes and GO labels
 #' 
-#' @examples 
-#' data(FELLA.sample)
-#' data(input.sample)
-#' obj <- enrich(
-#' compounds = input.sample, 
-#' data = FELLA.sample)
-#' tab <- generateEnzymesTable(
-#' threshold = 0.1, 
-#' object = obj, 
-#' data = FELLA.sample)
-#' head(tab)
+#' @describeIn generateResultsGraph generate a table with further data 
+#' on the reported enzymes
 #' 
 #' @import igraph
 #' @export
 generateEnzymesTable <- function(
     method = "diffusion", 
-    threshold = 0.005, 
+    threshold = 0.05, 
     nlimit = 250, 
     LabelLengthAtPlot = 45, 
     capPscores = 1e-6, 
+    mart.options = list(
+        biomart = "ensembl", dataset = "hsapiens_gene_ensembl"),
     object = NULL, 
     data = NULL, 
     ...) {
@@ -63,7 +78,7 @@ generateEnzymesTable <- function(
         return(invisible())
     } 
     
-    message("Writing ", method, "enzymes...")
+    message("Writing ", method, " enzymes...")
     
     id.ec <- getCom(data, level = 3, format = "id")
     pscores.ec <- sort(getPscores(object, method)[id.ec])
@@ -101,17 +116,14 @@ generateEnzymesTable <- function(
         stringsAsFactors = FALSE)
     rownames(out.df) <- NULL
     
-    if ("GO" %in% list.vertex.attributes(g)) {
+    if (!is.null(mart.options)) {
+        g <- addGOToGraph(
+            graph = g, GOterm = NULL, mart.options = mart.options)
         nodeGO <- sapply(
-            V(g)[nodeIds]$GO, 
-            function(goterms) paste(names(goterms), collapse = ";")
-        )
-        nodeGOname <- sapply(
             V(g)[nodeIds]$GO, 
             function(goterms) paste(goterms, collapse = ";")
         )
         out.df$GO_id <- nodeGO
-        out.df$GO_name <- nodeGOname
     }
     
     message("Done.")

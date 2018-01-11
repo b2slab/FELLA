@@ -44,27 +44,23 @@ Posterior KEGG releases might alter the reported sub-network
 \bioctitle[The FELLA R package]{An R package to enrich 
 metabolomics data: FELLA}
 \author[1,2]{Sergio Picart-Armada\thanks{\email{sergi.picart@upc.edu}}}
-\author[3]{Francesc Fern\'andez-Albert}
-\author[4,5,6]{Maria Vinaixa}
-\author[4,5]{Oscar Yanes}
+\author[1,2]{Francesc Fern\'andez-Albert}
+\author[3,4,5]{Maria Vinaixa}
+\author[3,4]{Oscar Yanes}
 \author[1,2]{Alexandre Perera-Lluna}
 \affil[1]{B2SLab, Departament d'Enginyeria de Sistemes,
 Autom\`atica i Inform\`atica Industrial,
 Universitat Polit\`ecnica de Catalunya, CIBER-BBN, Barcelona, 08028, Spain}
 \affil[2]{Institut de Recerca Pedi\`atrica
 Hospital Sant Joan de D\'eu, Esplugues de Llobregat, Barcelona, 08950, Spain}
-\affil[3]{Boehringer Ingelheim Pharmaceuticals Inc, Germany}
-\affil[4]{Centre for Omic Sciences, Department of Electronic Engineering, 
+\affil[3]{Centre for Omic Sciences, Department of Electronic Engineering, 
 Rovira i Virgili University, Reus, 43204, Spain}
-\affil[5]{Metabolomics Platform, Spanish Biomedical Research Centre in 
+\affil[4]{Metabolomics Platform, Spanish Biomedical Research Centre in 
 Diabetes and Associated Metabolic Disorders, Madrid, 28029, Spain}
-\affil[6]{Manchester Synthetic Biology Research Centre for Fine and 
+\affil[5]{Manchester Synthetic Biology Research Centre for Fine and 
 Speciality Chemicals, University of Manchester, 
 Manchester, M1 7DN, United Kingdom}
 
-%\small{\author{Sergio Picart-Armada,
-%Wesley K. Thompson, \\
-%Alfonso Buil and Alexandre Perera-Lluna}}
 \maketitle
 
 \section{Abstract}

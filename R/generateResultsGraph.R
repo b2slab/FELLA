@@ -1,28 +1,119 @@
-#' Generate graph objects from the enrichment results
+#' @include generateEnzymesTable.R
 #' 
-#' Function \code{generateResultsGraph} returns a graph object with class 
-#' \code{\link[igraph]{igraph}} or a list of graphs of the same class. 
-#' according to the specified threshold. A \code{\link[FELLA]{FELLA.USER}} 
-#' object with a successful enrichment analysis must be supplied.
+#' @title Generate and manipulate tables and sub-networks from an enrichment
+#' 
+#' @description 
+#' Function \code{\link[FELLA]{generateResultsGraph}} 
+#' gives a sub-network, plottable through 
+#' \code{\link[FELLA]{plotGraph}}, witht the nodes with 
+#' the lowest \code{p.score} from an enrichment analysis. 
+#' Function \code{\link[FELLA]{addGOToGraph}} can be applied to such 
+#' sub-networks to overlay GO labels and 
+#' similarity to a user-defined GO term. 
+#' 
+#' 
+#' @details
+#' Function \code{generateResultsGraph} returns an 
+#' \code{\link[igraph]{igraph}} object with a relevant sub-network 
+#' for manual examination. 
+#' A \code{\link[FELLA]{FELLA.USER}} 
+#' object with a successful enrichment analysis and the corresponding 
+#' \code{\link[FELLA]{FELLA.DATA}} must be supplied. 
+#' Graph nodes are prioritised by \code{p.score} and selected through 
+#' the most stringent between (1) p.score \code{threshold} and 
+#' (2) maximum number of nodes \code{nlimit}. 
+#' 
+#' There is an additional filtering feature for tiny connected components, 
+#' controllable through \code{thresholdConnectedComponent} 
+#' (smaller is stricter). 
+#' The user can choose to turn off this filter by setting 
+#' \code{thresholdConnectedComponent = 1}.  
+#' The idea is to discard connected components so small 
+#' that are likely to arise from random selection of nodes. 
+#' Let \code{k} be the order of the current sub-network.
+#' A connected component of order \code{r} will
+#' be kept only if the probability that a 
+#' random subgraph from the whole KEGG knowledge model 
+#' of order \code{k} contains a
+#' connected component of order at least \code{r} 
+#' is smaller than \code{thresholdConnectedComponent}. 
+#' Such probabilities are estimated during 
+#' \code{\link[FELLA]{buildDataFromGraph}}; the amount of random 
+#' trials can be controlled by its \code{niter} argument. 
 #' 
 #' @inheritParams .params
-#' @param ... ignored arguments
+#' @param ... Optional arguments for the plotting function 
+#' in \code{plotGraph}. Ignored otherwise.
 #'
-#' @return An \code{\link{igraph}} object 
+#' @return \code{\link[FELLA]{generateResultsGraph}} returns 
+#' an \code{\link{igraph}} object: a sub-network from the whole 
+#' KEGG knowledge model under the specified thresholds 
+#' (\code{threshold} and \code{thresholdConnectedComponent})
+#' 
+#' @template refs_gene_ontology
 #' 
 #' @examples 
+#' ## First generate a toy enrichment
+#' library(igraph)
 #' data(FELLA.sample)
 #' data(input.sample)
 #' ## Enrich input
 #' obj <- enrich(
 #' compounds = input.sample, 
 #' data = FELLA.sample)
-#' ## Generate graph
-#' g <- generateResultsGraph(
+#' 
+#' ######################
+#' ## Results table
+#' tab.res <- generateResultsTable(
+#' method = "hypergeom",
 #' threshold = 0.1, 
 #' object = obj, 
 #' data = FELLA.sample)
-#' g
+#' head(tab.res)
+#' 
+#' tab.res <- generateResultsTable(
+#' method = "diffusion",
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' head(tab.res)
+#' 
+#' ######################
+#' ## Enzymes table
+#' tab.ec <- generateEnzymesTable(
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample, 
+#' mart.options = NULL)
+#' head(tab.ec)
+#' 
+#' ######################
+#' ## Generate graph
+#' g.res <- generateResultsGraph(
+#' method = "pagerank", 
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' g.res
+#' 
+#' ## Plot graph (without GO terms)
+#' plotGraph(g.res)
+#' 
+#' ## Add similarity to the GO CC term "mitochondrion"
+#' g.cc <- FELLA:::addGOToGraph(
+#' graph = g.res, 
+#' GOterm = "GO:0005739")
+#' 
+#' ## Plot graph (with GO terms)
+#' plotGraph(g.cc)
+#' 
+#' ## Without the CC
+#' any(V(g.res)$GO.simil >= 0)
+#' ## With the CC
+#' v.cc <- unlist(V(g.cc)$GO.simil)
+#' sum(v.cc >= 0, na.rm = TRUE)
+#' ## Similarity values
+#' table(v.cc)
 #' 
 #' @import igraph
 #' @export

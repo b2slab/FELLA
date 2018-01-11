@@ -1,41 +1,17 @@
-#' Generate readable tables from the enrichment results
-#' 
-#' Function \code{generateResultsTable} returns a table 
-#' that contains the results 
-#' of a \code{\link[FELLA]{FELLA.USER}} object 
-#' with a successful enrichment analysis.
-#' 
-#'
 #' @inheritParams .params
-#' @param ... ignored arguments
 #'
-#' @return A table that contains the KEGG graph nodes with their p-score
+#' @return \code{\link[FELLA]{generateResultsTable}} returns a 
+#' data.frame that contains the nodes below the \code{p.score} threshold 
+#' from an enrichment analysis
 #' 
-#' @examples 
-#' data(FELLA.sample)
-#' data(input.sample)
-#' obj <- enrich(
-#' compounds = input.sample, 
-#' data = FELLA.sample)
-#' 
-#' tab <- generateResultsTable(
-#' method = "hypergeom",
-#' threshold = 0.1, 
-#' object = obj, 
-#' data = FELLA.sample)
-#' head(tab)
-#' 
-#' tab <- generateResultsTable(
-#' threshold = 0.1, 
-#' object = obj, 
-#' data = FELLA.sample)
-#' head(tab)
+#' @describeIn generateResultsGraph generate a table with all the 
+#' nodes below the \code{p.score} threshold
 #' 
 #' @import igraph
 #' @export
 generateResultsTable <- function(
     method = "diffusion", 
-    threshold = 0.005, 
+    threshold = 0.05, 
     plimit = 15, 
     nlimit = 250, 
     LabelLengthAtPlot = 45, 

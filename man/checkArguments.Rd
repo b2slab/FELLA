@@ -32,12 +32,15 @@ heavy matrices should be loaded.
 Can contain: \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
-Applied when filtering KEGG nodes}
+\code{p.score} threshold applied when filtering KEGG nodes. 
+Lower thresholds are more stringent.}
 
-\item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
+\item{plimit}{Pathway limit, must be a numeric value between 1 and 50. 
+Limits the amount of pathways in \code{method = "hypergeom"}}
 
 \item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
-This limits the order of the solution graph}
+Limits the order of the solution sub-graph when 
+in \code{method = "diffusion"} and \code{method = "pagerank"}}
 
 \item{niter}{Number of iterations (permutations) 
 for Monte Carlo ("simulation"), 
@@ -58,7 +61,8 @@ Connected components that are below the threshold are kept,
 while the ones exceeding it (because they are too small) are discarded.}
 
 \item{GOterm}{Character, GO entry to draw 
-semantic similarity in the solution graph.}
+semantic similarity in the solution graph. 
+If \code{NULL}, the GO labels will be appended without similarities.}
 
 \item{GONamesAsLabels}{Logical, should GO names 
 be displayed as labels instead of GO identifiers?}

@@ -1,49 +1,41 @@
-#' Internal function to add the GO semantic similarity attribute to the 
-#' results graph object
+#' @include generateResultsGraph.R
 #' 
+#' @details
 #' Function \code{addGOToGraph} takes and returns 
 #' a graph object with class 
-#' \code{\link[igraph]{igraph}} adding the attribute 
-#' \code{GO.simil} for semantic similarity.
+#' \code{\link[igraph]{igraph}} adding the following attributes: 
+#' GO labels in \code{V(graph)$GO}, and 
+#' semantic similarities in \code{V(graph)$GO.simil} if 
+#' \code{GOterm != NULL}. 
 #' 
-#' @param graph An \code{\link[igraph]{igraph}} object, typically a small one 
-#' coming from an enrichment procedure
+#' The GO database describes genes in terms of three ontologies: 
+#' molecular function (MF), biological process (BP) and 
+#' cellular component (CC) [Gene Ontology Consortium, 2015].
+#' The user can be interested in finding which enzymatic families 
+#' reported with a low \code{p.score}
+#' are closest to a particular GO term. 
+#' To assess similarity between GO labels, FELLA uses the 
+#' semantic similarity defined in [Yu, 2010] and their implementation 
+#' in the \code{\link[GOSemSim]{GOSemSim}} R package. 
+#' The user will obtain, for each enzymatic family, the closest GO 
+#' term to his or her GO query and the semantic similarity between them. 
+#' Exact matches have a similarity of \code{1}. 
+#' Function \code{\link[FELLA]{plotGraph}} detects the presence 
+#' of the GO similarity option and plots its magnitude.
+#' 
+#' 
 #' @inheritParams .params
-#' @param godata.options List, options for the database creator 
-#' \code{\link[GOSemSim]{godata}}
-#' @param mart.options List, options for the \code{biomaRt} function
-#' \code{\link[biomaRt]{getBM}}. Importantly, this defines the organism, 
-#' see \code{\link[biomaRt]{listDatasets}} for possibilities
 #'
-#' @return An \code{\link{igraph}} object that contains 
-#' an extra attribute: \code{GO.simil}
+#' @return \code{\link[FELLA]{addGOToGraph}} returns 
+#' an \code{\link{igraph}} object, which is the input 
+#' \code{graph} with 
+#' extra attributes: GO labels in \code{V(graph)$GO}, and 
+#' semantic similarities in \code{V(graph)$GO.simil} if 
+#' \code{GOterm != NULL}
 #' 
-#' @examples 
-#' ## This function is internal
-#' library(igraph)
-#' data(FELLA.sample)
-#' data(input.sample)
-#' ## Enrich input
-#' obj <- enrich(
-#' compounds = input.sample, 
-#' data = FELLA.sample)
-#' ## Generate graph
-#' g <- generateResultsGraph(
-#' threshold = 0.1, 
-#' object = obj, 
-#' data = FELLA.sample)
-#' g
-#' ## Add the cellular component
-#' g.cc <- FELLA:::addGOToGraph(
-#' graph = g, 
-#' GOterm = "GO:0005739")
 #' 
-#' ## Without the CC
-#' any(V(g)$GO.simil >= 0)
-#' ## With the CC
-#' v.cc <- unlist(V(g.cc)$GO.simil)
-#' sum(v.cc >= 0, na.rm = TRUE)
-#' table(v.cc)
+#' @describeIn generateResultsGraph add GO semantic similarity attribute 
+#' to the graph generated from \code{generateResultsGraph}
 #' 
 #' @import igraph
 #' @import plyr
@@ -54,23 +46,21 @@ addGOToGraph <- function(
     godata.options = list(
         OrgDb = "org.Hs.eg.db", ont = "CC"),
     mart.options = list(
-        biomart = "ensembl", dataset = "hsapiens_gene_ensembl"),
-    GONamesAsLabels = TRUE) {
+        biomart = "ensembl", dataset = "hsapiens_gene_ensembl")) {
     
-    # check if GOSemSim and biomaRt are available
-    if (!requireNamespace("GOSemSim", quietly = TRUE)) {
-        stop(
-            "Package GOSemSim must be installed to add GO labels", 
-            call. = FALSE)
-    }
+    # check if biomaRt is available
     if (!requireNamespace("biomaRt", quietly = TRUE)) {
         stop(
             "Package biomaRt must be installed to add GO labels", 
             call. = FALSE)
     }
     
-    if (is.null(GOterm))
+    if (!is.igraph(graph)) {
+        warning("'graph' is not an igraph object. Leaving it as it was...")
         return(graph)
+    }
+    
+    if (vcount(graph) == 0) return(graph)
     
     # First: map entrez genes to GO terms
     # All entrez ids:
@@ -98,8 +88,24 @@ addGOToGraph <- function(
         }
     )
     
+    if (is.null(GOterm)) {
+        message(
+            "Null GOterm provided to addGOToGraph. ", 
+            "Only the GO labels will be added. ",
+            "To include similarity values as well, please specify a GOterm")
+        return(graph)
+    }
+    
     
     # Second: add similarity to desired term
+    # 
+    # Check that GOSemSim is available
+    if (!requireNamespace("GOSemSim", quietly = TRUE)) {
+        stop(
+            "Package GOSemSim must be installed to add GO semantic similarity", 
+            call. = FALSE)
+    }
+    
     semData <- do.call(GOSemSim::godata, godata.options)
     # This outputs a list to keep the names of the best GO hit
     go.simil <- lapply(V(graph)$GO, FUN = function(entrez) {

@@ -131,6 +131,12 @@ These are optional but enable (i) faster permutations and custom
 metabolite backgrounds, and (ii) parametric approaches. 
 WARNING: diffusion and PageRank matrices in (i) 
 can allocate up to 250MB each. 
+On the other hand, the \code{niter} parameter 
+controls the amount of trials to approximate the 
+distribution of the connected component size under 
+uniform node sampling. 
+For further info, see the option \code{thresholdConnectedComponent} 
+in the details from \code{?generateResultsGraph}. 
 Regarding the destination, the user can specify 
 the name of the directory. 
 Otherwise a name containing the creation date, the organism 

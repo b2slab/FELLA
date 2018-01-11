@@ -1,8 +1,8 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and Enrichment for Metabolomics Data
-Version: 0.5.6
-Date: 2018-1-9
+Version: 0.5.7
+Date: 2018-1-11
 Authors@R: c(
     person(
         "Sergio", "Picart-Armada", role = c("aut", "cre"),
@@ -62,6 +62,9 @@ Collate:
     'AllArguments.R'
     'AllClasses.R'
     'AllMethods.R'
+    'generateResultsTable.R'
+    'generateEnzymesTable.R'
+    'generateResultsGraph.R'
     'addGOToGraph.R'
     'buildGraphFromKEGGREST.R'
     'buildDataFromGraph.R'
@@ -73,9 +76,6 @@ Collate:
     'runPagerank.R'
     'enrich.R'
     'exportResults.R'
-    'generateEnzymesTable.R'
-    'generateResultsGraph.R'
-    'generateResultsTable.R'
     'get-.R'
     'is-.R'
     'launchApp.R'

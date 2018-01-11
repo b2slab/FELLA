@@ -2,6 +2,20 @@
 
 ---
 
+### Version 0.5.7
+
+* Slight changes in vignette (affiliations)
+* Fixed `generateEnzymesTable`: now it can also add the GO terms 
+inside each enzyme
+* Modified `addGOToGraph`: now it will add only the GO labels, 
+without similarity score, provided that `GOterm = NULL`
+* Improved doc in result exports: `generateResultsTable`, 
+`generateEnzymesTable`, `generateResultsGraph`, 
+`addGOToGraph` and `plotGraph`.
+    - Merged all the doc
+    - Added references
+    - Expanded details
+
 ### Version 0.5.6
 
 * Improved doc in enrichment techniques: 

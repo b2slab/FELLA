@@ -391,7 +391,8 @@ shinyServer(function(input, output, session) {
         method = input$method, 
         threshold = input$threshold,
         nlimit = input$nlimit, 
-        data = data)
+        data = data, 
+        mart.options = NULL)
     }
   })
   output$exportEnzymes_csv <- downloadHandler(

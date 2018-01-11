@@ -24,12 +24,15 @@
 \code{"hypergeom"}, \code{"diffusion"}, \code{"pagerank"}}
 
 \item{threshold}{Numeric value between 0 and 1. 
-Applied when filtering KEGG nodes}
+\code{p.score} threshold applied when filtering KEGG nodes. 
+Lower thresholds are more stringent.}
 
-\item{plimit}{Pathway limit, must be a numeric value between 1 and 50}
+\item{plimit}{Pathway limit, must be a numeric value between 1 and 50. 
+Limits the amount of pathways in \code{method = "hypergeom"}}
 
 \item{nlimit}{Node limit, must be a numeric value between 1 and 1000. 
-This limits the order of the solution graph}
+Limits the order of the solution sub-graph when 
+in \code{method = "diffusion"} and \code{method = "pagerank"}}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 

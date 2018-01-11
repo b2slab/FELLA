@@ -42,41 +42,33 @@ mytriangle <- function(coords, v=NULL, params) {
 }
 
 
-#' Internal function to plot a solution graph
-#' 
-#' This function plots a solution graph, 
-#' tailored for the diffusion and pagerank
-#' analysis. 
+#' @details
+#' Function \code{\link[FELLA]{plotGraph}} 
+#' plots a solution graph from the diffusion and pagerank analysis. 
+#' For plotting hypergeom results, please use \code{plot} instead. 
+#' Specific colors and shapes for each KEGG category are used: 
+#' pathways are maroon, modules are violet, enzymes are orange, 
+#' reactions are blue and compounds are green. 
+#' If the graph contains the similarity to a GO term, enzymes will 
+#' be displayed as triangles whose color depicts the strength of 
+#' such measure (yellow: weak, purple: strong). 
+#' At the moment, \code{\link[FELLA]{plotGraph}} allows plotting 
+#' throug the static \code{\link[igraph]{plot.igraph}} and the 
+#' interactive \code{\link[igraph]{tkplot}}. 
 #'
 #' @inheritParams .params
-#' @param graph Graph result that must come 
-#' from diffusion or pagerank analysis
 #' @param graph.layout Two-column numeric matrix, if this argument is not null 
 #' then it is used as graph layout
 #' @param plotLegend Logical, should the legend be plotted as well?
 #' @param plot.fun Character, can be either \code{plot.igraph} or \code{tkplot}
-#' @param ... Optional further arguments for the plotting function
 #' 
-#' @return If \code{layout = F} then the value 
-#' returned is \code{invisible()}. 
-#' Otherwise, the layout is returned, 
-#' also in an invisible fashion.
+#' @return \code{\link[FELLA]{plotGraph}} returns 
+#' \code{invisible()} if \code{layout = F} and 
+#' the plotting layout as a data.frame otherwise.
 #' 
-#' @examples 
-#' ## This function is internal
-#' data(FELLA.sample)
-#' data(input.sample)
-#' ## Enrich input
-#' obj <- enrich(
-#' compounds = input.sample, 
-#' data = FELLA.sample)
-#' ## Generate graph
-#' g <- generateResultsGraph(
-#' threshold = 0.1, 
-#' object = obj, 
-#' data = FELLA.sample)
-#' ## Plot it
-#' FELLA:::plotGraph(g)
+#' 
+#' @describeIn generateResultsGraph plot a 
+#' graph generated from \code{generateResultsGraph}
 #' 
 #' @import igraph
 #' @export
