@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.5.10
+
+* Adding GO CC is now in `dontrun`, takes too long (12s)
+
 ### Version 0.5.9
 
 * Fixed vignette: converted pdf images to eps and added them 

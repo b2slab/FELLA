@@ -100,6 +100,7 @@
 #' plotGraph(g.res)
 #' 
 #' ## Add similarity to the GO CC term "mitochondrion"
+#' \dontrun{
 #' g.cc <- FELLA:::addGOToGraph(
 #' graph = g.res, 
 #' GOterm = "GO:0005739")
@@ -114,6 +115,7 @@
 #' sum(v.cc >= 0, na.rm = TRUE)
 #' ## Similarity values
 #' table(v.cc)
+#' }
 #' 
 #' @import igraph
 #' @export
