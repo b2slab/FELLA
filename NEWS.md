@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.5.9
+
+* Fixed vignette: converted pdf images to eps and added them 
+
 ### Version 0.5.8
 
 * Removed `broser()` calls

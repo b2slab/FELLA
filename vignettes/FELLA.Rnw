@@ -444,7 +444,7 @@ as well (reactions, enzymes and modules), see figure \ref{fig:hd}.
 Further details can found in \cite{metabopicart}. 
 
 \begin{figure}[!tpb]
-\centerline{\includegraphics[width=.8\linewidth]{HD_contour.pdf}}
+\centerline{\includegraphics[width=.8\linewidth]{HD_contour.eps}}
 \caption{Network setup for the diffusion process. 
 nput metabolites (in black rings) introduce a unitary flow 
 in the network and only the pathway nodes (blue rings) 
@@ -508,7 +508,7 @@ implemented in \Rfunction{runPagerank},
 can be found in \cite{metabopicart}.
 
 \begin{figure}[!tpb]
-\centerline{\includegraphics[width=.8\linewidth]{PR_contour.pdf}}
+\centerline{\includegraphics[width=.8\linewidth]{PR_contour.eps}}
 \caption{Network setup for PageRank. 
 Input metabolites (in black rings) are the source of random walks 
 that must climb through the graph levels, up to the pathway nodes. 
