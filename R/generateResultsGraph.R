@@ -128,7 +128,6 @@ generateResultsGraph <- function(
     data = NULL, 
     ...) {
     
-    #   browser()
     if (!is.FELLA.DATA(data)) {
         stop("'data' is not a FELLA.DATA object")
     } else if (getStatus(data) != "loaded"){
@@ -183,7 +182,6 @@ generateResultsGraph <- function(
             comp.hypergeom, path.hypergeom, drop = FALSE]
         
         graph.bipartite <- graph.incidence(incidence = incidence)
-        #     browser()
         graph.bipartite <- induced.subgraph(
             graph.bipartite, 
             vids = (degree(graph.bipartite) > 0))

@@ -2,6 +2,15 @@
 
 ---
 
+### Version 0.5.8
+
+* Removed `broser()` calls
+* Removed some commented code
+* Expanded doc on `launchApp`
+* Removed the old gone report functionality in the app 
+(might bring it back eventually)
+* Added captures of the graphical interface to the main vignette
+
 ### Version 0.5.7
 
 * Slight changes in vignette (affiliations)

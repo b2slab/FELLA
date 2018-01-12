@@ -11,10 +11,13 @@ a list of metabolites using KEGG reactions,
 enzymes, modules and pathways [Picart-Armada, 2017].
 }
 \details{
-The input is introduced as a list of affected metabolites (KEGG IDs, 
-[Kanehisa, 2017]).
+\code{FELLA} can build knowledge models for the desired organism 
+from the KEGG database [Kanehisa, 2017]. 
+Once a model is ready, the input for the enrichment is introduced 
+as a list of affected metabolites (as KEGG IDs). 
 The output contains a comprehensive biological network layout 
-that relates relevant pathways to the affected metabolites.
+that relates relevant pathways to the affected metabolites. 
+Results are available in network and tabular format. 
 
 \code{FELLA} is equipped with a simple graphical interface 
 for the lay user, deployed through \link[FELLA]{launchApp}.
@@ -26,10 +29,14 @@ to the KEGG server [Tenenbaum, 2013],
 \link[shiny]{shiny} for the graphical user interface [Chang, 2017].
 }
 \examples{
+## Walkthrough
 browseVignettes("FELLA")
-?FELLA.sample
-?input.sample
+## Create database
+?buildGraphFromKEGGREST
+## Enrich data
 ?enrich
+## Export results
+?generateResultsGraph
 
 }
 \references{

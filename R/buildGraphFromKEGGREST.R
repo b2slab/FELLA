@@ -200,7 +200,6 @@ buildGraphFromKEGGREST <- function(
             stringsAsFactors = FALSE)[lower.tri(matrix(1:25, nrow = 5)), ], 
         1, 
         function(row) {
-            # browser()
             original <- KEGGREST::keggLink(row[1], row[2])
             df <- data.frame(
                 from = sanitise(original, row[1], organism), 
@@ -262,7 +261,7 @@ buildGraphFromKEGGREST <- function(
             
             if (a.from == "enzyme" & (a.to %in% c("module", "pathway"))) 
                 return(NULL)
-            # browser()
+            
             return(df.piece)
         }, 
         .id = NULL
@@ -357,7 +356,7 @@ buildGraphFromKEGGREST <- function(
     for (w in names(edges.split)[-1]) {
         current.w <- as.numeric(w)
         message(paste0("Current weight: ", w, " out of 4..."))
-        # browser()
+        
         dist.matrix <- distances(g.curated, mode = "out")
         list.edges <- edges.split[[w]]
         

@@ -2,6 +2,8 @@
 
 shinyServer(function(input, output, session) {
   # Database of choice
+  # This could be loaded in global.R to save memory, but 
+  # this way each user can load a different database
   FELLA.DATA <- reactive({
     if (input$database != "") {
       withProgress(message = "Loading database", value = .5, {
@@ -123,7 +125,6 @@ shinyServer(function(input, output, session) {
   
   # Table showing excluded compounds
   output$tableExcluded <- renderTable({
-    #     browser()
     if (!is.null(inputSummary())) {
       if (length(inputSummary()$excluded) > 0) {
         outTable <- data.frame(inputSummary()$excluded)
@@ -133,9 +134,9 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # Generate the graph / graphlist...
-  # BUT the current graph is extracted using another function
-  # That's because the current graph can vary with the user-selected 
+  # Generate the graph 
+  # The current graph is extracted using another function, though,
+  # because the current graph can vary with the user-selected 
   # GO term, if any
   generateGraph <- reactive({
     usr <- createUser()
@@ -264,7 +265,7 @@ shinyServer(function(input, output, session) {
   })
   
   ###########################################################
-  # Cytoscape plugin!
+  # network as a list with nodes and edges
   network <- reactive({
     g <- currentGraph()
     if (!is.null(g)) {
@@ -417,7 +418,6 @@ shinyServer(function(input, output, session) {
       "genesFromEnzymes.txt"
     }, 
     content = function(file) {
-      # browser()
       tab <- tableEnzymes()
       if (!is.null(tab)) {
         writeLines(
@@ -448,38 +448,5 @@ shinyServer(function(input, output, session) {
           data = data)
       }
     } 
-  )
-  
-  #   output$exportcsv = downloadHandler(
-  #     filename = "report.pdf",
-  #     
-  #     content = function(file) {
-  #       out = knit2pdf("report/sample.Rnw")
-  #       file.rename(out, file) # move pdf to file for downloading
-  #     },
-  #     
-  #     contentType = "application/pdf"
-  #   )  
-  
-  output$report = downloadHandler(
-    filename = "report.pdf",
-    
-    content = function(file) {
-      out = knit2pdf("report/sample.Rnw")
-      file.rename(out, file) # move pdf to file for downloading
-    },
-    
-    contentType = "application/pdf"
-  )
-  
-  output$reportPR = downloadHandler(
-    filename = "reportPR.pdf",
-    
-    content = function(file) {
-      out = knit2pdf("report/samplePR.Rnw")
-      file.rename(out, file) # move pdf to file for downloading
-    },
-    
-    contentType = "application/pdf"
   )
 })

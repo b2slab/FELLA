@@ -5,11 +5,11 @@ shinyUI(fluidPage(
     title = h1(
       a(href = "http://b2slab.upc.edu/", 
         img(src='b2slab_small.png', align = "center", height = "50px")), 
-      "SHELLA: pathway analysis for metabolomics data", 
+      "FELLA: pathway analysis for metabolomics data", 
       a(href = "http://www.creb.upc.edu/", 
         img(src='creb_upc.png', align = "center", height = "50px"), 
         align = "center")),  
-    windowTitle = "SHELLA: enriching metabolomics data"
+    windowTitle = "FELLA: enriching metabolomics data"
   ),
   
   fluidRow(
@@ -21,8 +21,7 @@ shinyUI(fluidPage(
           column(
             3, 
             h2("Overview"), 
-            h4("SHELLA is an interface to the FELLA R package. 
-               SHELLA allows the user to perform 
+            h4("FELLA allows the user to perform 
                a pathway enrichment on metabolomics data 
                using the KEGG database."), 
             h3("1. Upload compounds"), 
@@ -64,7 +63,7 @@ shinyUI(fluidPage(
             
             br(), 
             h2("Example file"), 
-            h5("Here is a sample of the format understood by SHELLA.
+            h5("Here is a sample of the format understood by FELLA.
                This is the content of the data for 'Example 2'. 
                KEGG identifiers can be quoted as well, but this is not 
                necessary. The file extension is irrelevant (.txt, .csv) 
@@ -84,7 +83,7 @@ shinyUI(fluidPage(
             tableOutput("tableCompounds"), 
             h5("Mismatching compounds:"),
             h6("Note: due to the graph curation, 
-               not every KEGG compound is within the SHELLA database,
+               not every KEGG compound is within the FELLA database,
                Even if the KEGG id exists, 
                a mismatch can take place."), 
             tableOutput("tableExcluded") 

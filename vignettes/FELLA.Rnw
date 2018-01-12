@@ -358,7 +358,7 @@ The enrichment is therefore achieved by finding a sub-network
 from the whole KEGG graph that is statistically 
 relevant for a list of input metabolites.
 
-\begin{figure}[!tpb]%figure1
+\begin{figure}[!tpb]%figure2
 \centerline{\includegraphics[width=\linewidth]{kegggraph.eps}}
 \caption{Internal knowledge representation from KEGG. 
 The scheme outlines the KEGG graph, a heterogeneous network 
@@ -613,6 +613,10 @@ see section \ref{sec:export}.
 
 <<01_database, eval=TRUE>>=
 tmpdir <- paste0(tempdir(), "/my_database")
+# Mke sure the database does not exist from a former vignette build
+# Otherwise the vignette will rise an error 
+# because FELLA will not overwrite an existing database
+unlink(tmpdir, recursive = TRUE)  
 buildDataFromGraph(
     keggdata.graph = graph, 
     databaseDir = tmpdir, 
@@ -968,23 +972,54 @@ The app is divided in the following tabs:
 
 \begin{itemize}
 
-\item Compounds upload: contains a general description of 
+\item Compounds upload (figure \ref{fig:shiny01}): 
+contains a general description of 
 the tabs and a handle to submit the input metabolite list 
 as a text file. Examples are provided as well. 
 The right panel shows the mapped and the mismatching 
 compounds with regard to the default database.
-\item Advanced options: widgets that contain the main 
+
+\begin{figure}[!h]
+\centerline{\includegraphics[scale=1]{shiny1.png}}
+\caption{Graphical interface: compounds upload}
+\label{fig:shiny01}
+\end{figure}
+
+\item Advanced options (figure \ref{fig:shiny02}): 
+widgets that contain the main 
 function arguments for customising the enrichment procedure. 
 Allows database choice from the internal package directory, 
 method and approximation choice and parameter tweaking. 
 It also allows defining a GO label for the semantic similarity 
 analysis on the reported enzymes.
-\item Results: interactive plot with the sub-graph with the 
+
+\begin{figure}[!h]
+\centerline{\includegraphics[scale=1]{shiny2.png}}
+\caption{Graphical interface: advanced options}
+\label{fig:shiny02}
+\end{figure}
+
+\item Results (figure \ref{fig:shiny03}): 
+interactive plot with the sub-graph with the 
 top $k$ KEGG entries. Nodes can be selected, 
 queried and link to the KEGG entries when hovered. 
 Below the network lies an interactive table with the graph nodes, 
 allowing the user to look into particular entries.
-\item Export: several tabular and network exporting options.
+
+\begin{figure}[!h]
+\centerline{\includegraphics[scale=1]{shiny3.png}}
+\caption{Graphical interface: results}
+\label{fig:shiny03}
+\end{figure}
+
+\item Export (figure \ref{fig:shiny04}): 
+several tabular and network exporting options.
+
+\begin{figure}[!h]
+\centerline{\includegraphics[scale=1]{shiny4.png}}
+\caption{Graphical interface: export}
+\label{fig:shiny04}
+\end{figure}
 
 \end{itemize}
 

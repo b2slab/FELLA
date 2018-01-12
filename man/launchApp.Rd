@@ -13,7 +13,19 @@ launchApp(...)
 \code{invisible()}, but as a side effect the app will be launched
 }
 \description{
-Launch a shiny application to perform the metabolomics data enrichment.
+\code{\link[FELLA]{launchApp}} deploys a shiny application 
+to perform the metabolomics data enrichment. 
+Although this app does not provide all the options available in 
+\code{\link[FELLA]{FELLA}}, it is easily accessible for the lay user.
+}
+\details{
+The graphical interface allows to: (1) upload the data and 
+check if the KEGG ids have successfully mapped, 
+(2) select database, set analysis and graphical parameters, 
+(3) interactively browse the resulting sub-network as a graph or 
+as a table, and (4) export such results as a table or a network. 
+At least one database is needed before deploying the app. 
+See \code{?buildDataFromGraph} for further details.
 }
 \examples{
 \dontrun{
