@@ -266,7 +266,7 @@ buildDataFromGraph <- function(
         K <- graph.laplacian(graph, normalized = FALSE, sparse = TRUE)
         
         # Boundary conditions
-        Matrix::diag(K)[id.pathway] <- Matrix::diag(K)[id.pathway] + 1
+        Matrix::diag(K)[id.pathway] <- Matrix::diag(K)[id.pathway] + 1.0
         
         # The inverse (WARNING: it uses a large amount of memory)
         R <- as.matrix(solve(K))
@@ -318,7 +318,7 @@ buildDataFromGraph <- function(
         
         # Laplacian matrix
         K <- -t(graph.laplacian(graph, normalized = FALSE, sparse = TRUE))
-        Matrix::diag(K) <- 0
+        Matrix::diag(K) <- 0.0
         
         K <- apply(K, 2, function(x) {
             if (sum(x) != 0) return(x/sum(x))

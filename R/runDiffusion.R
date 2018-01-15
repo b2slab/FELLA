@@ -139,7 +139,7 @@ runDiffusion <- function(
                 sparse = TRUE)
             # Connect pathways to boundary
             Matrix::diag(minusKI)[getCom(data, "pathway", "id")] <- 
-                Matrix::diag(minusKI)[getCom(data, "pathway", "id")] + 1
+                Matrix::diag(minusKI)[getCom(data, "pathway", "id")] + 1.0
             
             # Heat generation vector
             generation <- numeric(dim(minusKI)[1])
@@ -242,7 +242,7 @@ runDiffusion <- function(
             sparse = TRUE)
         # Connect pathways to boundary
         Matrix::diag(minusKI)[getCom(data, "pathway", "id")] <- 
-            Matrix::diag(minusKI)[getCom(data, "pathway", "id")] + 1
+            Matrix::diag(minusKI)[getCom(data, "pathway", "id")] + 1.0
         
         # Heat generation vector
         generation <- numeric(nrow(minusKI))
