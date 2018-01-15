@@ -580,6 +580,7 @@ excluded from the graph - the following code removes
 
 
 <<01_graph, eval=TRUE>>=
+library(FELLA)
 set.seed(1)
 # Filter overview pathways
 graph <- buildGraphFromKEGGREST(

@@ -198,7 +198,7 @@ buildGraphFromKEGGREST <- function(
             categories, 
             KEEP.OUT.ATTRS = FALSE, 
             stringsAsFactors = FALSE)[lower.tri(
-              matrix(seq_len(25), nrow = 5)), ], 
+                matrix(seq_len(25), nrow = 5)), ], 
         1, 
         function(row) {
             original <- KEGGREST::keggLink(row[1], row[2])

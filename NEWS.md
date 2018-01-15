@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.5.14
+
+* Small bugs
+
 ### Version 0.5.13
 
 * Small bug fixes

@@ -59,4 +59,4 @@ FELLA:::launchApp(
 ```
 
 and leave the command active. Going to the direction 
-[127.0.0.1:8888](127.0.0.1:8888) will start the analysis.
+http://127.0.0.1:8888 will start the analysis.
