@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.5.12
+
+* Small bug fixes
+
 ### Version 0.5.11
 
 * Fixed calls to `sapply` and `1:n`

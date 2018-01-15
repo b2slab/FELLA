@@ -266,7 +266,7 @@ buildDataFromGraph <- function(
         K <- graph.laplacian(graph, normalized = FALSE, sparse = TRUE)
         
         # Boundary conditions
-        diag(K)[id.pathway] <- diag(K)[id.pathway] + 1
+        Matrix::diag(K)[id.pathway] <- Matrix::diag(K)[id.pathway] + 1
         
         # The inverse (WARNING: it uses a large amount of memory)
         R <- as.matrix(solve(K))
@@ -317,8 +317,8 @@ buildDataFromGraph <- function(
         d <- dampingFactor
         
         # Laplacian matrix
-        K <- -t(graph.laplacian(graph))
-        diag(K) <- 0
+        K <- -t(graph.laplacian(graph, normalized = FALSE, sparse = TRUE))
+        Matrix::diag(K) <- 0
         
         K <- apply(K, 2, function(x) {
             if (sum(x) != 0) return(x/sum(x))
@@ -326,7 +326,7 @@ buildDataFromGraph <- function(
         )
         
         # The inverse (WARNING: it uses a large amount of memory)
-        R <- (1 - d) * solve(diag(dim(K)[1]) - d * K)
+        R <- (1 - d) * solve(diag(nrow(K)) - d * K)
         rownames(R) <- V(graph)$name
         colnames(R) <- V(graph)$name
         pagerank.matrix <- R[, id.compound]
