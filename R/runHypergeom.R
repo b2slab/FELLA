@@ -117,7 +117,7 @@ runHypergeom <- function(
     pathhits <- pvalues.path
     
     # p-values calculation
-    for (path in 1:ncol(hypergeom.matrix)) {
+    for (path in seq_len(ncol(hypergeom.matrix))) {
         sample_success <- sum(hypergeom.matrix[row_comp, path])
         pathhits[path] <- sample_success
         

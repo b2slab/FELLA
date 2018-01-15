@@ -144,9 +144,10 @@ runPagerank <- function(
             
             # Load the graph 
             graph <- getGraph(data)
+            n.nodes <- vcount(graph)
             
             # Prior for personalized PageRank
-            prior <- numeric(vcount(graph))
+            prior <- numeric(n.nodes)
             names(prior) <- V(graph)$name
             
             # Current scores
@@ -159,7 +160,7 @@ runPagerank <- function(
             prior[comp.input] <- 0
             
             # Null model
-            null.score <- sapply(1:niter, function(dummy) {
+            null.score <- vapply(seq_len(niter), function(dummy) {
                 if (dummy %% round(.1*niter) == 0) 
                     message(round(dummy*100/niter),"%")
                 
@@ -169,13 +170,12 @@ runPagerank <- function(
                     directed = TRUE, 
                     damping = d, 
                     personalized = prior)$vector
-            })
+            }, FUN.VALUE = double(n.nodes))
             
-            n.nodes <- length(current.score)
-            pscores <- sapply(1:n.nodes, function(row) {
+            pscores <- vapply(seq_len(n.nodes), function(row) {
                 ((1 - stats::ecdf(null.score[row, ])(current.score[row]))*
                     n.nodes + 1)/(n.nodes + 1)
-            })
+            }, FUN.VALUE = double(1))
             names(pscores) <- V(graph)$name
             
         } else {
@@ -194,18 +194,18 @@ runPagerank <- function(
             current.score <- rowSums(
                 pagerank.matrix[, comp.input, drop = FALSE])
             
-            null.score <- sapply(1:niter, function(dummy) {
+            null.score <- vapply(seq_len(niter), function(dummy) {
                 if (dummy %% round(.1*niter) == 0) 
                     message(round(dummy*100/niter),"%")
                 
                 rowSums(pagerank.matrix[, sample(comp.background, n.input)])
-            })
+            }, FUN.VALUE = double(n.nodes))
             
             n.nodes <- length(current.score)
-            pscores <- sapply(1:n.nodes, function(row) {
+            pscores <- vapply(seq_len(n.nodes), function(row) {
                 ((1 - stats::ecdf(null.score[row, ])(current.score[row]))*
                     n.nodes + 1)/(n.nodes + 1)
-            })
+            }, FUN.VALUE = double(1))
             names(pscores) <- rownames(pagerank.matrix)
         }
     ###### Second case: moments   

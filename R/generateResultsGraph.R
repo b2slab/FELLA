@@ -190,10 +190,10 @@ generateResultsGraph <- function(
         
         # The com attribute for each node
         V(graph.bipartite)$com <- V(g.data)[V(graph.bipartite)$name]$com
-        V(graph.bipartite)$label <- sapply(
+        V(graph.bipartite)$label <- vapply(
             V(g.data)[V(graph.bipartite)$name]$NAME, 
             function(name.aux) {
-                if (length(name.aux) == 0) return(NA)
+                if (length(name.aux) == 0) return(NA_character_)
                 # Take first name
                 name.first <- name.aux[[1]]
                 name.def <- substr(name.first, 1, LabelLengthAtPlot)
@@ -201,7 +201,8 @@ generateResultsGraph <- function(
                     name.def <- paste0(name.def, "...")
                 
                 name.def
-            }
+            }, 
+            FUN.VALUE = character(1)
         )
             
         return(graph.bipartite)
@@ -231,10 +232,10 @@ generateResultsGraph <- function(
         
         # Define labels for the plot
         vertex.labels <- character(vcount(graph))
-        vertex.labels <- sapply(
+        vertex.labels <- vapply(
             V(graph)$NAME, 
             function(name.aux) {
-                if (length(name.aux) == 0) return(NA)
+                if (length(name.aux) == 0) return(NA_character_)
                 # Take first name
                 name.first <- name.aux[[1]]
                 name.def <- substr(name.first, 1, LabelLengthAtPlot)
@@ -242,7 +243,8 @@ generateResultsGraph <- function(
                     name.def <- paste0(name.def, "...")
                 
                 name.def
-            }
+            }, 
+            FUN.VALUE = character(1)
         )
         
         V(graph)$label <- vertex.labels

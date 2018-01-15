@@ -91,16 +91,16 @@ generateResultsTable <- function(
             
             nodeIds <- names(pscores)
             # Take names (1st name in KEGG, abbreviate if it's too long)
-            nodeNames <- as.character(sapply(nodeIds, function(id) {
+            nodeNames <- as.character(vapply(nodeIds, function(id) {
                 ans <- data@keggdata@id2name[[id]]
                 if (length(ans) == 0) 
-                    return(NULL)
+                    return("")
                 
                 ans <- ans[1]
                 if (nchar(ans) > LabelLengthAtPlot) 
                     ans <- paste0(substr(ans, 1, LabelLengthAtPlot), "...")
                 return(ans)
-            }))
+            }, FUN.VALUE = character(1)))
             nodeCom <- V(getGraph(data))[nodeIds]$com
             nodeTypes <- listCategories()[nodeCom]
             

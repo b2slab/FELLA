@@ -126,7 +126,7 @@ setMethod("show", signature = "FELLA.USER", function(object) {
         n.show <- min(15, length(
             getPscores(object = object, method = "hypergeom")))
         cat("Top", n.show, "p-values:", fill = TRUE)
-        print(sort(getPscores(object, "hypergeom"))[1:n.show])
+        print(head(sort(getPscores(object, "hypergeom")), n.show))
     }
     
     breakline()

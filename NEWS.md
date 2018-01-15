@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.5.11
+
+* Fixed calls to `sapply` and `1:n`
+
 ### Version 0.5.10
 
 * Adding GO CC is now in `dontrun`, takes too long (12s)

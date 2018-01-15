@@ -131,6 +131,8 @@ runDiffusion <- function(
             
             # Load the graph as undirected and its Laplacian
             graph <- as.undirected(getGraph(data))
+            n.nodes <- vcount(graph)
+            
             minusKI <- graph.laplacian(
                 graph = graph, 
                 normalized = FALSE, 
@@ -149,42 +151,39 @@ runDiffusion <- function(
             generation[comp.input] <- 0
             
             # Null model
-            null.temp <- sapply(1:niter, function(dummy) {
+            null.temp <- vapply(seq_len(niter), function(dummy) {
                 if (dummy %% round(.1*niter) == 0) 
                     message(round(dummy*100/niter),"%")
                 
                 generation[sample(comp.background, n.input)] <- 1
                 as.vector(solve(minusKI, generation)) 
-            })
+            }, FUN.VALUE = double(n.nodes))
             
-            n.nodes <- length(current.temp)
-            pscores <- sapply(1:n.nodes, function(row) {
+            pscores <- vapply(seq_len(n.nodes), function(row) {
                 ((1 - stats::ecdf(null.temp[row, ])(current.temp[row]))*
                     n.nodes + 1)/(n.nodes + 1)
-            })
+            }, FUN.VALUE = double(1))
             names(pscores) <- V(graph)$name
-            
-            
         } else {
             # Calculate current temperature
             diffusion.matrix <- getMatrix(data, "diffusion")
+            n.nodes <- nrow(diffusion.matrix)
             
             current.temp <- rowSums(
                 diffusion.matrix[, comp.input, drop = FALSE])
             
-            null.temp <- sapply(1:niter, function(dummy) {
+            null.temp <- vapply(seq_len(niter), function(dummy) {
                 if (dummy %% round(.1*niter) == 0) 
                     message(round(dummy*100/niter),"%")
                 
                 rowSums(
                     diffusion.matrix[, sample(comp.background, n.input)])
-            })
+            }, FUN.VALUE = double(n.nodes))
             
-            n.nodes <- length(current.temp)
-            pscores <- sapply(1:n.nodes, function(row) {
+            pscores <- vapply(seq_len(n.nodes), function(row) {
                 ((1 - stats::ecdf(null.temp[row, ])(current.temp[row]))*
                     n.nodes + 1)/(n.nodes + 1)
-            })
+            }, FUN.VALUE = double(1))
             names(pscores) <- rownames(diffusion.matrix)
         }
         

@@ -127,7 +127,7 @@ plotGraph <- function(
         "4" = "#8DB6CD",
         "5" = "#548B54"
     )
-    vertex.color <- sapply(V(graph), function(y) {
+    vertex.color <- vapply(V(graph), function(y) {
         solidColor <- mapSolidColor[graph.com[y]]
         if (!GO.annot) return(solidColor)
         
@@ -139,8 +139,8 @@ plotGraph <- function(
             else solidColor <- "#B300FF"
         }
         
-        return(solidColor)
-    })
+        solidColor
+    }, FUN.VALUE = character(1))
     
     # Vertex frame color
     vertex.frame.color <- rep("black", vcount(graph))

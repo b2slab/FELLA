@@ -197,7 +197,8 @@ buildGraphFromKEGGREST <- function(
             categories, 
             categories, 
             KEEP.OUT.ATTRS = FALSE, 
-            stringsAsFactors = FALSE)[lower.tri(matrix(1:25, nrow = 5)), ], 
+            stringsAsFactors = FALSE)[lower.tri(
+              matrix(seq_len(25), nrow = 5)), ], 
         1, 
         function(row) {
             original <- KEGGREST::keggLink(row[1], row[2])
@@ -345,7 +346,7 @@ buildGraphFromKEGGREST <- function(
     message("Pruning graph...")
     # CURATE GRAPH
     # We start with the graph curation
-    edges.split <- split(1:ecount(g.raw), E(g.raw)$weight)
+    edges.split <- split(seq_len(ecount(g.raw)), E(g.raw)$weight)
     
     message(paste0("Current weight: 1 out of 4..."))
     g.curated <- subgraph.edges(

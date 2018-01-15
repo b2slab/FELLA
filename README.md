@@ -46,9 +46,7 @@ g <- buildGraphFromKEGGREST(
   organism = "hsa", 
   filter.path = "hsa01100"
 )
-buildDataFromGraph(
-  g, 
-  niter = 10)
+buildDataFromGraph(g)
 ```
 
 Then we can launch the shiny app 

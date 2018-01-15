@@ -91,7 +91,7 @@ generateEnzymesTable <- function(
     nodePscores <- head(pscores.ec[pscores.ec < threshold], nlimit)
     
     nodeIds <- names(nodePscores)
-    nodeNames <- sapply(
+    nodeNames <- vapply(
         getName(data, id = nodeIds), 
         function(id) {
             ans <- id[1]
@@ -100,12 +100,14 @@ generateEnzymesTable <- function(
             if (nchar(ans) > LabelLengthAtPlot) 
                 ans <- paste0(substr(ans, 1, LabelLengthAtPlot), "...")
             return(ans)
-        })
+        }, 
+        FUN.VALUE = character(1))
     
     g <- getGraph(data)
-    nodeGenes <- sapply(
+    nodeGenes <- vapply(
         V(g)[nodeIds]$entrez, 
-        function(genes) paste(genes, collapse = ";")
+        function(genes) paste(genes, collapse = ";"), 
+        FUN.VALUE = character(1)
     )
 
     out.df <- data.frame(
@@ -119,9 +121,10 @@ generateEnzymesTable <- function(
     if (!is.null(mart.options)) {
         g <- addGOToGraph(
             graph = g, GOterm = NULL, mart.options = mart.options)
-        nodeGO <- sapply(
+        nodeGO <- vapply(
             V(g)[nodeIds]$GO, 
-            function(goterms) paste(goterms, collapse = ";")
+            function(goterms) paste(goterms, collapse = ";"), 
+            FUN.VALUE = character(1)
         )
         out.df$GO_id <- nodeGO
     }
