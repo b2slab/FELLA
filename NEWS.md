@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.99.0
+
+* Submission to Bioconductor
+
 ### Version 0.5.14
 
 * Small bugs

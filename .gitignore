@@ -23,6 +23,7 @@ inst/doc
 
 # RStudio files
 .Rproj.user/
+FELLA.Rproj
 
 # produced vignettes
 vignettes/*.html
