@@ -10,7 +10,7 @@ getGraph(data)
 \item{data}{FELLA.DATA object}
 }
 \value{
-KEGG graph as an \link[igraph]{igraph} object
+KEGG graph as an \link[igraph:igraph-package]{igraph} object
 }
 \description{
 Extractor function for the KEGG graph from the FELLA.DATA object

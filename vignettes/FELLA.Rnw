@@ -652,7 +652,7 @@ The function \Rfunction{getInfo} provides the KEGG
 release and organism that generated a \Rclass{FELLA.DATA} object:
 
 <<01_info, eval=TRUE, results=verbatim>>=
-getInfo(fella.data)
+cat(getInfo(fella.data))
 @
 
 Please note that the database built for this vignette is 
@@ -981,7 +981,7 @@ The right panel shows the mapped and the mismatching
 compounds with regard to the default database.
 
 \begin{figure}[!h]
-\centerline{\includegraphics[scale=1]{shiny1.png}}
+\centerline{\includegraphics[width=11cm]{shiny1.png}}
 \caption{Graphical interface: compounds upload}
 \label{fig:shiny01}
 \end{figure}
@@ -995,7 +995,7 @@ It also allows defining a GO label for the semantic similarity
 analysis on the reported enzymes.
 
 \begin{figure}[!h]
-\centerline{\includegraphics[scale=1]{shiny2.png}}
+\centerline{\includegraphics[width=11cm]{shiny2.png}}
 \caption{Graphical interface: advanced options}
 \label{fig:shiny02}
 \end{figure}
@@ -1008,7 +1008,7 @@ Below the network lies an interactive table with the graph nodes,
 allowing the user to look into particular entries.
 
 \begin{figure}[!h]
-\centerline{\includegraphics[scale=1]{shiny3.png}}
+\centerline{\includegraphics[width=12cm]{shiny3.png}}
 \caption{Graphical interface: results}
 \label{fig:shiny03}
 \end{figure}
@@ -1017,7 +1017,7 @@ allowing the user to look into particular entries.
 several tabular and network exporting options.
 
 \begin{figure}[!h]
-\centerline{\includegraphics[scale=1]{shiny4.png}}
+\centerline{\includegraphics[width=12cm]{shiny4.png}}
 \caption{Graphical interface: export}
 \label{fig:shiny04}
 \end{figure}
@@ -1175,8 +1175,8 @@ interactive sub-network examination.
 \section{Funding}
 This work was supported by the Spanish
 Ministry of Economy and Competitiveness (MINECO)
-[TEC2014-60337-R to A.P.].
-A.P. and S.P. thank for funding the
+[BFU2014-57466-P to O.Y., TEC2014-60337-R and DPI2017-89827-R to A.P.].
+O.Y., A.P. and S.P. thank for funding the
 Spanish Biomedical Research Centre in Diabetes
 and Associated Metabolic Disorders (CIBERDEM)
 and the Networking Biomedical Research Centre

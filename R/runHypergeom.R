@@ -3,11 +3,11 @@
 #' @details
 #' Function \code{runHypergeom} performs an over representation analysis 
 #' through the hypergeometric test [Fisher, 1935] on a 
-#' \code{\link[FELLA]{FELLA.USER}} object with mapped metabolites 
-#' and a \code{\link[FELLA]{FELLA.DATA}} object. 
+#' \code{\link{FELLA.USER}} object with mapped metabolites 
+#' and a \code{\link{FELLA.DATA}} object. 
 #' If a custom background was specified, it will be used. 
 #' This approach is included for completeness and it is not the 
-#' main purpose behind the \code{\link[FELLA]{FELLA}} package. 
+#' main purpose behind the \code{\link{FELLA}} package. 
 #' Importantly, \code{runHypergeom} is not a hypergeometric test using the 
 #' original KEGG pathways. 
 #' Instead, a compound "belongs" to a "pathway" if 
@@ -22,11 +22,10 @@
 #' @inheritParams .params
 #'
 #' @return \code{runHypergeom} returns a 
-#' \code{\link[FELLA]{FELLA.USER}} object 
+#' \code{\link{FELLA.USER}} object 
 #' updated with the hypergeometric test results
 #' 
-#' @describeIn enrich classical hypergeometric test using 
-#' compound-pathway connections from the network
+#' @rdname enrich-funs 
 #' 
 #' @importFrom stats phyper p.adjust
 #' @import Matrix

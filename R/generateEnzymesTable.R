@@ -7,20 +7,20 @@
 #' 
 #' Function \code{generateResultsTable} returns a table 
 #' that contains the best hits from
-#' a \code{\link[FELLA]{FELLA.USER}} object 
+#' a \code{\link{FELLA.USER}} object 
 #' with a successful enrichment analysis.
-#' Similarly, \code{\link[FELLA]{generateEnzymesTable}} returns 
+#' Similarly, \code{generateEnzymesTable} returns 
 #' a data frame with the best scoring enzyme families and their 
 #' annotated genes.
 #' 
 #' @details 
-#' Functions \code{\link[FELLA]{generateResultsTable}} and 
-#' \code{\link[FELLA]{generateEnzymesTable}} need a 
-#' \code{\link[FELLA]{FELLA.DATA}} object and a 
-#' \code{\link[FELLA]{FELLA.USER}} object with a successful enrichment.
-#' \code{\link[FELLA]{generateResultsTable}} provides the entries 
+#' Functions \code{generateResultsTable} and 
+#' \code{generateEnzymesTable} need a 
+#' \code{\link{FELLA.DATA}} object and a 
+#' \code{\link{FELLA.USER}} object with a successful enrichment.
+#' \code{generateResultsTable} provides the entries 
 #' whose p-score is below the chosen \code{threshold} in a tabular format. 
-#' \code{\link[FELLA]{generateEnzymesTable}} returns a table 
+#' \code{generateEnzymesTable} returns a table 
 #' that contains (1) the enzymes that are below the user-defined 
 #' p-score threshold, along with (2) the genes that belong to 
 #' the enzymatic families in the organism defined in the database, 
@@ -30,12 +30,11 @@
 #' @inheritParams .params
 #' @param method one in \code{"diffusion"}, \code{"pagerank"}
 #'
-#' @return \code{\link[FELLA]{generateEnzymesTable}} returns a 
+#' @return \code{generateEnzymesTable} returns a 
 #' data.frame that contains the enzymes below the \code{p.score} threshold,
 #' along with their genes and GO labels
 #' 
-#' @describeIn generateResultsGraph generate a table with further data 
-#' on the reported enzymes
+#' @rdname export-funs
 #' 
 #' @import igraph
 #' @export

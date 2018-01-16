@@ -1,11 +1,11 @@
 #' @inheritParams .params
 #'
-#' @return \code{\link[FELLA]{generateResultsTable}} returns a 
+#' @return \code{generateResultsTable} returns a 
 #' data.frame that contains the nodes below the \code{p.score} threshold 
 #' from an enrichment analysis
 #' 
-#' @describeIn generateResultsGraph generate a table with all the 
-#' nodes below the \code{p.score} threshold
+#' @name export-funs
+#' @rdname export-funs
 #' 
 #' @import igraph
 #' @export

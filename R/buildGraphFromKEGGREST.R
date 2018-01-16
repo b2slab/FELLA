@@ -113,7 +113,7 @@ largestcc <- function(graph) {
 #' to build and return the curated KEGG graph. 
 #' 
 #' @details
-#' In function \code{buildGraphFromKEGG}, 
+#' In function \code{buildGraphFromKEGGREST}, 
 #' The user specifies (i) an organism, and (ii) patterns matching 
 #' pathways that should not be included as nodes. 
 #' A graph object, as described in [Picart-Armada, 2017], 
@@ -133,7 +133,7 @@ largestcc <- function(graph) {
 #' connects both entries. 
 #' However, in order to enrich metabolomics data, the user has to 
 #' pass the graph object to \code{buildDataFromGraph}  
-#' to obtain the \code{\link[FELLA]{FELLA.USER}} object. 
+#' to obtain the \code{\link{FELLA.USER}} object. 
 #' All the networks are handled with the igraph R package [Csardi, 2006].
 #' 
 #' 
@@ -143,10 +143,11 @@ largestcc <- function(graph) {
 #' E.g: \code{"01100"} to filter 
 #' the overview metabolic pathway in any species
 #' 
-#' @return \code{buildGraphFromKEGG} returns the 
-#' curated KEGG graph (class \code{\link[igraph]{igraph}})
+#' @return \code{buildGraphFromKEGGREST} returns the 
+#' curated KEGG graph (class \code{\link[igraph:igraph-package]{igraph}})
 #' 
-#' @describeIn loadKEGGdata builds graph, needs internet
+#' @name data-funs
+#' @rdname data-funs
 #' 
 #' @import igraph
 #' @import Matrix

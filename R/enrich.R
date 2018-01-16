@@ -1,61 +1,62 @@
-#' @include runPagerank.R
-#' 
 #' @title Functions to map and enrich a list of metabolites
 #' 
 #' @description 
-#' Functions \code{\link[FELLA]{runHypergeom}}, 
-#' \code{\link[FELLA]{runDiffusion}} and \code{\link[FELLA]{runPagerank}} 
-#' perform an enrichment on a \code{\link[FELLA]{FELLA.USER}} with 
+#' Functions \code{runHypergeom}, 
+#' \code{runDiffusion} and \code{runPagerank} 
+#' perform an enrichment on a \code{\link{FELLA.USER}} with 
 #' the mapped input metabolites 
-#' (through \code{\link[FELLA]{defineCompounds}}) 
-#' and a \code{\link[FELLA]{FELLA.DATA}} object. 
+#' (through \code{defineCompounds}) 
+#' and a \code{\link{FELLA.DATA}} object. 
 #' They are based on the hypergeometric test, the heat diffusion model 
 #' and the PageRank algorithm, respectively. 
 #' 
-#' Function \code{\link[FELLA]{enrich}} is a wrapper with 
+#' Function \code{enrich} is a wrapper with 
 #' the following order: 
-#' \code{\link[FELLA]{loadKEGGdata}} (optional), 
-#' \code{\link[FELLA]{defineCompounds}} and one or more in 
-#' \code{\link[FELLA]{runHypergeom}}, \code{\link[FELLA]{runDiffusion}} 
-#' and \code{\link[FELLA]{runPagerank}}
+#' \code{loadKEGGdata} (optional), 
+#' \code{defineCompounds} and one or more in 
+#' \code{runHypergeom}, \code{runDiffusion} 
+#' and \code{runPagerank}
 #' 
 #' @template approxTemplate
 #' 
 #' @details
-#' Finally, the function \code{\link[FELLA]{enrich}} 
+#' Finally, the function \code{enrich} 
 #' is a wrapper to perform the enrichment analysis. 
-#' If no \code{\link[FELLA]{FELLA.DATA}} object is supplied, 
+#' If no \code{\link{FELLA.DATA}} object is supplied, 
 #' it loads it, maps the affected compounds and performs 
 #' the desired enrichment(s) with a single call.
 #' Returned is a list with the loaded 
-#' \code{\link[FELLA]{FELLA.DATA}} object 
-#' and the results in a \code{\link[FELLA]{FELLA.USER}} object. 
+#' \code{\link{FELLA.DATA}} object 
+#' and the results in a \code{\link{FELLA.USER}} object. 
 #' Conversely, the user can supply the 
-#' \code{\link[FELLA]{FELLA.DATA}} object and the wrapper 
+#' \code{\link{FELLA.DATA}} object and the wrapper 
 #' will map the metabolites and run the desired enrichment 
 #' method(s). 
-#' In this case, only the \code{\link[FELLA]{FELLA.USER}} 
+#' In this case, only the \code{\link{FELLA.USER}} 
 #' will be returned.
 #'
 #' @inheritParams .params
 #' @param databaseDir Character, path to load the 
-#' \code{\link[FELLA]{FELLA.DATA}} object if
+#' \code{\link{FELLA.DATA}} object if
 #' it is not already passed through the argument \code{data}
 #' @param internalDir Logical, is the directory located 
 #' in the package directory?
 #' @param ... Further arguments for the enrichment function(s) 
-#' \code{\link[FELLA]{runDiffusion}}, \code{\link[FELLA]{runPagerank}}
+#' \code{runDiffusion}, \code{runPagerank}
 #' 
 #' @return \code{enrich} returns a 
-#' \code{\link[FELLA]{FELLA.USER}} object 
+#' \code{\link{FELLA.USER}} object 
 #' updated with the desired enrichment results if 
-#' the \code{\link[FELLA]{FELLA.DATA}} was supplied. 
+#' the \code{\link{FELLA.DATA}} was supplied. 
 #' Otherwise, a list with the freshly loaded  
-#' \code{\link[FELLA]{FELLA.DATA}} object and the 
+#' \code{\link{FELLA.DATA}} object and the 
 #' corresponding enrichment in the 
-#' \code{\link[FELLA]{FELLA.USER}} object. 
+#' \code{\link{FELLA.USER}} object. 
 #' 
 #' @template refs_enrichment
+#' @include runPagerank.R
+#' 
+#' @rdname enrich-funs 
 #' 
 #' @examples 
 #' ## Load the internal database. 

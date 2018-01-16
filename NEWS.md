@@ -2,6 +2,12 @@
 
 ---
 
+### Version 0.99.1
+
+* Fixed doc links (hopefully)
+* Updated funding in vignette
+* Travis will only test the devel branch
+
 ### Version 0.99.0
 
 * Submission to Bioconductor

@@ -1,9 +1,10 @@
-#' @include generateResultsGraph.R
+#' @include exportResults.R
 #' 
 #' @details
 #' Function \code{addGOToGraph} takes and returns 
 #' a graph object with class 
-#' \code{\link[igraph]{igraph}} adding the following attributes: 
+#' \code{\link[igraph:igraph-package]{igraph}} 
+#' adding the following attributes: 
 #' GO labels in \code{V(graph)$GO}, and 
 #' semantic similarities in \code{V(graph)$GO.simil} if 
 #' \code{GOterm != NULL}. 
@@ -16,26 +17,24 @@
 #' are closest to a particular GO term. 
 #' To assess similarity between GO labels, FELLA uses the 
 #' semantic similarity defined in [Yu, 2010] and their implementation 
-#' in the \code{\link[GOSemSim]{GOSemSim}} R package. 
+#' in the \code{\link[GOSemSim:GOSemSim-package]{GOSemSim}} R package. 
 #' The user will obtain, for each enzymatic family, the closest GO 
 #' term to his or her GO query and the semantic similarity between them. 
 #' Exact matches have a similarity of \code{1}. 
-#' Function \code{\link[FELLA]{plotGraph}} detects the presence 
+#' Function \code{plotGraph} detects the presence 
 #' of the GO similarity option and plots its magnitude.
 #' 
 #' 
 #' @inheritParams .params
 #'
-#' @return \code{\link[FELLA]{addGOToGraph}} returns 
-#' an \code{\link{igraph}} object, which is the input 
-#' \code{graph} with 
+#' @return \code{addGOToGraph} returns 
+#' an \code{\link[igraph:igraph-package]{igraph}} object, 
+#' which is the input \code{graph} with 
 #' extra attributes: GO labels in \code{V(graph)$GO}, and 
 #' semantic similarities in \code{V(graph)$GO.simil} if 
 #' \code{GOterm != NULL}
 #' 
-#' 
-#' @describeIn generateResultsGraph add GO semantic similarity attribute 
-#' to the graph generated from \code{generateResultsGraph}
+#' @rdname export-funs
 #' 
 #' @import igraph
 #' @import plyr

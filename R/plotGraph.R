@@ -43,7 +43,7 @@ mytriangle <- function(coords, v=NULL, params) {
 
 
 #' @details
-#' Function \code{\link[FELLA]{plotGraph}} 
+#' Function \code{plotGraph} 
 #' plots a solution graph from the diffusion and pagerank analysis. 
 #' For plotting hypergeom results, please use \code{plot} instead. 
 #' Specific colors and shapes for each KEGG category are used: 
@@ -52,23 +52,23 @@ mytriangle <- function(coords, v=NULL, params) {
 #' If the graph contains the similarity to a GO term, enzymes will 
 #' be displayed as triangles whose color depicts the strength of 
 #' such measure (yellow: weak, purple: strong). 
-#' At the moment, \code{\link[FELLA]{plotGraph}} allows plotting 
+#' At the moment, \code{plotGraph} allows plotting 
 #' throug the static \code{\link[igraph]{plot.igraph}} and the 
 #' interactive \code{\link[igraph]{tkplot}}. 
 #'
 #' @inheritParams .params
-#' @param graph.layout Two-column numeric matrix, if this argument is not null 
+#' @param graph.layout Two-column numeric matrix, 
+#' if this argument is not null 
 #' then it is used as graph layout
 #' @param plotLegend Logical, should the legend be plotted as well?
-#' @param plot.fun Character, can be either \code{plot.igraph} or \code{tkplot}
+#' @param plot.fun Character, can be either 
+#' \code{plot.igraph} or \code{tkplot}
 #' 
-#' @return \code{\link[FELLA]{plotGraph}} returns 
+#' @return \code{plotGraph} returns 
 #' \code{invisible()} if \code{layout = F} and 
 #' the plotting layout as a data.frame otherwise.
 #' 
-#' 
-#' @describeIn generateResultsGraph plot a 
-#' graph generated from \code{generateResultsGraph}
+#' @rdname export-funs
 #' 
 #' @import igraph
 #' @export

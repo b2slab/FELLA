@@ -52,7 +52,7 @@ if the approximation \code{approx = "t"} is used}
 
 \item{dampingFactor}{Numeric value between 0 and 1 (none inclusive), 
 damping factor \code{d} for 
-PageRank (\code{\link[igraph]{page_rank}})}
+PageRank (\code{\link[igraph:page_rank]{page.rank}})}
 
 \item{layout}{Logical, should the plot be returned as a layout?}
 

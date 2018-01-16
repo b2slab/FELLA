@@ -15,23 +15,25 @@
 #' Results are available in network and tabular format. 
 #' 
 #' \code{FELLA} is equipped with a simple graphical interface 
-#' for the lay user, deployed through \link[FELLA]{launchApp}.
+#' for the lay user, deployed through \link{launchApp}.
 #' 
 #' \code{FELLA} relies mainly on the following packages: 
 #' KEGGREST for the queries 
 #' to the KEGG server [Tenenbaum, 2013], 
-#' \link[igraph]{igraph} for the network support [Csardi, 2006] and 
-#' \link[shiny]{shiny} for the graphical user interface [Chang, 2017].
+#' \link[igraph:igraph-package]{igraph} for the 
+#' network support [Csardi, 2006] and 
+#' \link[shiny:shiny-package]{shiny} for the 
+#' graphical user interface [Chang, 2017].
 #' 
 #' @examples 
 #' ## Walkthrough
 #' browseVignettes("FELLA")
-#' ## Create database
+#' ## I: create database
 #' ?buildGraphFromKEGGREST
-#' ## Enrich data
+#' ## II: enrich data
 #' ?enrich
-#' ## Export results
-#' ?generateResultsGraph
+#' ## III: export results
+#' ?exportResults
 #' 
 #' @references 
 #' Methodology:

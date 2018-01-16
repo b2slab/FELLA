@@ -3,8 +3,8 @@
 #' @details
 #' Function \code{runDiffusion} performs 
 #' the diffusion-based enrichment on a 
-#' \code{\link[FELLA]{FELLA.USER}} object with mapped metabolites 
-#' and a \code{\link[FELLA]{FELLA.DATA}} object [Picart-Armada, 2017]. 
+#' \code{\link{FELLA.USER}} object with mapped metabolites 
+#' and a \code{\link{FELLA.DATA}} object [Picart-Armada, 2017]. 
 #' If a custom background was specified, it will be used. 
 #' The idea behind the heat diffusion is the usage of the 
 #' finite difference formulation of the heat equation to 
@@ -57,18 +57,14 @@
 #' This will probably include some input metabolites and 
 #' also reactions, enzymes, modules and pathways. 
 #' Other metabolites can be suggested as well. 
-#' 
-#' 
-#' 
-# ' @template approxTemplate
 #'
 #' @inheritParams .params
 #'
 #' @return \code{runDiffusion} returns a 
-#' \code{\link[FELLA]{FELLA.USER}} object 
+#' \code{\link{FELLA.USER}} object 
 #' updated with the diffusion enrichment results
 #' 
-#' @describeIn enrich prioritise nodes through heat diffusion
+#' @rdname enrich-funs 
 #' 
 #' @importFrom stats ecdf pnorm pgamma pt
 #' @import Matrix

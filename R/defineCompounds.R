@@ -1,13 +1,13 @@
 #' @description 
 #' Function \code{defineCompounds} creates a 
-#' \code{\link[FELLA]{FELLA.USER}} object from a list of 
-#' compounds and a \code{\link[FELLA]{FELLA.DATA}} object.
+#' \code{\link{FELLA.USER}} object from a list of 
+#' compounds and a \code{\link{FELLA.DATA}} object.
 #' 
 #' @details
 #' Function \code{defineCompounds} maps the 
 #' specficied list of KEGG compounds [Kanehisa, 2017], usually from an 
 #' experimental metabolomics study, to the graph contained in the
-#' \code{\link[FELLA]{FELLA.DATA}} object. 
+#' \code{\link{FELLA.DATA}} object. 
 #' Importantly, the names must be KEGG ids, so other formats 
 #' (common names, HMDB ids, etc) must be mapped to KEGG first. 
 #' For example, through the "Compound ID Conversion" 
@@ -16,16 +16,17 @@
 #' list of KEGG compound ids, which should be more extensive than 
 #' the list of input metabolites. 
 #' Once the compounds are mapped, the enrichment 
-#' can be performed through \code{\link[FELLA]{runHypergeom}}, 
-#' \code{\link[FELLA]{runDiffusion}} and \code{\link[FELLA]{runPagerank}}.
+#' can be performed through \code{runHypergeom}, 
+#' \code{runDiffusion} and \code{runPagerank}.
 #'
 #' @inheritParams .params
 #'
 #' @return \code{defineCompounds} returns 
-#' the \code{\link[FELLA]{FELLA.USER}} object 
+#' the \code{\link{FELLA.USER}} object 
 #' with the mapped metabolites, ready to be enriched.
 #' 
-#' @describeIn enrich map the metabolites to the knowledge model
+#' @name enrich-funs
+#' @rdname enrich-funs 
 #' 
 #' @export
 defineCompounds <- function(

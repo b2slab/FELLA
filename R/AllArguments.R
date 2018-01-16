@@ -37,7 +37,8 @@
 #' for Monte Carlo ("simulation"), 
 #' must be a numeric value between 1e2 and 1e5
 #' @param layout Logical, should the plot be returned as a layout?
-#' @param graph An \code{\link[igraph]{igraph}} object, typically a small one, 
+#' @param graph An \code{\link[igraph:igraph-package]{igraph}} object, 
+#' typically a small one, 
 #' coming from an enrichment through \code{"diffusion"} or \code{"pagerank"}.
 #' @param GOterm Character, GO entry to draw 
 #' semantic similarity in the solution graph. 
@@ -59,7 +60,7 @@
 #' \code{\link[stats]{p.adjust}} method
 #' @param dampingFactor Numeric value between 0 and 1 (none inclusive), 
 #' damping factor \code{d} for 
-#' PageRank (\code{\link[igraph]{page_rank}})
+#' PageRank (\code{\link[igraph:page_rank]{page.rank}})
 #' @param t.df Numeric value; number of degrees of freedom 
 #' of the t distribution 
 #' if the approximation \code{approx = "t"} is used

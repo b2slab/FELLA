@@ -1,28 +1,69 @@
-#' Export the enrichment results in several file formats
+#' @include generateResultsGraph.R
 #' 
-#' Function \code{exportResults} writes the enrichment results in a 
-#' proper layout and filetype. 
-#' It can be a plot image (png), a table (csv), 
-#' an \code{\link[igraph]{igraph}} object 
-#' or a pdf report [under construction]
+#' @title Generate and manipulate tables and sub-networks from an enrichment
 #' 
-#' @param format Character, one of: \code{"csv"}, \code{"igraph"} 
-#' or supported igraph formats, see \code{\link[igraph]{write.graph}}
-#' @param file Character specifying the output 
-#' directory for the exported files
+#' @description 
+#' Function \code{exportResults} 
+#' is a wrapper around \code{generateResultsTable}, 
+#' \code{generateEnzymesTable} and \code{generateResultsGraph} 
+#' to write the results to files.
+#' 
+#' @details
+#' Function \code{exportResults} writes the enrichment results 
+#' as the specified filetype.
+#' Options are: a csv table (\code{"csv"}), 
+#' an enzyme csv table (\code{"enzyme"}) 
+#' an \code{\link[igraph:igraph-package]{igraph}} 
+#' object as an \code{RData} file, 
+#' or any format supported by igraph's 
+#' \code{\link[igraph]{write.graph}}.
+#' 
+#' @param format Character, one of: \code{"csv"} for regular 
+#' results table, \code{"enzyme"} for table with enzyme data, 
+#' \code{"igraph"} for igraph format. 
+#' Alternatively, any format supported by igraph, 
+#' see \code{\link[igraph]{write.graph}}
+#' @param file Character specifying the output file name
+#' @param ... Optional arguments for the plotting function 
+#' in \code{plotGraph}. Arguments passed to the exporting function 
+#' in \code{exportResults}. Ignored otherwise.
 #' @inheritParams .params
-#' @param ... Developer parameter, currently ignored
 #'
-#' @return Return value is \code{invisible()}, 
-#' but as a permanent action the 
-#' specified \code{file} is created.
+#' @return \code{exportResults} returns \code{invisible()}, 
+#' but as a side effect the specified \code{file} is created.
+#' 
+#' @rdname export-funs
+#' 
+#' @template refs_gene_ontology
 #' 
 #' @examples 
+#' ## First generate a toy enrichment
+#' library(igraph)
 #' data(FELLA.sample)
 #' data(input.sample)
+#' ## Enrich input
 #' obj <- enrich(
 #' compounds = input.sample, 
 #' data = FELLA.sample)
+#' 
+#' ######################
+#' ## Results table
+#' tab.res <- generateResultsTable(
+#' method = "hypergeom",
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' head(tab.res)
+#' 
+#' tab.res <- generateResultsTable(
+#' method = "diffusion",
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' head(tab.res)
+#' 
+#' ######################
+#' ## Use wrapper to write the table to a file
 #' out.file <- tempfile()
 #' exportResults(
 #' format = "csv", 
@@ -30,8 +71,47 @@
 #' file = out.file, 
 #' object = obj, 
 #' data = FELLA.sample)
-#' df <- read.csv(out.file)
-#' head(df)
+#' tab.wrap <- read.csv(out.file)
+#' head(tab.wrap)
+#' 
+#' ######################
+#' ## Enzymes table
+#' tab.ec <- generateEnzymesTable(
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample, 
+#' mart.options = NULL)
+#' head(tab.ec)
+#' 
+#' ######################
+#' ## Generate graph
+#' g.res <- generateResultsGraph(
+#' method = "pagerank", 
+#' threshold = 0.1, 
+#' object = obj, 
+#' data = FELLA.sample)
+#' g.res
+#' 
+#' ## Plot graph (without GO terms)
+#' plotGraph(g.res)
+#' 
+#' ## Add similarity to the GO CC term "mitochondrion"
+#' \dontrun{
+#' g.cc <- FELLA:::addGOToGraph(
+#' graph = g.res, 
+#' GOterm = "GO:0005739")
+#' 
+#' ## Plot graph (with GO terms)
+#' plotGraph(g.cc)
+#' 
+#' ## Without the CC
+#' any(V(g.res)$GO.simil >= 0)
+#' ## With the CC
+#' v.cc <- unlist(V(g.cc)$GO.simil)
+#' sum(v.cc >= 0, na.rm = TRUE)
+#' ## Similarity values
+#' table(v.cc)
+#' }
 #' 
 #' @import igraph
 #' @export

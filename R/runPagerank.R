@@ -3,8 +3,8 @@
 #' @details
 #' Function \code{runPagerank} performs the random walk 
 #' based enrichment on a 
-#' \code{\link[FELLA]{FELLA.USER}} object with mapped metabolites 
-#' and a \code{\link[FELLA]{FELLA.DATA}} object.
+#' \code{\link{FELLA.USER}} object with mapped metabolites 
+#' and a \code{\link{FELLA.DATA}} object.
 #' If a custom background was specified, it will be used. 
 #' PageRank was originally conceived as a scoring system for websites 
 #' [Page, 1999]. 
@@ -20,7 +20,7 @@
 #' \code{dampingFactor} or to restart it with probability 
 #' \code{1 - dampingFactor}. 
 #' In the original publication, \code{dampingFactor = 0.85}, 
-#' which is the value used in \code{\link[FELLA]{FELLA}} by default. 
+#' which is the value used in \code{FELLA} by default. 
 #' If he or she continues, an edge is picked from the outgoing edges 
 #' in the current node with a probability proportional to its weight. 
 #' If he or she restarts it, a node is uniformly picked from the 
@@ -28,7 +28,7 @@
 #' The "personalised PageRank" variant allows a user-defined 
 #' distribution as the source of new random walks. 
 #' The R package \code{igraph} contains such variant in its 
-#' \code{\link[igraph]{page.rank}} function [Csardi, 2006].
+#' \code{\link[igraph:page_rank]{page.rank}} function [Csardi, 2006].
 #' 
 #' As described in the supplement S3 from [Picart-Armada, 2017], 
 #' the PageRank \code{PR} can be computed as 
@@ -76,7 +76,7 @@
 #' \code{\link[FELLA]{FELLA.USER}} object 
 #' updated with the PageRank enrichment results
 #' 
-#' @describeIn enrich prioritise nodes through PageRank
+#' @rdname enrich-funs
 #' 
 #' @importFrom stats ecdf pnorm pgamma pt
 #' @import Matrix
