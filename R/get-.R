@@ -110,7 +110,7 @@ getExcluded <- function(object) {
 #'
 #' @inheritParams .params
 #'
-#' @return KEGG graph as an \link[igraph:igraph-package]{igraph} object
+#' @return KEGG graph as an \pkg{igraph} object
 #' @examples 
 #' ## This function is internal
 #' attach(environment(FELLA:::getGraph))

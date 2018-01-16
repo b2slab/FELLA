@@ -144,7 +144,7 @@ largestcc <- function(graph) {
 #' the overview metabolic pathway in any species
 #' 
 #' @return \code{buildGraphFromKEGGREST} returns the 
-#' curated KEGG graph (class \code{\link[igraph:igraph-package]{igraph}})
+#' curated KEGG graph (class \pkg{igraph})
 #' 
 #' @name data-funs
 #' @rdname data-funs

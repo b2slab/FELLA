@@ -80,11 +80,11 @@ while the ones exceeding it (because they are too small) are discarded.}
 results table, \code{"enzyme"} for table with enzyme data, 
 \code{"igraph"} for igraph format. 
 Alternatively, any format supported by igraph, 
-see \code{\link[igraph]{write.graph}}}
+see \code{\link[igraph]{write_graph}}}
 
 \item{file}{Character specifying the output file name}
 
-\item{graph}{An \code{\link[igraph:igraph-package]{igraph}} object, 
+\item{graph}{An \pkg{igraph} object, 
 typically a small one, 
 coming from an enrichment through \code{"diffusion"} or \code{"pagerank"}.}
 
@@ -119,7 +119,7 @@ data.frame that contains the enzymes below the \code{p.score} threshold,
 along with their genes and GO labels
 
 \code{generateResultsGraph} returns 
-an \code{\link[igraph:igraph-package]{igraph}} 
+an \pkg{igraph}
 object: a sub-network from the whole 
 KEGG knowledge model under the specified thresholds 
 (\code{threshold} and \code{thresholdConnectedComponent})
@@ -128,7 +128,7 @@ KEGG knowledge model under the specified thresholds
 but as a side effect the specified \code{file} is created.
 
 \code{addGOToGraph} returns 
-an \code{\link[igraph:igraph-package]{igraph}} object, 
+an \pkg{igraph} object, 
 which is the input \code{graph} with 
 extra attributes: GO labels in \code{V(graph)$GO}, and 
 semantic similarities in \code{V(graph)$GO.simil} if 
@@ -179,7 +179,7 @@ and (3) GO labels of such enzymes, if \code{mart.options} is
 not \code{NULL} and points to the right database.
 
 Function \code{generateResultsGraph} returns an 
-\code{\link[igraph:igraph-package]{igraph}} 
+\pkg{igraph} 
 object with a relevant sub-network 
 for manual examination. 
 A \code{\link{FELLA.USER}} 
@@ -211,14 +211,14 @@ Function \code{exportResults} writes the enrichment results
 as the specified filetype.
 Options are: a csv table (\code{"csv"}), 
 an enzyme csv table (\code{"enzyme"}) 
-an \code{\link[igraph:igraph-package]{igraph}} 
+an \pkg{igraph}
 object as an \code{RData} file, 
 or any format supported by igraph's 
-\code{\link[igraph]{write.graph}}.
+\code{\link[igraph]{write_graph}}.
 
 Function \code{addGOToGraph} takes and returns 
 a graph object with class 
-\code{\link[igraph:igraph-package]{igraph}} 
+\pkg{igraph} 
 adding the following attributes: 
 GO labels in \code{V(graph)$GO}, and 
 semantic similarities in \code{V(graph)$GO.simil} if 
@@ -232,7 +232,7 @@ reported with a low \code{p.score}
 are closest to a particular GO term. 
 To assess similarity between GO labels, FELLA uses the 
 semantic similarity defined in [Yu, 2010] and their implementation 
-in the \code{\link[GOSemSim:GOSemSim-package]{GOSemSim}} R package. 
+in the \pkg{GOSemSim} R package. 
 The user will obtain, for each enzymatic family, the closest GO 
 term to his or her GO query and the semantic similarity between them. 
 Exact matches have a similarity of \code{1}. 

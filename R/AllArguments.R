@@ -37,7 +37,7 @@
 #' for Monte Carlo ("simulation"), 
 #' must be a numeric value between 1e2 and 1e5
 #' @param layout Logical, should the plot be returned as a layout?
-#' @param graph An \code{\link[igraph:igraph-package]{igraph}} object, 
+#' @param graph An \pkg{igraph} object, 
 #' typically a small one, 
 #' coming from an enrichment through \code{"diffusion"} or \code{"pagerank"}.
 #' @param GOterm Character, GO entry to draw 

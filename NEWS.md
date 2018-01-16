@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.99.2
+
+* Fixed more doc links
+
 ### Version 0.99.1
 
 * Fixed doc links (hopefully)

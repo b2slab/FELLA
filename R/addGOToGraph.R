@@ -3,7 +3,7 @@
 #' @details
 #' Function \code{addGOToGraph} takes and returns 
 #' a graph object with class 
-#' \code{\link[igraph:igraph-package]{igraph}} 
+#' \pkg{igraph} 
 #' adding the following attributes: 
 #' GO labels in \code{V(graph)$GO}, and 
 #' semantic similarities in \code{V(graph)$GO.simil} if 
@@ -17,7 +17,7 @@
 #' are closest to a particular GO term. 
 #' To assess similarity between GO labels, FELLA uses the 
 #' semantic similarity defined in [Yu, 2010] and their implementation 
-#' in the \code{\link[GOSemSim:GOSemSim-package]{GOSemSim}} R package. 
+#' in the \pkg{GOSemSim} R package. 
 #' The user will obtain, for each enzymatic family, the closest GO 
 #' term to his or her GO query and the semantic similarity between them. 
 #' Exact matches have a similarity of \code{1}. 
@@ -28,7 +28,7 @@
 #' @inheritParams .params
 #'
 #' @return \code{addGOToGraph} returns 
-#' an \code{\link[igraph:igraph-package]{igraph}} object, 
+#' an \pkg{igraph} object, 
 #' which is the input \code{graph} with 
 #' extra attributes: GO labels in \code{V(graph)$GO}, and 
 #' semantic similarities in \code{V(graph)$GO.simil} if 

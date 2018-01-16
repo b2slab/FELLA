@@ -13,16 +13,16 @@
 #' as the specified filetype.
 #' Options are: a csv table (\code{"csv"}), 
 #' an enzyme csv table (\code{"enzyme"}) 
-#' an \code{\link[igraph:igraph-package]{igraph}} 
+#' an \pkg{igraph}
 #' object as an \code{RData} file, 
 #' or any format supported by igraph's 
-#' \code{\link[igraph]{write.graph}}.
+#' \code{\link[igraph]{write_graph}}.
 #' 
 #' @param format Character, one of: \code{"csv"} for regular 
 #' results table, \code{"enzyme"} for table with enzyme data, 
 #' \code{"igraph"} for igraph format. 
 #' Alternatively, any format supported by igraph, 
-#' see \code{\link[igraph]{write.graph}}
+#' see \code{\link[igraph]{write_graph}}
 #' @param file Character specifying the output file name
 #' @param ... Optional arguments for the plotting function 
 #' in \code{plotGraph}. Arguments passed to the exporting function 

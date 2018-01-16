@@ -11,7 +11,7 @@
 #' 
 #' @details
 #' Function \code{generateResultsGraph} returns an 
-#' \code{\link[igraph:igraph-package]{igraph}} 
+#' \pkg{igraph} 
 #' object with a relevant sub-network 
 #' for manual examination. 
 #' A \code{\link{FELLA.USER}} 
@@ -42,7 +42,7 @@
 #' @inheritParams .params
 #'
 #' @return \code{generateResultsGraph} returns 
-#' an \code{\link[igraph:igraph-package]{igraph}} 
+#' an \pkg{igraph}
 #' object: a sub-network from the whole 
 #' KEGG knowledge model under the specified thresholds 
 #' (\code{threshold} and \code{thresholdConnectedComponent})
