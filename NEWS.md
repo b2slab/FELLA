@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.99.3
+
+* Version bump (biomaRt down?)
+
 ### Version 0.99.2
 
 * Fixed more doc links
