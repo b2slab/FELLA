@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.99.4
+
+* Enhanced shiny app: now has the experimental custom background
+
 ### Version 0.99.3
 
 * Version bump (biomaRt down?)

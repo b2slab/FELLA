@@ -51,18 +51,37 @@ shinyServer(function(input, output, session) {
         if (is.null(read.comp)) {
           return(NULL)
         }
-      }
-      else {
+      } else {
         message("No compounds uploaded yet.")
         return(NULL)
       }
     }
+    # Background
+    if (!is.null(input$fileBkgd)) {
+      read.filebkgd <- read.table(
+        input$fileBkgd$datapath, 
+        header = FALSE, 
+        stringsAsFactors = FALSE)
+      read.bkgd <- as.character(read.filebkgd[, 1])
+      read.bkgd <- read.bkgd[complete.cases(read.bkgd)]
+      # If this is null, fine (no file uploaded)
+      # b
+      # ecause by default all the compounds will be used 
+      # if null
+    } else {
+      read.bkgd <- NULL
+    }
+    
     data <- FELLA.DATA()
     if (is.null(data)) return(NULL)
+    if (length(read.bkgd) & !length(intersect(read.bkgd, read.comp))) {
+      return(NULL)
+    }
     
     withProgress(message = "Running enrichment", value = .5, {
       result <- enrich(
         compounds = read.comp, 
+        compoundsBackground = read.bkgd,
         method = input$method, 
         approx =input$approx, 
         niter = input$niter, 

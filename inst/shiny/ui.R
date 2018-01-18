@@ -60,7 +60,9 @@ shinyUI(fluidPage(
               selected = 1),
             
             fileInput("file", label = ""),
-            
+            fileInput("fileBkgd", 
+                      label = "Optional: upload custom compounds as 
+                      the background"),
             br(), 
             h2("Example file"), 
             h5("Here is a sample of the format understood by FELLA.
