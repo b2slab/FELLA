@@ -2,6 +2,10 @@
 
 ---
 
+### Version 0.99.5
+
+* Depends on R 3.4 (otherwise this is not usable at the moment)
+
 ### Version 0.99.4
 
 * Enhanced shiny app: now has the experimental custom background
