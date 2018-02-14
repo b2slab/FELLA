@@ -11,6 +11,57 @@
 BiocStyle::latex()
 @
 
+<<0a_exporting_helper, echo=FALSE, eval=TRUE>>=
+# If you want to generate the supplementary files, 
+# do not knit the vignette but run all its chunks in Rstudio
+# 
+# All the chunks related to the supplement start with 0a_*
+# They can be left as eval=FALSE without affecting the main vignette 
+# 
+# This function exports the results to report them as supplementary files
+export_for_supplementary <- function(
+    dir.out, # folder to save files
+    prefix, # dataset prefix
+    fella.user, fella.data, nlimit, # arguments for FELLA
+    ...) {
+    
+    # Make sure the out dir exists
+    dir.create(dir.out)
+    
+    # Export input
+    file_names <- paste0(dir.out, "/", prefix, "_input.csv")
+    df_names <- getInput(fella.user) %>%
+        getName(data = fella.data) %>% 
+        plyr::ldply(function(x) data.frame(
+            Names = paste(x, collapse = ",")), .id = "KEGG id")
+    utils::write.csv(df_names, file = file_names, row.names = FALSE)
+    
+    # Export table
+    file_results <- paste0(dir.out, "/", prefix, "_subgraph.csv") 
+    exportResults(
+        format = "csv", 
+        file = file_results, 
+        object = fella.user, 
+        data = fella.data, 
+        nlimit = nlimit, 
+        ...
+    )
+    
+    # Export plot
+    file_graph <- paste0(dir.out, "/", prefix, "_subgraph.pdf") 
+    plot_title <- paste0("Nodes reported in the '", prefix, "' dataset ")
+    plot_sub <- paste0("Node limit: ", nlimit)
+    grDevices::pdf(file_graph, width = 7, height = 7)
+    plot(
+        fella.user, 
+        data = fella.data, 
+        nlimit = nlimit, 
+        ...)
+    graphics::title(main = plot_title, sub = plot_sub)
+    grDevices::dev.off()
+}
+@
+
 \usepackage{dsfont}
 \usepackage{booktabs}
 \usepackage{fixltx2e} %subscripts
@@ -798,6 +849,18 @@ plot(
     vertex.label.cex = vertex.label.cex)
 @
 
+<<0a_03_export_supplementary, echo=FALSE, eval=TRUE>>=
+export_for_supplementary(
+    dir.out = "suppl", 
+    prefix = "epithelial", 
+    fella.user = analysis.epithelial, 
+    fella.data = fella.data, 
+    method = "diffusion", 
+    nlimit = nlimit, 
+    vertex.label.cex = vertex.label.cex
+)
+@
+
 In the original work \cite{epithelial}, the activation of 
 the \textbf{glycerophosphocholine synthesis} rather than 
 the \textbf{carnitine} response is a main result. 
@@ -1076,13 +1139,26 @@ analysis.ovarian <- enrich(
     data = fella.data, 
     methods = "diffusion")
 
+nlimit <- 150
 plot(
     analysis.ovarian, 
     method = "diffusion", 
     data = fella.data, 
-    nlimit = 150, 
+    nlimit = nlimit, 
     vertex.label.cex = vertex.label.cex, 
     plotLegend = FALSE)
+@
+
+<<0a_05_export_supplementary, echo=FALSE, eval=TRUE>>=
+export_for_supplementary(
+    dir.out = "suppl", 
+    prefix = "ovarian", 
+    fella.user = analysis.ovarian, 
+    fella.data = fella.data, 
+    method = "diffusion", 
+    nlimit = nlimit, 
+    vertex.label.cex = vertex.label.cex
+)
 @
 
 The resulting subnetwork\warnkegg~reports several 
@@ -1125,13 +1201,26 @@ analysis.malaria <- enrich(
     data = fella.data, 
     methods = "diffusion")
 
+nlimit <- 50
 plot(
     analysis.malaria, 
     method = "diffusion", 
     data = fella.data, 
-    nlimit = 50, 
+    nlimit = nlimit, 
     vertex.label.cex = vertex.label.cex, 
     plotLegend = FALSE)
+@
+
+<<0a_06_export_supplementary, echo=FALSE, eval=TRUE>>=
+export_for_supplementary(
+    dir.out = "suppl", 
+    prefix = "malaria", 
+    fella.user = analysis.malaria, 
+    fella.data = fella.data, 
+    method = "diffusion", 
+    nlimit = nlimit, 
+    vertex.label.cex = vertex.label.cex
+)
 @
 
 In this case, the depicted subnetwork\warnkegg~contains 
@@ -1157,6 +1246,47 @@ are related to three input metabolites each
 and might be candidates for further examination. 
 
 \section{Conclusions}
+
+<<0a_check_validation, echo=FALSE, eval=TRUE>>=
+# Number of metabolites per study
+list_datasets <- c("epithelial", "ovarian", "malaria")
+df_metabolites <- plyr::ldply(
+    list_datasets, function(dataset) {
+        input <- get(paste0("compounds.", dataset))
+        mapped <- getInput(get(paste0("analysis.", dataset)))
+        
+        data.frame(
+            dataset = dataset, 
+            n_input = length(input), 
+            n_mapped = length(mapped)
+        )
+    }
+)
+write.csv(
+    df_metabolites, file = "suppl/descriptive_input.csv", row.names = FALSE)
+
+# See if all the entities mentioned in the vignette apear in their solutions
+df_val <- utils::read.csv("vignettes/validation.csv")
+
+df_test <- plyr::ddply(
+    df_val, "dataset", function(df_db) {
+        dataset <- as.character(df_db$dataset[1])
+        df_tmp <- utils::read.csv(paste0("suppl/", dataset, "_subgraph.csv"))
+        df_db$in_solution <- df_db$KEGG.id %in% df_tmp$KEGG.id
+        df_db
+    }
+)
+utils::write.csv(
+    df_test, file = "suppl/descriptive_hits.csv", row.names = FALSE)
+
+# Write session info for supplement as well
+writeLines(capture.output(sessionInfo()), con = "suppl/info_session.txt")
+writeLines(getInfo(fella.data), con = "suppl/info_kegg.txt")
+
+# Zip the files
+utils::zip(zipfile = "suppl.zip", files = "suppl")
+# unlink("suppl", recursive = TRUE)
+@
 
 The \fella~R package provides a simple, programmatic 
 and intuitive enrichment tool for metabolomics summary data.
