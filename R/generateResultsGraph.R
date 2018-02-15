@@ -84,7 +84,7 @@ generateResultsGraph <- function(
     valid <- getValid(object, method)
     if (is.na(valid) || !valid) {
         warning(
-            paste0("Method ", method, " has not been executed yet. "), 
+            "Method ", method, " has not been executed yet. ", 
             "Returning NULL...")
         return(invisible())
     } 

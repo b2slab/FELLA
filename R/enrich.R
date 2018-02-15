@@ -143,7 +143,7 @@ enrich <- function(
     
     # Check if data is loaded
     returnList <- FALSE
-    if (class(data) != "FELLA.DATA") {
+    if (!is.FELLA.DATA(data)) {
         message(
             "No data object supplied. ", 
             "Loading it from the 'databaseDir' argument...")

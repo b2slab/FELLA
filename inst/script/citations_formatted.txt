@@ -1,0 +1,133 @@
+% KEGG [Kanehisa, 2017]
+
+Kanehisa, M., Furumichi, M., Tanabe, 
+M., Sato, Y., & Morishima, K. (2017). 
+KEGG: new perspectives on genomes, pathways, diseases and drugs. 
+Nucleic acids research, 45(D1), D353-D361.
+
+% MetScape 2 [Karnovsky, 2011]
+
+Karnovsky, A., Weymouth, T., Hull, T., Tarcea, V. G., 
+Scardoni, G., Laudanna, C., ... & Athey, B. (2011). 
+Metscape 2 bioinformatics tool for the analysis 
+and visualization of metabolomics and gene expression data. 
+Bioinformatics, 28(3), 373-380.
+
+%%%%%
+
+% GO [Gene Ontology Consortium, 2015]
+
+Gene Ontology Consortium. (2015). 
+Gene ontology consortium: going forward. 
+Nucleic acids research, 43(D1), D1049-D1056.
+
+% GOSemSim [Yu, 2010]
+
+Yu, G., Li, F., Qin, Y., Bo, X., Wu, Y., & Wang, S. (2010). 
+GOSemSim: an R package for measuring semantic similarity 
+among GO terms and gene products. Bioinformatics, 26(7), 976-978.
+
+%%%%%
+
+% metabopicart [Picart-Armada, 2017]
+
+Picart-Armada, S., Fernandez-Albert, F., Vinaixa, 
+M., Rodriguez, M. A., Aivio, S., Stracker, 
+T. H., Yanes, O., & Perera-Lluna, A. (2017). 
+Null diffusion-based enrichment for metabolomics data. 
+PLOS ONE, 12(12), e0189012.
+
+%%%%%
+
+% MetaboAnalyst [Xia, 2015]
+
+Xia, J., Sinelnikov, I. V., Han, B., & Wishart, D. S. (2015). 
+MetaboAnalyst 3.0 - making metabolomics more meaningful. 
+Nucleic acids research, 43(W1), W251-W257.
+
+% IMPaLA [Kamburov, 2011]
+
+Kamburov, A., Cavill, R., Ebbels, T. M., Herwig, 
+R., & Keun, H. C. (2011). Integrated pathway-level analysis 
+of transcriptomics and metabolomics data with IMPaLA. 
+Bioinformatics, 27(20), 2917-2918.
+
+%%%%%
+
+% igraph [Csardi, 2006]
+
+Csardi, G., & Nepusz, T. (2006). The igraph software package 
+for complex network research. 
+InterJournal, Complex Systems, 1695(5), 1-9.
+
+% KEGGREST [Tenenbaum, 2013]
+
+Tenenbaum, D. (2013). KEGGREST: Client-side REST access 
+to KEGG. R package version, 1(1).
+
+% shiny [Chang, 2017]
+
+Chang, W., Cheng, J., Allaire, JJ., 
+Xie, Y., & McPherson, J. (2017).
+shiny: Web Application Framework for R. R package version 1.0.5.
+https://CRAN.R-project.org/package=shiny
+
+%%%%%
+
+% fisher's exact test [Fisher, 1935]
+
+Fisher, R. A. (1935). The logic of inductive inference. 
+Journal of the Royal Statistical Society, 98(1), 39-82.
+
+% diffusion - hotnet [Vandin, 2011]
+
+Vandin, F., Upfal, E., & Raphael, B. J. (2011). 
+Algorithms for detecting significantly mutated pathways 
+in cancer. Journal of Computational Biology, 18(3), 507-522.
+
+% PageRank [Page, 1999]
+
+Page, L., Brin, S., Motwani, R., & Winograd, T. (1999). 
+The PageRank citation ranking: Bringing order to the web. 
+Stanford InfoLab.
+
+% Bonals [Bonals, 2012]
+
+Bonals, L. (2012). Transferencia de calor Apunts de classe.
+
+%%%%%
+
+% Empirical p [North, 2002]
+
+North, B. V., Curtis, D., & Sham, P. C. (2002). 
+A note on the calculation of empirical P values 
+from Monte Carlo procedures. 
+American journal of human genetics, 71(2), 439.
+
+%%%%%
+
+% Dataset 1: [Chen, 2015]
+
+Chen, L., Li, J., Guo, T., Ghosh, S., Koh, S. K., 
+Tian, D., ... & Chan, E. C. Y. (2015). 
+Global metabonomic and proteomic analysis of 
+human conjunctival epithelial cells (IOBA-NHC) 
+in response to hyperosmotic stress. 
+Journal of proteome research, 14(9), 3982-3995.
+
+% Dataset 2: [Vermeersch, 2014]
+
+Vermeersch, K. A., Wang, L., McDonald, J. F., 
+& Styczynski, M. P. (2014). 
+Distinct metabolic responses of an ovarian cancer stem cell line. 
+BMC systems biology, 8(1), 134.
+
+% Dataset 3: [Decuypere, 2016]
+
+Decuypere, S., Maltha, J., Deborggraeve, S., Rattray, N. J., 
+Issa, G., Berenger, K., ... & Goodacre, R. (2016). 
+Towards Improving Point-of-Care Diagnosis of 
+Non-malaria Febrile Illness: A Metabolomics Approach. 
+PLoS neglected tropical diseases, 10(3), e0004480.
+
+%%%%%

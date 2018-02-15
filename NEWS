@@ -1,10 +1,528 @@
-CHANGES IN VERSION 1.0.0
+CHANGES IN VERSION 0.99.4
 ------------------------
 
-    o Three methodologies are available: 
-      'hypergeom', 'diffusion' and 'pagerank'
-      
-    o Quickstart vignette shows how to define the compounds in the input, 
-      run the analysis, plot and export the results
+    o Moved contents of `NEWS.md` to NEWS
+    
+    o Deleted most of `data-raw` folder, moved the rest to `inst/script`
+    
+    o Removed redundant `Authors` field in DESCRIPTION
+    
+    o Removed `class(data) != "FELLA.DATA"` by using built-in 
+      `is.FELLA.DATA`
 
-    o A shiny app is included to facilitate the analysis
+CHANGES IN VERSION 0.99.3
+------------------------
+
+    o Version bump (biomaRt down?)
+
+CHANGES IN VERSION 0.99.2
+------------------------
+
+    o Fixed more doc links
+
+CHANGES IN VERSION 0.99.1
+------------------------
+
+    o Fixed doc links (hopefully)
+    
+    o Updated funding in vignette
+    
+    o Travis will only test the devel branch
+
+CHANGES IN VERSION 0.99.0
+------------------------
+
+    o Submission to Bioconductor
+
+CHANGES IN VERSION 0.5.14
+------------------------
+
+    o Small bugs
+
+CHANGES IN VERSION 0.5.13
+------------------------
+
+    o Small bug fixes
+
+CHANGES IN VERSION 0.5.12
+------------------------
+
+    o Small bug fixes
+
+CHANGES IN VERSION 0.5.11
+------------------------ 
+
+    o Fixed calls to `sapply` and `1:n`
+
+CHANGES IN VERSION 0.5.10
+------------------------
+
+    o Adding GO CC is now in `dontrun`, takes too long (12s)
+
+CHANGES IN VERSION 0.5.9
+------------------------
+
+    o Fixed vignette: converted pdf images to eps and added them 
+
+CHANGES IN VERSION 0.5.8
+------------------------
+
+    o Removed `broser()` calls
+    
+    o Removed some commented code
+    
+    o Expanded doc on `launchApp`
+    
+    o Removed the old gone report functionality in the app 
+      (might bring it back eventually)
+      
+    o Added captures of the graphical interface to the main vignette
+
+CHANGES IN VERSION 0.5.7
+------------------------
+
+    o Slight changes in vignette (affiliations)
+    
+    o Fixed `generateEnzymesTable`: now it can also add the 
+      GO terms inside each enzyme
+      
+    o Modified `addGOToGraph`: now it will add only the GO labels, 
+      without similarity score, provided that `GOterm = NULL`
+      
+    o Improved doc in result exports: `generateResultsTable`, 
+      `generateEnzymesTable`, `generateResultsGraph`, 
+      `addGOToGraph` and `plotGraph`.
+      - Merged all the doc
+      - Added references
+      - Expanded details
+
+CHANGES IN VERSION 0.5.6
+------------------------
+
+    o Improved doc in enrichment techniques: 
+      - Merged 5 functions: `defineCompounds`, `runHypergeom`, 
+        `runDiffusion`, `runPagerank`, `enrich`
+      - Expanded details: formulation, how to compute scores, 
+        null model
+      - Added references
+      - Centralised examples
+    
+    o References are now in template files
+
+CHANGES IN VERSION 0.5.5
+------------------------
+
+    o Improved doc in `FELLA.DATA` object creation
+      - Fused 3 functions
+      - Added references
+      - Expanded details
+
+CHANGES IN VERSION 0.5.4
+------------------------
+
+    o Added progress bars to shiny app for:
+      - Loading database
+      - Enriching 
+      - Adding GO similarity
+      
+    o Added simple legend for GO similarity
+
+CHANGES IN VERSION 0.5.3
+------------------------
+
+    o Added `CITATION` file
+    
+    o Added some cites to doc
+
+CHANGES IN VERSION 0.5.2
+------------------------
+
+    o Shiny app
+      - Fixed bug: table not showing up
+      - Documentation has been improved
+      - Fixed bug: empty network led to error
+      - Now exporting a network takes into account 
+        `thresholdConnectedComponent` as well (it did not until now)
+      - Modified logo size and title
+
+CHANGES IN VERSION 0.5.1
+------------------------
+
+    o Small modifications on Travis and `is-.R`
+
+CHANGES IN VERSION 0.5.0
+------------------------
+
+    o Fixed bibliography in vignette
+    
+    o Fixed missing table in vignette
+    
+    o Changed mechanisms when handling existing directories. 
+      Now the writing is stopped instead of overwriting and the 
+      automatic names are more meaningful.
+      
+    o New naming convention for databases. 
+      Meaningful names with creation date, organism and KEGG version.
+      
+    o Updated unit testing and argument checking accordingly
+
+CHANGES IN VERSION 0.4.13
+------------------------
+
+    o Temporarily downgraded R dependency to version 4.3
+    
+    o Bug on the `biomaRt` query was actually due to their 
+      package being outdated. Updating fixed it. 
+      
+    o Small changes in functions (exports) to pass `check()`
+    
+    o Small fixes on Shiny App
+    
+    o Added vignette
+
+CHANGES IN VERSION 0.4.12
+------------------------
+
+    o Travis modification
+
+CHANGES IN VERSION 0.4.11
+------------------------
+
+    o Small changes on functions and DESCRIPTION
+
+CHANGES IN VERSION 0.4.10
+------------------------
+
+    o Trying Travis 
+
+CHANGES IN VERSION 0.4.9
+------------------------
+
+    o Small changes in plotting functions
+
+CHANGES IN VERSION 0.4.8
+------------------------
+
+    o Fixed the `FELLA.sample` file so that it contains the metadata
+    
+    o Added the `getInfo` function for getting the metabata, 
+      with corresponding unit testing
+      
+    o Fixed minor writing mistakes
+    
+    o `loadMatrix` can no longer be `"all"`
+    
+    o `AllArguments.R` now has `loadMatrix`, `databaseDir`, `internalDir`
+    
+    o Shiny app:
+      - Fixed the database error when no database is present
+      - Fixed table error when the graph was empty (e.g. hypergeom)
+      - Adding a GO term is now functional again. 
+        Added several biomaRt/GO options.
+      - GO term changes plot legend
+      - Changes in the UI (text, new widgets for GO term)
+      - GO example autofills all the new widgets
+
+CHANGES IN VERSION 0.4.7
+------------------------
+
+    o Improved vignette text and added Bioconductor style
+    
+    o Added `BiocStyle` as a dependency
+
+To do:
+
+    o General check of arguments and documentation
+    
+    o Quantitative input?
+    
+    o Elaborate on this vignette or build another one for publication
+
+CHANGES IN VERSION 0.4.6
+------------------------
+
+    o Removed the infamous `splitByCC` part (from `checkArguments`, 
+      the conditional on the `plot` method and from the vignette)
+      
+    o Now the option is to filter out small CCs but still work 
+      with a single graph (`thresholdConnectedComponent` still exists). 
+      Therefore, function `generateResultsGraph` can only return 
+      a graph, being more intuitive.
+
+CHANGES IN VERSION 0.4.5
+------------------------
+
+    o Modified size p-value computation. 
+      Now it is more efficient and consistent
+
+CHANGES IN VERSION 0.4.4
+------------------------
+
+    o Fused `checkArguments` into `AllArguments.R`
+    
+    o Deleted the generic `summary` as it is not necessary. 
+      Now the same can be achieved using `show` only, and this avoids 
+      method dispatch issues. 
+
+CHANGES IN VERSION 0.4.3
+------------------------
+
+    o Added the `summary` method for `FELLA.DATA` objects
+    
+    o Fixed some dependencies in methods
+    
+    o Separated `mytriangle` in function `plotGraph`
+    
+    o Renamed functions (`is-.R`, `plotLegend.R`)
+    
+    o Updated sample data documentation
+
+CHANGES IN VERSION 0.4.2
+------------------------
+
+    o Added doc template for the statistical normalisation
+    
+    o Removed p-values from table
+    
+    o Improved `generateResultsTable` function
+    
+    o Improved `runDiffusion` and `runPagerank` at the code level and 
+      avoided checking arguments
+
+CHANGES IN VERSION 0.4.1
+------------------------
+
+    o Added accessor to `status` and substituted all the calls
+    
+    o Addition of GO terms works
+
+CHANGES IN VERSION 0.4.0
+------------------------
+
+    o Removed some superfluous arguments: askplots, filename, BIMODAL
+    
+    o Aggregated `get-.R` and `list-.R` functions in single files
+    
+    o Cleaned part of: `AllMethods`, `exportResults`, `generate-`
+    
+    o Fixed unit testing
+    
+    o Fixed runnable examples
+    
+    o Fixed vignette
+    
+    o Rebuilt example data
+    
+    o Improved argument handling. `method` can no longer be `"all"` and 
+      handles a unique method now, but `methods`
+      can pass a vector of methods instead
+      
+    o Passes `check()` and `BiocCheck(".")` 
+
+CHANGES IN VERSION 0.3.3
+------------------------
+
+    o Improved argument documentation (still work to do)
+    
+    o Fused individual dummy functions that contained the commented parameters
+    
+    o Added `list-()` functions
+    
+    o Removed `p.adjust` from diffusion and pagerank
+    
+    o Improved unit testing
+
+To do:
+
+    o Fix documentation of changed functions
+    
+    o Try to better isolate functions (e.g. `plot` and `generateResultsGraph`
+      do too many things at once...)
+      
+    o Quantitative input?
+    
+    o Delete repetitive code
+    
+    o Use `checkArguments` in main functions
+    
+    o Improve `AllMethods`: use accessors, clean code...
+
+CHANGES IN VERSION 0.3.2
+------------------------
+
+    o Switched from `pValues` to `pScores` (except in `hypergeom`)
+
+CHANGES IN VERSION 0.3.1
+------------------------
+
+    o Removed `rcytoscapejs` dependency
+
+CHANGES IN VERSION 0.3.0
+------------------------
+
+    o Fixed vignette 
+    
+    o Modifications to several functions, addressing:
+      - Proper handling of GO labels - now can be used in many species
+      - `addCellularComponentToGraph` is now `addGOToGraph`
+      - New dependency: biomaRt
+      - Plotting functions have been simplified, but still need work
+      - Graph building has been improved
+      
+    o Shiny app:
+      - Removed tabs, has only 4 now
+      - Left only interactive plot
+      - Table is now from `DT`
+
+To do:
+
+    o Fix documentation of changed functions
+    
+    o Try to better isolate functions (e.g. `plot` and `generateResultsGraph`
+      do too many things at once...)
+      
+    o Quantitative input?
+    
+    o Improve function documentation (use templates) to supress warnings
+    
+    o Change `rcytoscapejs` dependency to `visNetwork` (in CRAN)
+    
+    o What to do about the p-values?
+
+CHANGES IN VERSION 0.2.6
+------------------------
+
+    o Fixed indentation
+    
+    o Fixed long lines
+    
+    o Added NEWS file
+    
+    o Fixed examples
+
+To do:
+
+    o Vignette breaks, top priority
+    
+    o Quantitative input?
+    
+    o Improve function documentation (use templates) to supress warnings
+    
+    o Change `rcytoscapejs` dependency to `visNetwork` (in CRAN)
+    
+    o What to do about the p-values?
+
+CHANGES IN VERSION 0.2.5
+------------------------
+
+Some minor changes to accomodate Bioconductor's standards:
+
+    o Update `R` version
+    
+    o Add `R` file to the `testthat` folder
+    
+    o Add GO biocView
+
+To do from Bioconductor:
+
+    o Vignette breaks
+    
+    o Add NEWS file
+    
+    o Fix indentation
+    
+    o Fix long lines (<80)
+    
+    o Add runnable examples: 
+      - buildDataFromGraph
+      - buildGraphFromKEGGREST
+      - loadKEGGdata
+
+To do:
+
+    o Quantitative input?
+    
+    o Improve function documentation (use templates) to supress warnings
+    
+    o Change `rcytoscapejs` dependency to `visNetwork` (in CRAN)
+
+
+CHANGES IN VERSION 0.2.4
+------------------------
+
+    o Minor tweaks in the plotting function. Has more flexibility 
+      and can use `tkplot` as well (for image generation purposes), 
+      or force layout. This function should be really improved, 
+      it's not that hard...
+
+CHANGES IN VERSION 0.2.3
+------------------------
+
+    o Fixed CREB website link
+    
+    o Added the option to specify the damping factor in pagerank
+    
+    o Changed default damping factor to 0.85
+
+CHANGES IN VERSION 0.2.2
+------------------------
+
+    o Fixed table export (`stringsAsFactors` was not 
+      disabled when creating the data.frame).
+    
+    o Added the function `generateEnzymesTable` to build a table with the 
+      EC numbers, along with the genes (entrez) within them and the associated 
+      GO labels (http://www.geneontology.org/).
+    
+    o The shiny app exports tables with the full enzyme data and 
+      simply as a text gene list as well. 
+
+CHANGES IN VERSION 0.2.1
+------------------------
+
+The shiny app has been updated. 
+
+    o Now the rcytoscape part has clickable links. 
+      This is due to a change in the 
+      r-cytoscape.js (https://github.com/cytoscape/r-cytoscape.js/) 
+      package that changes the `href` node attribute to `tooltip`.
+    o The colors and shapes have been updated as well, to be consistent with 
+      our notation. 
+
+To do:
+
+    o The labels of the nodes are not sorted by length. 
+      Short labels can be really weird...
+
+CHANGES IN VERSION 0.2.0
+------------------------
+
+Added the shiny app as a developer option. It requires the following packages:
+
+    o shiny
+    
+    o DT
+    
+    o xtable
+    
+    o knitr
+    
+    o rcytoscapejs
+
+CHANGES IN VERSION 0.0.999
+------------------------
+
+This is the first version of this package. It contains: 
+
+    o Basic enrichment functions: hypergeom, diffusion, pagerank
+    
+    o Null models: normal or Monte Carlo
+    
+    o Export options: to tables or graphs
+    
+    o Plotting capabilities
+    
+    o Possibility of custom background
+
+Further versions should include interactive plots and 
+applications for an easier usage

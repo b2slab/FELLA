@@ -40,7 +40,7 @@ generateResultsTable <- function(
     
     if (is.na(getValid(object, method)) | !getValid(object, method)) {
         warning(
-            paste0("Mehod ", method, " has not been executed yet. "),  
+            "Mehod ", method, " has not been executed yet. ",  
             "Returning NULL...")
         return(invisible())
     } 

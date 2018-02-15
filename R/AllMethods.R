@@ -244,7 +244,7 @@ setMethod(
         
         valid <- getValid(x, method)
         if (is.na(valid) || !valid) {
-            stop(paste0("Results from ", method, " are not ready yet."))
+            stop("Results from ", method, " are not ready yet.")
         } 
         
         if (method == "hypergeom") {
