@@ -1051,7 +1051,7 @@ an object belongs to a certain class: \Rfunction{is.FELLA.DATA}
 and \Rfunction{is.FELLA.USER}.
 
 
-\subsection{Epithelial cells dataset}
+\subsection{Ovarian cancer cells dataset}
 
 The next example has been extracted from the study on 
 metabolic responses of ovarian cancer cells \cite{ovarian}. 

@@ -1,3 +1,10 @@
+CHANGES IN VERSION 0.99.5
+------------------------
+
+    o Small correction in vignette
+    
+    o Version bump to see if bioc build is bugged
+
 CHANGES IN VERSION 0.99.4
 ------------------------
 
