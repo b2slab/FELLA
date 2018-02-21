@@ -2,6 +2,16 @@
 
 ---
 
+### Version 0.99.3.1
+
+* Updated news and version number to be branch-specific
+* Vignette:
+    - Repeated title is fixed
+    - Aconitase enzyme
+    - Added reference to the original MTBLS ids
+    - Now the `FELLA.DATA` does not contain the diffusion matrix and 
+      it is saved as well
+
 ### Version 0.99.3
 
 * Version bump (biomaRt down?)
