@@ -246,8 +246,6 @@ buildDataFromGraph <- function(
             hypergeom.matrix, 
             file = paste0(outputDir, "/hypergeom.matrix.RData"))
         
-        rm(hypergeom.matrix)
-        
         message("Done.")
     }
     
@@ -296,8 +294,6 @@ buildDataFromGraph <- function(
             
             message("Done.")
         }
-        
-        rm(R, K, diffusion.matrix)
     }
     
     
@@ -351,8 +347,6 @@ buildDataFromGraph <- function(
                 file = paste0(outputDir, "/pagerank.rowSums.RData"))
             message("Done.")
         }
-        
-        rm(R, K, pagerank.matrix)
     }
     invisible(TRUE)
 }

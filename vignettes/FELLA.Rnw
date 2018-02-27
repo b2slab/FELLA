@@ -676,6 +676,9 @@ This example data is extracted from the epithelial
 cancer cells dataset \cite{epithelial}, an in vitro model 
 of dry eye in which the human epithelial cells IOBA-NHC 
 are put under hyperosmotic stress. 
+The original study files are deposited in the Metabolights repository 
+\cite{metabolights} under the identifier MTBLS214: 
+\url{https://www.ebi.ac.uk/metabolights/MTBLS214}.
 The list of metabolites hereby used reflects 
 metabolic changes in \textq{Treatment 1} (24 hours in 
 serum-free media at 380 mOsm) against control (24 hours at 280 mOsm). 
@@ -1055,6 +1058,9 @@ and \Rfunction{is.FELLA.USER}.
 
 The next example has been extracted from the study on 
 metabolic responses of ovarian cancer cells \cite{ovarian}. 
+The original files can be found in the MTBLS150 study 
+in the Metabolights respository: 
+\url{https://www.ebi.ac.uk/metabolights/MTBLS150}.
 OCSCs are isogenic ovarian cancer stem cells derived from 
 the OVCAR-3 ovarian cancer cells.
 The abundances of six metabolites are affected by the 
@@ -1098,7 +1104,7 @@ like \textit{fumarate hydratase}
 ovarian_tca_fumarate_succinate} 
 \textit{succinate dehydrogenase} 
 \cite{ovarian_succinate_dehydrogenase_ni,ovarian_tca_fumarate_succinate} 
-and \textit{acotinase} \cite{ovarian_4_2_1_3_singh}.
+and \textit{aconitase} \cite{ovarian_4_2_1_3_singh}.
 Another suggestion is \textit{lysosome} - 
 lysosomes suffer changes in cancer cells and directly affect 
 apoptosis \cite{ovarian_lysosome_kirkegaard}. 
@@ -1110,6 +1116,8 @@ in cancer cells \cite{ovarian_hexokinase_kaelin}.
 
 The metabolites in the last example are related to 
 the distinction between malaria and other febrile ilnesses in \cite{malaria}. 
+The study files can be found under the MTBLS315 identifier in Metabolights: 
+\url{https://www.ebi.ac.uk/metabolights/MTBLS315}.
 Specifically, the list of KEGG identifiers has been 
 extracted from the supplementary data spreadsheet, 
 using all the possible KEGG matches for the 

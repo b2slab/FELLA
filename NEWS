@@ -1,3 +1,10 @@
+CHANGES IN VERSION 0.99.6
+------------------------
+
+    o Small corrections in vignette
+    
+    o Removed `rm` calls
+
 CHANGES IN VERSION 0.99.5
 ------------------------
 

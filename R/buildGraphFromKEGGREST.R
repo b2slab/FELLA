@@ -370,7 +370,6 @@ buildGraphFromKEGGREST <- function(
             edges = t(list.ends[new.edges, ]), 
             attr = list(weight = E(g.raw)[list.edges[new.edges]]$weight))
     }
-    rm(current.w, dist.matrix, list.edges, list.ends, new.edges)
     
     # Final edge weights have to be inverted
     E(g.curated)$weight <- 1/E(g.curated)$weight
