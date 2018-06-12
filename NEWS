@@ -526,7 +526,7 @@ Added the shiny app as a developer option. It requires the following packages:
 CHANGES IN VERSION 0.0.999
 ------------------------
 
-This is the first version of this package. It contains: 
++ This is the first version of this package. It contains: 
 
     o Basic enrichment functions: hypergeom, diffusion, pagerank
     
@@ -538,5 +538,5 @@ This is the first version of this package. It contains:
     
     o Possibility of custom background
 
-Further versions should include interactive plots and 
++ Further versions should include interactive plots and 
 applications for an easier usage
