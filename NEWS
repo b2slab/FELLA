@@ -1,3 +1,9 @@
+CHANGES IN VERSION 1.1.2
+------------------------
+
+    o Disabled `buildGraphFromKEGGREST` test in 32-bit Windows due to 
+      its memory usage
+
 CHANGES IN VERSION 0.99.6
 ------------------------
 

@@ -1,8 +1,8 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and enrichment for metabolomics data
-Version: 1.1.1
-Date: 2018-2-27
+Version: 1.1.2
+Date: 2018-7-6
 Authors@R: c(
     person(
         "Sergio", "Picart-Armada", role = c("aut", "cre"),
