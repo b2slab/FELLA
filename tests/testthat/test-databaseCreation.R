@@ -9,9 +9,9 @@ dir.append <- paste(sample(letters, 40, replace = T), collapse = "")
 
 # make sure KEGGREST tests are not run in a windows i386 R installation 
 # (memory usage exceeds the 3GB limit)
+# check if pointer size is 4 bytes (32 bit)
 check_win32 <- function() {
-    sys <- Sys.info()
-    if (grepl("i386", sys["machine"]) & grepl("Windows", sys["sysname"])) {
+    if (.Machine$sizeof.pointer == 4L & .Platform$OS.type == "windows") {
         msg <- paste0(
             "32-bit Windows installations may hit ", 
             "the allocation limit when using buildGraphFromKEGGREST"
