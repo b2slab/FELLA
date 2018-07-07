@@ -7,8 +7,23 @@ graph.db <- try(FELLA:::getGraph(FELLA.sample))
 dir.tmp <- tempdir()
 dir.append <- paste(sample(letters, 40, replace = T), collapse = "")
 
+# make sure KEGGREST tests are not run in a windows i386 R installation 
+# (memory usage exceeds the 3GB limit)
+# check if pointer size is 4 bytes (32 bit)
+check_win32 <- function() {
+    if (.Machine$sizeof.pointer == 4L & .Platform$OS.type == "windows") {
+        msg <- paste0(
+            "32-bit Windows installations may hit ", 
+            "the allocation limit when using buildGraphFromKEGGREST"
+        )
+        skip(msg)
+    }
+}
+
 # Takes some time
 test_that("The graph can be parsed from KEGGREST", {
+    check_win32()
+
     expect_error({
         g.full <- buildGraphFromKEGGREST(organism = "gla")
     }, NA)
