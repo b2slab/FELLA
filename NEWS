@@ -1,9 +1,4 @@
-CHANGES IN VERSION 1.1.3
-------------------------
-
-    o Version 1.1.2 did not skip such test
-
-CHANGES IN VERSION 1.1.2
+CHANGES IN VERSION 1.0.1
 ------------------------
 
     o Disabled `buildGraphFromKEGGREST` test in 32-bit Windows due to 
