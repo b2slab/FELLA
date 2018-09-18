@@ -16,8 +16,6 @@ KEGG graph as an \pkg{igraph} object
 Extractor function for the KEGG graph from the FELLA.DATA object
 }
 \examples{
-## This function is internal
-attach(environment(FELLA:::getGraph))
 data(FELLA.sample)
 g <- getGraph(FELLA.sample)
 class(g)

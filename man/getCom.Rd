@@ -23,8 +23,6 @@ Vector of the names/ids of the desired KEGG graph community
 Extractor function for all the nodes from a level/community of KEGG graph
 }
 \examples{
-## This function is internal
-attach(environment(FELLA:::getCom))
 data(FELLA.sample)
 ## Pathways
 getCom(FELLA.sample, 1, format = "name")

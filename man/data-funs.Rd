@@ -11,9 +11,9 @@
 buildGraphFromKEGGREST(organism = "hsa", filter.path = NULL)
 
 buildDataFromGraph(keggdata.graph = NULL, databaseDir = NULL,
-    internalDir = TRUE, matrices = c("hypergeom", "diffusion", "pagerank"),
-    normality = c("diffusion", "pagerank"), dampingFactor = 0.85,
-    niter = 100)
+    internalDir = TRUE, matrices = c("hypergeom", "diffusion",
+    "pagerank"), normality = c("diffusion", "pagerank"),
+    dampingFactor = 0.85, niter = 100)
 
 loadKEGGdata(databaseDir = tail(listInternalDatabases(), 1),
     internalDir = TRUE, loadMatrix = NULL)

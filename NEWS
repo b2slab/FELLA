@@ -1,3 +1,14 @@
+CHANGES IN VERSION 1.1.4
+------------------------
+
+    o Added a full vignette showing a case study on Mus musculus
+    
+    o Functions `getCom` and `getGraph` are exported now
+    
+    o Added `DT` and other packages to `suggests`
+    
+    o Small fixes for `BiocCheck`
+
 CHANGES IN VERSION 1.1.3
 ------------------------
 

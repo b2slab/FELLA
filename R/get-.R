@@ -50,8 +50,6 @@ getBackground <- function(object) {
 #' @return Vector of the names/ids of the desired KEGG graph community
 #' 
 #' @examples 
-#' ## This function is internal
-#' attach(environment(FELLA:::getCom))
 #' data(FELLA.sample)
 #' ## Pathways
 #' getCom(FELLA.sample, 1, format = "name")
@@ -64,6 +62,7 @@ getBackground <- function(object) {
 #' head(getCom(FELLA.sample, 4))
 #' ## Compounds
 #' head(getCom(FELLA.sample, 5))
+#' @export
 getCom <- function(data, level, format = "name") {
     if (format == "name")
         return(names(data@keggdata@id[[level]]))
@@ -112,11 +111,10 @@ getExcluded <- function(object) {
 #'
 #' @return KEGG graph as an \pkg{igraph} object
 #' @examples 
-#' ## This function is internal
-#' attach(environment(FELLA:::getGraph))
 #' data(FELLA.sample)
 #' g <- getGraph(FELLA.sample)
 #' class(g)
+#' @export
 getGraph <- function(data) {
     return(data@keggdata@graph)
 }

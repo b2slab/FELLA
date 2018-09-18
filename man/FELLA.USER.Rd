@@ -11,8 +11,8 @@
 \S4method{show}{FELLA.USER}(object)
 
 \S4method{plot}{FELLA.USER,missing}(x = new("FELLA.USER"),
-    method = "hypergeom", threshold = 0.05, plimit = 15, nlimit = 250,
-    layout = FALSE, thresholdConnectedComponent = 0.05,
+    method = "hypergeom", threshold = 0.05, plimit = 15,
+    nlimit = 250, layout = FALSE, thresholdConnectedComponent = 0.05,
     LabelLengthAtPlot = 22, data = NULL, ...)
 }
 \arguments{
@@ -56,15 +56,10 @@ best hits for each applied method
 otherwise \code{invisible()}
 }
 \description{
-An S4 class to save all the user analysis data
-
 Assigning the value of show to a variable will provide
 small data frames with the best scoring pathways (\code{hypergeom})
 and the best nodes in the KEGG network (\code{diffusion} and 
 \code{pagerank})
-
-\code{"plot"} is an S4 method to plot the results 
-from a FELLA.USER object
 }
 \section{Slots}{
 

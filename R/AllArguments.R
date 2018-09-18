@@ -76,6 +76,8 @@
 #' formatting. Smaller p-scores will be displayed 
 #' as \code{< capPscores} 
 #' 
+#' @return \code{NULL}
+#' 
 #' @keywords internal
 .params <- function() {}
 

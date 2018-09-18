@@ -1,0 +1,509 @@
+---
+title: "A fatty liver study on Mus musculus"
+author: 
+-   name: Sergio Picart-Armada 
+    affiliation: B2SLab at Polytechnic University of Catalonia
+    email: sergi.picart@upc.edu
+-   name: Alexandre Perera-Lluna
+    affiliation: B2SLab at Polytechnic University of Catalonia
+    email: alexandre.perera@upc.edu
+date: "September 17, 2018"
+package: "`r BiocStyle::pkg_ver('FELLA')`"
+output: BiocStyle::pdf_document
+bibliography: bibliography_mouse.bib
+vignette: >
+    %\VignetteIndexEntry{Quick start}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+This vignette shows the utility of the `FELLA` package on 
+non-human organisms; in particular, on a multi-omic _Mus musculus_ study. 
+The original study [@gogiashvili2017metabolic] presents a mouse model of the 
+non-alcoholic fatty liver disease (NAFLD).
+Metabolites in liver tissue from leptin-deficient _ob/ob_ mice and 
+wild type mice were compared using Nuclear Magnetic Resonance (NMR). 
+Afterwards, quantitative real-time polymerase chain reaction (qRT-PCR) 
+helped identify changes at the gene expression level. 
+Finally, biological mechanisms behind NAFLD were elucidated by leveraging 
+the data from both omics.
+
+## Building the database
+
+The first step is to build the `FELLA.DATA` object for the 
+`mmu` organism from the KEGG database [@kanehisa2016kegg].
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+library(FELLA)
+library(org.Mm.eg.db)
+library(KEGGREST)
+
+library(igraph)
+library(magrittr)
+
+set.seed(1)
+# Filter overview pathways
+graph <- buildGraphFromKEGGREST(
+    organism = "mmu", 
+    filter.path = c("01100", "01200", "01210", "01212", "01230"))
+
+tmpdir <- paste0(tempdir(), "/my_database")
+# Mke sure the database does not exist from a former vignette build
+# Otherwise the vignette will rise an error 
+# because FELLA will not overwrite an existing database
+unlink(tmpdir, recursive = TRUE)  
+buildDataFromGraph(
+    keggdata.graph = graph, 
+    databaseDir = tmpdir, 
+    internalDir = FALSE, 
+    matrices = "none", 
+    normality = "diffusion", 
+    niter = 100)
+```
+
+
+We load the `FELLA.DATA` object and two mappings 
+(from gene symbol to entrez identifiers, and from enzyme EC numbers 
+to their annotated entrez genes).
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+alias2entrez <- as.list(org.Mm.eg.db::org.Mm.egSYMBOL2EG)
+entrez2ec <- KEGGREST::keggLink("enzyme", "mmu")
+entrez2path <- KEGGREST::keggLink("pathway", "mmu")
+
+fella.data <- loadKEGGdata(
+    databaseDir = tmpdir, 
+    internalDir = FALSE, 
+    loadMatrix = "none"
+)
+
+summary(fella.data)
+```
+
+## Note on reproducibility
+
+We want to emphasise that `FELLA` builds its `FELLA.DATA` object 
+using the most recent version of the KEGG database. 
+KEGG is frequently updated and therefore small changes can 
+take place in the knowledge graph between different releases. 
+The discussion on our findings was written at the date specified 
+in the vignette header and using the KEGG release in the 
+[Reproducibility](#reproducibility) section. 
+
+
+# Enrichment analysis
+
+_Table 2_ from the main body in [@gogiashvili2017metabolic] 
+contains six metabolites that show 
+significant changes between the experimental classes by a univariate test 
+followed by multiple test correction. 
+These are the start of our enrichment analysis:
+
+```{r}
+cpd.nafld <- c(
+    "C00020", # AMP
+    "C00719", # Betaine
+    "C00114", # Choline
+    "C00037", # Glycine
+    "C00160", # Glycolate
+    "C01104"  # Trimethylamine-N-oxide
+)
+
+analysis.nafld <- enrich(
+    compounds = cpd.nafld, 
+    data = fella.data, 
+    method = "diffusion", 
+    approx = "normality")
+```
+
+Five compounds are successfully mapped to the graph object:
+
+```{r}
+analysis.nafld %>% 
+    getInput %>% 
+    getName(data = fella.data)
+```
+
+Likewise, one compound does not map:
+
+```{r}
+getExcluded(analysis.nafld) 
+```
+
+The highlighted subgraph with the default parameters has the 
+following appeareance, with large connected components that 
+involve the metabolites in the input:
+
+```{r, fig.width=8, fig.height=8}
+plot(
+    analysis.nafld, 
+    method = "diffusion", 
+    data = fella.data, 
+    nlimit = 250,  
+    plotLegend = FALSE)
+```
+
+We will also extract all the p-scores and the suggested sub-network 
+for further analysis:
+
+```{r}
+g.nafld <-  generateResultsGraph(
+    object = analysis.nafld, 
+    data = fella.data, 
+    method = "diffusion")
+
+pscores.nafld <- getPscores(
+    object = analysis.nafld, 
+    method = "diffusion")
+```
+
+In addition, we will store the ids of all the metabolites, 
+reactions and enzymes in the database:
+
+```{r}
+id.cpd <- getCom(fella.data, level = 5, format = "id") %>% names
+id.rx <- getCom(fella.data, level = 4, format = "id") %>% names
+id.ec <- getCom(fella.data, level = 3, format = "id") %>% names
+```
+
+
+
+## Examining the metabolites
+
+### From Table 2
+
+The authors find 5 extra metabolites in _Table 2_ that 
+are significant at $p < 0.05$ but
+do not appear after thresholding the false discovery rate at 5%.
+Such metabolites, highlighted in italics but without an asterisk,
+are also relevant and play a role in their discussion. 
+We will examine how `FELLA` prioritises such metabolites:
+
+```{r}
+cpd.nafld.suggestive <- c(
+    "C00008", # ADP
+    "C00791", # Creatinine
+    "C00025", # Glutamate
+    "C01026", # N,N-dimethylglycine
+    "C00079", # Phenylalanine
+    "C00299"  # Uridine
+)
+getName(cpd.nafld.suggestive, data = fella.data)
+```
+
+When checking if any of these metabolites are found in the reported 
+sub-network, we find that `C01026` is already reported:
+
+```{r}
+V(g.nafld)$name %>% 
+    intersect(cpd.nafld.suggestive) %>% 
+    getName(data = fella.data)
+```
+
+Abbreviated as __DMG__ in their study, 
+N,N-Dimethylglycine is a cornerstone of their findings. 
+It is reported in Figure 6a as part of the folate-independent remethylation 
+to explain the metabolic changes observed in the _ob/ob_ mice.
+__DMG__ is also mentioned in the conclusions as part of one of 
+the most prominent alterations found in the study: a reduced conversion of 
+betaine to __DMG__.
+
+### From Figure 6a
+
+_Figure 6a_ contains the metabolic context of the observed 
+alterations, with processes such as 
+transsulfuration and folate-dependent remethylation. 
+These were identified with the help of gene expression analysis. 
+We will now check for coincidences between the metabolites in _Figure 6a_, 
+excluding choline and betaine for being in the input and 
+DMG since it was already discussed.
+
+```{r}
+cpd.new.fig6 <- c(
+    "C00101", # THF
+    "C00440", # 5-CH3-THF
+    "C00143", # 5,10-CH3-THF
+    "C00073", # Methionine
+    "C00019", # SAM
+    "C00021", # SAH
+    "C00155", # Homocysteine
+    "C02291", # Cystathione
+    "C00097"  # Cysteine
+)
+getName(cpd.new.fig6, data = fella.data)
+```
+
+This time, there are no coincidences with the reported sub-network:
+
+```{r}
+cpd.new.fig6 %in% V(g.nafld)$name
+```
+
+However, we can further inquire whether the p-scores of such metabolites 
+tend to be low among all the metabolites in the whole network 
+from the `fella.data` object.
+
+```{r}
+wilcox.test(
+    x = pscores.nafld[cpd.new.fig6], # metabolites from fig6
+    y = pscores.nafld[setdiff(id.cpd, cpd.new.fig6)], # rest of metabolites
+    alternative = "less")
+```
+
+The test is indeed significant -- despite `FELLA` does not directly 
+report such metabolites, its metabolite ranking supports 
+the claims by the authors.
+
+
+## Examining the genes
+
+### Cbs
+
+The authors complement the metabolomic profilings with a differential 
+gene expression study. 
+One of the main findings is a change of _Cbs_ expression levels. 
+To link _Cbs_ to the enrichment from `FELLA`, we will first map 
+it to its EC number, _4.2.1.22_ at the time of writing:
+
+```{r}
+ec.cbs <- entrez2ec[[paste0("mmu:", alias2entrez[["Cbs"]])]] %>% 
+    gsub(pattern = "ec:", replacement = "")
+
+getName(fella.data, ec.cbs)
+```
+
+In _Figure 6a_, the reaction linked to _Cbs_ and catalysed by 
+the enzyme _4.2.1.22_ has the KEGG identifier _R01290_.
+
+```{r}
+rx.cbs <- "R01290"
+
+getName(fella.data, rx.cbs)
+```
+
+As shown in _Figure 6a_, _Cbs_ is not directly linked to the metabolites 
+found through NMR, and nor the reaction neither the enzyme are suggested 
+by `FELLA`:
+
+```{r}
+c(rx.cbs, ec.cbs) %in% V(g.nafld)$name
+```
+
+However, both of them have a relatively low p-score 
+in their respective categories.
+This can be seen through the proportion of enzymes (resp. reactions) 
+that show a p-score as low or lower than _4.2.1.22_ (resp. _R01290_)
+
+```{r}
+# enzyme
+pscores.nafld[ec.cbs]
+mean(pscores.nafld[id.ec] <= pscores.nafld[ec.cbs])
+
+# reaction
+pscores.nafld[rx.cbs]
+mean(pscores.nafld[id.rx] <= pscores.nafld[rx.cbs])
+```
+
+It's not surprising that none of them is directly reported, because none of 
+the metabolites participating in the reaction is found in the input. 
+The main evidence for finding _Cbs_ is gene expression, and our approach 
+gives indirect hints of this connection.
+
+### Bhmt
+
+The alteration of _Bhmt_ activity is related to the downregulation of _Cbs_. 
+Despite not finding evidence of change in _Bhmt_ expression, the authors 
+argue that its inhibition would explain the increased 
+betaine-to-DMG ratio in _ob/ob_ mice. 
+Such claim is also backed up by prior studies.
+To find out the role of _Cbs_ in our analysis, we will again map it to 
+its EC number, _2.1.1.5_:
+
+```{r}
+ec.bhmt <- entrez2ec[[paste0("mmu:", alias2entrez[["Bhmt"]])]] %>% 
+    gsub(pattern = "ec:", replacement = "")
+
+getName(fella.data, ec.bhmt)
+```
+
+This time, `FELLA` not only reports it, but also its associated reaction 
+_R02821_ (represented by an arrow in _Figure 6a_) and both of its metabolites.
+While __betaine__ was already an input metabolite, 
+__DMG__ was a novel finding as discussed earlier
+
+```{r}
+ec.bhmt %in% V(g.nafld)$name
+"R02821" %in% V(g.nafld)$name
+```
+
+This illustrates how `FELLA` can translate knowledge from dysregulated 
+metabolites to other molecular levels, such as reactions and enzymes.
+
+### Slc22a5
+
+The decrease of _Bhmt_ activity is later connected to the upregulation of 
+_Slc22a5_, also proved within the original study. 
+However, _Slc22a5_ does not map to any EC number and therefore 
+it cannot be found through `FELLA`:
+
+```{r}
+entrez.slc22a5 <- alias2entrez[["Slc22a5"]]
+entrez.slc22a5 %in% names(entrez2ec)
+```
+
+As a matter of fact, the only connection that can be found from KEGG is 
+the role of _Slc22a5_ in the _Choline metabolism in cancer_ pathway.
+
+```{r}
+path.slc22a5 <- entrez2path[paste0("mmu:", entrez.slc22a5)] %>% 
+    gsub(pattern = "path:", replacement = "")
+
+getName(fella.data, path.slc22a5)
+```
+
+Coincidentally, this pathway is reported in the sub-graph:
+
+```{r}
+path.slc22a5 %in% V(g.nafld)$name
+```
+
+### Genes from Figure 3
+
+We also examined if genes from _Table 3_ were reachable in our analysis. 
+These five literature-derived genes were experimentally confirmed to show 
+gene expression changes, in order to prove that RNA extracted after the 
+metabolomic profiling was still reliable for further transcriptomic analyses. 
+However, only _Scd2_ maps to an enzymatic family:
+
+
+```{r}
+symbol.fig3 <- c(
+    "Cd36",
+    "Scd2", 
+    "Apoa4", 
+    "Lcn2", 
+    "Apom")
+
+entrez.fig3 <- alias2entrez[symbol.fig3] %>% unlist %>% unique
+ec.fig3 <- entrez2ec[paste0("mmu:", entrez.fig3)] %T>% 
+    print %>%
+    unlist %>% 
+    unique %>% 
+    na.omit %>% 
+    gsub(pattern = "ec:", replacement = "")
+
+getName(fella.data, ec.fig3)
+```
+
+Such family is not reported in our sub-graph
+
+```{r}
+ec.fig3 %in% V(g.nafld)$name
+```
+
+In addition, its p-score is high compared to other enzymes
+
+```{r}
+pscores.nafld[ec.fig3]
+mean(pscores.nafld[id.ec] <= pscores.nafld[ec.fig3])
+```
+
+The fact that only one gene mapped to an EC number hinders the potential 
+findings using `FELLA`, and is probably the main reason why `FELLA` missed 
+_Scd2_.
+In addition, `FELLA` defines a knowledge model that offers simplicity and 
+interpretability, at the cost of introducing limitations on 
+how sophisticated its findings can be.
+
+
+### Genes from Table S2
+
+In parallel with the original study, and cited within its main body, 
+gene array expression data was collected [@godoy2016gene]
+and its hits are included in the supplementary _Table S2_ from 
+[@gogiashvili2017metabolic]. 
+These genes include the already discussed _Cbs_.
+We will attempt to link the genes marked as significantly changed to 
+our reported sub-network. 
+In contrast with _Figure 3_, all the genes map to an EC number: 
+
+```{r}
+symbol.tableS2 <- c(
+    "Mat1a",
+    "Ahcyl2", 
+    "Cbs",
+    "Mat2b",  
+    "Mtr")
+entrez.tableS2 <- alias2entrez[symbol.tableS2] %>% unlist %>% unique
+ec.tableS2 <- entrez2ec[paste0("mmu:", entrez.tableS2)] %T>%
+    print %>%
+    unlist %>% 
+    unique %>% 
+    na.omit %>% 
+    gsub(pattern = "ec:", replacement = "")
+```
+
+None of these EC families are reported in the sub-graph:
+
+```{r}
+ec.tableS2 %in% V(g.nafld)$name
+```
+
+But in this case, their scores tend to be lower than the rest of enzymes:
+
+```{r}
+wilcox.test(
+    x = pscores.nafld[ec.tableS2], # enzymes from table S2
+    y = pscores.nafld[setdiff(id.ec, ec.tableS2)], # rest of enzymes
+    alternative = "less")
+```
+
+These findings suggest that if the annotation database is complete enough, 
+`FELLA` can provide a meaningful priorisisation of the enzymes surrounding 
+the affected metabolites.
+
+# Conclusions
+
+`FELLA` has been used to give a biological meaning to a list of 6 metabolites 
+extracted from a multi-omic study of a mouse model of NAFLD. 
+It has been able to reproduce some findings at the metabolite and 
+gene expression levels, whereas most of the times missed entities would 
+still present a low ranking compared to their background in the database.  
+The bottom line from our analysis in the present vignette is that 
+`FELLA` not only works on human studies, 
+but also generalises to animal models. 
+
+
+# Reproducibility
+
+This is the result of running `sessionInfo()`
+
+```{r}
+sessionInfo()
+```
+
+KEGG version:
+
+```{r}
+cat(getInfo(fella.data))
+```
+
+Date of generation:
+
+```{r}
+date()
+```
+
+
+Image of the workspace (for submission):
+
+```{r}
+tempfile(pattern = "vignette_mmu_", fileext = ".RData") %T>% 
+    message("Saving workspace to ", .) %>% 
+    save.image(compress = "xz")
+```
+
+
+# References {#references}

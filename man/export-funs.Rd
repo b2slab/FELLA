@@ -12,28 +12,29 @@
 \alias{plotGraph}
 \title{Generate and manipulate tables and sub-networks from an enrichment}
 \usage{
-generateResultsTable(method = "diffusion", threshold = 0.05, plimit = 15,
+generateResultsTable(method = "diffusion", threshold = 0.05,
+    plimit = 15, nlimit = 250, LabelLengthAtPlot = 45,
+    capPscores = 1e-06, object = NULL, data = NULL, ...)
+
+generateEnzymesTable(method = "diffusion", threshold = 0.05,
     nlimit = 250, LabelLengthAtPlot = 45, capPscores = 1e-06,
-    object = NULL, data = NULL, ...)
+    mart.options = list(biomart = "ensembl", dataset =
+    "hsapiens_gene_ensembl"), object = NULL, data = NULL, ...)
 
-generateEnzymesTable(method = "diffusion", threshold = 0.05, nlimit = 250,
-    LabelLengthAtPlot = 45, capPscores = 1e-06, mart.options = list(biomart
-    = "ensembl", dataset = "hsapiens_gene_ensembl"), object = NULL,
-    data = NULL, ...)
-
-generateResultsGraph(method = "diffusion", threshold = 0.05, plimit = 15,
-    nlimit = 250, thresholdConnectedComponent = 0.05,
+generateResultsGraph(method = "diffusion", threshold = 0.05,
+    plimit = 15, nlimit = 250, thresholdConnectedComponent = 0.05,
     LabelLengthAtPlot = 22, object = NULL, data = NULL, ...)
 
-exportResults(format = "csv", file = "myOutput", method = "diffusion",
-    object = NULL, data = NULL, ...)
+exportResults(format = "csv", file = "myOutput",
+    method = "diffusion", object = NULL, data = NULL, ...)
 
-addGOToGraph(graph = NULL, GOterm = NULL, godata.options = list(OrgDb =
-    "org.Hs.eg.db", ont = "CC"), mart.options = list(biomart = "ensembl",
+addGOToGraph(graph = NULL, GOterm = NULL, godata.options = list(OrgDb
+    = "org.Hs.eg.db", ont = "CC"), mart.options = list(biomart = "ensembl",
     dataset = "hsapiens_gene_ensembl"))
 
 plotGraph(graph = NULL, layout = FALSE, graph.layout = NULL,
-    plotLegend = TRUE, plot.fun = "plot.igraph", NamesAsLabels = TRUE, ...)
+    plotLegend = TRUE, plot.fun = "plot.igraph", NamesAsLabels = TRUE,
+    ...)
 }
 \arguments{
 \item{method}{one in \code{"diffusion"}, \code{"pagerank"}}

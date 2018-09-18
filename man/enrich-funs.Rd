@@ -10,7 +10,8 @@
 \alias{enrich}
 \title{Functions to map and enrich a list of metabolites}
 \usage{
-defineCompounds(compounds = NULL, compoundsBackground = NULL, data = NULL)
+defineCompounds(compounds = NULL, compoundsBackground = NULL,
+    data = NULL)
 
 runHypergeom(object = NULL, data = NULL, p.adjust = "fdr")
 
