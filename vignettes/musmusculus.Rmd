@@ -19,8 +19,11 @@ vignette: >
 
 # Introduction
 
-This vignette shows the utility of the `FELLA` package on 
-non-human organisms; in particular, on a multi-omic _Mus musculus_ study. 
+This vignette shows the utility of the `FELLA` package, 
+which is based in a statistically normalised 
+diffusion process [@picart2017null], on 
+non-human organisms.
+In particular, we will work on a multi-omic _Mus musculus_ study. 
 The original study [@gogiashvili2017metabolic] presents a mouse model of the 
 non-alcoholic fatty liver disease (NAFLD).
 Metabolites in liver tissue from leptin-deficient _ob/ob_ mice and 
@@ -78,8 +81,21 @@ fella.data <- loadKEGGdata(
     internalDir = FALSE, 
     loadMatrix = "none"
 )
+```
 
-summary(fella.data)
+Summary of the database:
+
+```{r}
+fella.data
+```
+
+In addition, we will store the ids of all the metabolites, 
+reactions and enzymes in the database:
+
+```{r}
+id.cpd <- getCom(fella.data, level = 5, format = "id") %>% names
+id.rx <- getCom(fella.data, level = 4, format = "id") %>% names
+id.ec <- getCom(fella.data, level = 3, format = "id") %>% names
 ```
 
 ## Note on reproducibility
@@ -94,6 +110,8 @@ in the vignette header and using the KEGG release in the
 
 
 # Enrichment analysis
+
+## Defining the input and running the enrichment
 
 _Table 2_ from the main body in [@gogiashvili2017metabolic] 
 contains six metabolites that show 
@@ -158,17 +176,6 @@ pscores.nafld <- getPscores(
     object = analysis.nafld, 
     method = "diffusion")
 ```
-
-In addition, we will store the ids of all the metabolites, 
-reactions and enzymes in the database:
-
-```{r}
-id.cpd <- getCom(fella.data, level = 5, format = "id") %>% names
-id.rx <- getCom(fella.data, level = 4, format = "id") %>% names
-id.ec <- getCom(fella.data, level = 3, format = "id") %>% names
-```
-
-
 
 ## Examining the metabolites
 
@@ -495,7 +502,6 @@ Date of generation:
 ```{r}
 date()
 ```
-
 
 Image of the workspace (for submission):
 

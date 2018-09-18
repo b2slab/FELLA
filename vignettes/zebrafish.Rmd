@@ -1,0 +1,441 @@
+---
+title: "An oxybenzone exposition study on gilt-head bream"
+author: 
+-   name: Sergio Picart-Armada 
+    affiliation: B2SLab at Polytechnic University of Catalonia
+    email: sergi.picart@upc.edu
+-   name: Alexandre Perera-Lluna
+    affiliation: B2SLab at Polytechnic University of Catalonia
+    email: alexandre.perera@upc.edu
+date: "September 18, 2018"
+package: "`r BiocStyle::pkg_ver('FELLA')`"
+output: BiocStyle::pdf_document
+bibliography: bibliography_zebrafish.bib
+vignette: >
+    %\VignetteIndexEntry{Quick start}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+This vignette contains a case study of the effects of 
+environmental contamination on gilt-head bream (_Sparus aurata_) [@ziarrusta2018bream]. 
+Fish were exposed over 14 days to *oxybenzone* and changes were sought 
+in their brain, liver and plasma using untargeted metabolomics. 
+Samples were processed using Ultra-performance liquid chromatography mass-spectrometry (UHPLC-qOrbitrap MS) in 
+positive and negative modes with both C18 and HILIC separation.
+
+The mortality of exposed fish was not altered, as well as the 
+brain-related metabolites. 
+However, liver and plasma showed perturbations, proving that 
+adverse effects beyond the well-studied hormonal activity were present. 
+
+The enrichment procedure implemented in `FELLA` [@picart2017null] 
+was used in the 
+study for a deeper understanding of the dysregulated metabolites 
+in both tissues. 
+
+
+## Building the database
+
+At the time of publication, the KEGG database [@kanehisa2016kegg] 
+--upon which `FELLA` is based-- did not have pathway annotations for 
+the _Sparus aurata_ organism. 
+It is common, however, to use the zebrafish (_Danio rerio_) pathways as 
+a good approximation. 
+KEGG provides pathway annotations for it under the organismal code `dre`, 
+which will be used to build the `FELLA.DATA` object.
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+library(FELLA)
+
+library(igraph)
+library(magrittr)
+
+set.seed(1)
+# Filter the dre01100 overview pathway, as in the article
+graph <- buildGraphFromKEGGREST(
+    organism = "dre", 
+    filter.path = c("01100"))
+
+tmpdir <- paste0(tempdir(), "/my_database")
+# Make sure the database does not exist from a former vignette build
+# Otherwise the vignette will rise an error 
+# because FELLA will not overwrite an existing database
+unlink(tmpdir, recursive = TRUE)  
+buildDataFromGraph(
+    keggdata.graph = graph, 
+    databaseDir = tmpdir, 
+    internalDir = FALSE, 
+    matrices = "none", 
+    normality = "diffusion", 
+    niter = 100)
+```
+
+We load the `FELLA.DATA` object to run both analyses:
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+fella.data <- loadKEGGdata(
+    databaseDir = tmpdir, 
+    internalDir = FALSE, 
+    loadMatrix = "none"
+)
+```
+
+Given the 11-month temporal gap between the study and this vignette, 
+small changes to the amount of nodes in each category are expected 
+(see section _2.4 Data handling and statistical analyses_ from the study).
+Please see the [Note on reproducibility](#notereproducibility) to understand 
+why.
+
+```{r}
+fella.data
+```
+
+
+## Note on reproducibility {#notereproducibility}
+
+We want to emphasise that each time this vignette is built, 
+`FELLA` constructs its `FELLA.DATA` object 
+using the most recent version of the KEGG database. 
+KEGG is frequently updated and therefore small changes can 
+take place in the knowledge graph between different releases. 
+The discussion on our findings was written at the date specified 
+in the vignette header and using the KEGG release in the 
+[Reproducibility](#reproducibility) section. 
+
+
+# Enrichment analysis on liver tissue
+
+
+## Defining the input and running the enrichment {#defenrichliver}
+
+_Table 1_ from the main body in [@ziarrusta2018bream] 
+contains 5 KEGG identifiers associated to metabolic changes 
+in liver tissue and 12 in plasma.
+Our first enrichment analysis with `FELLA` will be based on the 
+liver-derived metabolites. 
+Also note that we use the faster `approx = "normality"` approach, 
+whereas the original article uses `approx = "simulation"` with 
+`niter = 15000`
+This is not only intended to keep the bulding time 
+of this vignette as low as possible, 
+but also to demonstrate that the findings 
+using both statistical approaches are consistent.
+
+```{r}
+cpd.liver <- c(
+    "C12623", 
+    "C01179", 
+    "C05350", 
+    "C05598", 
+    "C01586"
+)
+
+analysis.liver <- enrich(
+    compounds = cpd.liver, 
+    data = fella.data, 
+    method = "diffusion", 
+    approx = "normality")
+```
+
+All the metabolites are successfully mapped:
+
+```{r}
+analysis.liver %>% 
+    getInput %>% 
+    getName(data = fella.data)
+```
+
+Below is a plot of the reported sub-network using the default parameters. 
+The five metabolites are present and lie within the same connected component.
+
+```{r, fig.width=8, fig.height=8}
+plot(
+    analysis.liver, 
+    method = "diffusion", 
+    data = fella.data, 
+    nlimit = 250,  
+    plotLegend = FALSE)
+```
+
+We will examine the igraph object with the reported sub-network and 
+some of its reported entities in tabular format:
+
+```{r}
+g.liver <-  generateResultsGraph(
+    object = analysis.liver, 
+    data = fella.data, 
+    method = "diffusion")
+
+tab.liver <- generateResultsTable(
+    object = analysis.liver, 
+    data = fella.data, 
+    method = "diffusion")
+```
+
+The reported sub-network contains around 
+100 nodes and can be manually inquired:
+
+```{r}
+g.liver
+```
+
+
+## Examining the pathways
+
+_Figure 2_ from the original study frames the five metabolites in the 
+input around _Phenylalanine metabolism_. 
+We can verify that `FELLA` finds such pathway and two closely related 
+suggestions: _Tyrosine metabolism_ and 
+_Phenylalanine, tyrosine and tryptophan biosynthesis_.
+
+```{r}
+path.fig2 <- "dre00360" # Phenylalanine metabolism
+path.fig2 %in% V(g.liver)$name
+```
+
+These are the reported pathways:
+
+```{r}
+tab.liver[tab.liver$Entry.type == "pathway", ]
+```
+
+
+## Examining the metabolites {#exammetplasma}
+
+_Figure 2_ also gathers two types of metabolites: 
+metabolites in the input (inside shaded frames) and 
+other contextual metabolites (no frames) that link the 
+input metabolites. 
+
+First of all, we can check that all the input metabolites 
+appear in the suggested sub-network. 
+While it's expected that most of the input metabolites appear as 
+relevant, it is an important property of our method, 
+in order to elaborate a sensible 
+biological justification of the experimental differences. 
+
+```{r}
+cpd.liver %in% V(g.liver)$name
+```
+
+On the other hand, one of the two contextual metabolites 
+is also suggested by `FELLA`, proving its usefulness to fill the 
+gaps between the input metabolites.
+
+```{r}
+cpd.fig2 <- c(
+    "C00079", # Phenylalanine
+    "C00082"  # Tyrosine
+)
+cpd.fig2 %in% V(g.liver)$name
+```
+
+
+# Enrichment analysis on plasma
+
+
+## Defining the input and running the enrichment
+
+As shown in section 
+[Defining the input and running the enrichment](#defenrichliver), 
+12 KEGG identifiers (one ID is repeated) are related to the 
+experimental changes observed in plasma, which are the starting 
+point of the enrichment:
+
+```{r}
+cpd.plasma <- c(
+    "C16323", 
+    "C00740", 
+    "C08323", 
+    "C00623", 
+    "C00093", 
+    "C06429", 
+    "C16533", 
+    "C00740", 
+    "C06426", 
+    "C06427", 
+    "C07289", 
+    "C01879"
+) %>% unique
+
+analysis.plasma <- enrich(
+    compounds = cpd.plasma, 
+    data = fella.data, 
+    method = "diffusion", 
+    approx = "normality")
+```
+
+The totality of the 11 unique metabolites 
+map to the `FELLA.DATA` object:
+
+```{r}
+analysis.plasma %>% 
+    getInput %>% 
+    getName(data = fella.data)
+```
+
+Again, the reported sub-network consists of a large connected component 
+encompassing most input metabolites:
+
+```{r, fig.width=8, fig.height=8}
+plot(
+    analysis.plasma, 
+    method = "diffusion", 
+    data = fella.data, 
+    nlimit = 250,  
+    plotLegend = FALSE)
+```
+
+We will export the results as a network and as a table:
+
+```{r}
+g.plasma <-  generateResultsGraph(
+    object = analysis.plasma, 
+    data = fella.data, 
+    method = "diffusion")
+
+tab.plasma <- generateResultsTable(
+    object = analysis.plasma, 
+    data = fella.data, 
+    method = "diffusion")
+```
+
+The reported sub-network is a bit larger than the one 
+from liver, containing roughly 120 nodes:
+
+```{r}
+g.plasma
+```
+
+
+## Examining the pathways
+
+_Figure 3_ from the original study is a holistic view of the 
+affected metabolites found in plasma, based on literature and 
+on an analysis with `FELLA`.
+The 11 metabolites are depicted within their core metabolic pathways. 
+We will check whether `FELLA` is able to highlight them, 
+by first showing the reported metabolic pathways:
+
+```{r}
+tab.plasma[tab.plasma$Entry.type == "pathway", ]
+```
+
+And then comparing against the ones in _Figure 3_:
+
+```{r}
+path.fig3 <- c(
+    "dre00591", # Linoleic acid metabolism
+    "dre01040", # Biosynthesis of unsaturated fatty acids
+    "dre00592", # alpha-Linolenic acid metabolism
+    "dre00564", # Glycerophospholipid metabolism
+    "dre00480", # Glutathione metabolism
+    "dre00260"  # Glycine, serine and threonine metabolism
+)
+path.fig3 %in% V(g.plasma)$name
+```
+
+All of them but *Glutathione metabolism* are recovered, 
+showing how `FELLA` can help gaining perspective on 
+the input metabolites. 
+
+
+## Examining the metabolites 
+
+As in the [analogous section for liver](#exammetplasma), 
+we will quantify how many input metabolites, 
+drawn within a shaded frame in _Figure 3_, are reported 
+in the sub-network:
+
+```{r}
+cpd.plasma %in% V(g.plasma)$name
+```
+
+From the 11 highlighted metabolites, only one is 
+not reported by `FELLA`: *5-Oxo-L-proline*. 
+
+Conversely, two out of the three contextual metabolites 
+from the same figure are reported:
+
+```{r}
+cpd.fig3 <- c(
+    "C01595", # Linoleic acid
+    "C00157", # Phosphatidylcholine
+    "C00037"  # Glycine
+) 
+cpd.fig3 %in% V(g.plasma)$name
+```
+
+As _Figure 3_ shows, the addition of *linoleic acid* and 
+*phosphatidylcholine*, backed up by `FELLA`, helps connecting 
+almost all the metabolites found in blood.
+
+`FELLA` misses *glycine* and, in fact, stays consistent with the 
+pathway (*Glutathione metabolism*) and the input metabolite 
+(*5-Oxo-L-proline*) that it left out from _Figure 3_. 
+The fact that `FELLA` does not suggest such pathway seems to happen 
+at several molecular levels and therefore none of its metabolites 
+are pinpointed.
+
+Even if the glutathione pathway was not reported, 
+`FELLA` can greatly ease the creation of elaborated contextual figures, 
+such as _Figure 3_, by suggesting the intermediate metabolites and 
+the metabolic pathways that link the input compounds. 
+
+
+# Conclusions
+
+In this vignette, we apply `FELLA` to an untargeted metabolic study 
+of gilt-head bream exposed to an environmental contaminat (oxybenzome). 
+This study is an example of how `FELLA` can be useful for 
+(1) organisms not limited to _Homo sapiens_, and 
+(2) conditions not limited to a specific disease. 
+
+On one hand, `FELLA` helps creating complex 
+contextual interpretations of the data, such as the comprehensive 
+_Figure 3_ from the original article [@ziarrusta2018bream]. 
+This material would be challenging to build through regular 
+over-representation analysis of the input metabolites. 
+On the other hand, metabolites and pathways suggested by `FELLA` 
+were also mentioned in the literature and supported the
+main findings in the study. 
+In particular, it helped identify key processes such as 
+*phenylalanine metabolism*, 
+*alpha-linoleic acid metabolism* and 
+*serine metabolism*, 
+which ultimately pointed to alterations in *oxidative stress*.
+
+
+# Reproducibility
+
+This is the result of running `sessionInfo()`
+
+```{r}
+sessionInfo()
+```
+
+KEGG version:
+
+```{r}
+cat(getInfo(fella.data))
+```
+
+Date of generation:
+
+```{r}
+date()
+```
+
+Image of the workspace (for submission):
+
+```{r}
+tempfile(pattern = "vignette_dre_", fileext = ".RData") %T>% 
+    message("Saving workspace to ", .) %>% 
+    save.image(compress = "xz")
+```
+
+
+# References {#references}
