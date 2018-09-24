@@ -12,7 +12,7 @@ package: "`r BiocStyle::pkg_ver('FELLA')`"
 output: BiocStyle::pdf_document
 bibliography: bibliography_mouse.bib
 vignette: >
-    %\VignetteIndexEntry{Quick start}
+    %\VignetteIndexEntry{Example: a fatty liver study on Mus musculus}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 ---

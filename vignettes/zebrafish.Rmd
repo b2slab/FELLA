@@ -12,7 +12,7 @@ package: "`r BiocStyle::pkg_ver('FELLA')`"
 output: BiocStyle::pdf_document
 bibliography: bibliography_zebrafish.bib
 vignette: >
-    %\VignetteIndexEntry{Quick start}
+    %\VignetteIndexEntry{Example: oxybenzone exposition in gilt-head bream}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 ---
