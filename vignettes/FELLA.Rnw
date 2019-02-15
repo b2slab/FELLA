@@ -41,8 +41,7 @@ Posterior KEGG releases might alter the reported sub-network
 \SweaveOpts{concordance=TRUE, include=TRUE, echo=TRUE, results=hide}
 %\SweaveOpts{fig=FALSE, results=hide, prefix.string=fella_latexfiles/}
 %\setkeys{Gin}{width=1\textwidth}
-\bioctitle[The FELLA R package]{An R package to enrich 
-metabolomics data: FELLA}
+\bioctitle[The FELLA R package]{FELLA: an R package to enrich metabolomics data}
 \author[1,2]{Sergio Picart-Armada\thanks{\email{sergi.picart@upc.edu}}}
 \author[1,2]{Francesc Fern\'andez-Albert}
 \author[3,4,5]{Maria Vinaixa}

@@ -1,4 +1,30 @@
-utils::citHeader("To cite 'FELLA' in publications use:")
+utils::citHeader("To cite 'FELLA' please use the BMC Bioinformatics citation. \
+                  To cite its algorithm please use the PLOS ONE reference. \
+                  Thank you for using our software.")
+
+utils::citEntry(
+    entry = "article",
+    title = "FELLA: an R package to enrich metabolomics data",
+    author = utils::personList(
+        utils::as.person("Sergio Picart-Armada"),
+    		utils::as.person("Francesc Fernandez-Albert"), 
+    		utils::as.person("Maria Vinaixa"), 
+    		utils::as.person("Oscar Yanes"), 
+    		utils::as.person("Alexandre Perera-Lluna")),
+	  journal = "BMC Bioinformatics",
+    volume = "19",
+    number = "1",
+    pages = "538",
+    year = "2018",
+    doi = "10.1186/s12859-018-2487-5",
+    textVersion = paste0(
+        "Sergio Picart-Armada, Francesc Fernandez-Albert, Maria Vinaixa, ", 
+        "Oscar Yanes, Alexandre Perera-Lluna. FELLA: an R package ", 
+        "to enrich metabolomics data. ", 
+        "BMC Bioinformatics, 19(1), 538. ", 
+        "https://doi.org/10.1186/s12859-018-2487-5")
+)
+
 utils::citEntry(
     entry = "article",
     title = "Null diffusion-based enrichment for metabolomics data",
