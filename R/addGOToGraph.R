@@ -68,13 +68,13 @@ addGOToGraph <- function(
     # Map them
     mart.go <- do.call(biomaRt::useMart, mart.options)
     df.entrez2go <- biomaRt::getBM(
-        attributes = c('entrezgene', 'go_id'), 
-        filters = 'entrezgene', 
+        attributes = c('entrezgene_id', 'go_id'), 
+        filters = 'entrezgene_id', 
         values = entrez.all, 
         mart = mart.go)
     list.entrez2go <- plyr::dlply(
         df.entrez2go, 
-        "entrezgene", 
+        "entrezgene_id", 
         function(df) grep("GO:\\d+", df$go_id, value = TRUE)
     )
     # Add GO terms to graph

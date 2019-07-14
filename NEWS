@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.5.1
+------------------------
+
+    o Fixed bug in vignette due to changes in `biomaRt` 
+
 CHANGES IN VERSION 1.3.1
 ------------------------
 
