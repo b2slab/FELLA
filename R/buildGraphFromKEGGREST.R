@@ -168,7 +168,9 @@ buildGraphFromKEGGREST <- function(
     list.list <- plyr::llply(
         stats::setNames(categories, categories), 
         function(category) {
-            if (category %in% c("pathway", "module")) {
+            # only pathways are organism-specific now
+            # modules are filtered through genes
+            if (category %in% c("pathway")) {
                 ans <- KEGGREST::keggList(
                     database = category, 
                     organism = organism)
@@ -303,6 +305,19 @@ buildGraphFromKEGGREST <- function(
     g.raw <- delete.vertices(
         g.raw, 
         which((V(g.raw)$com == 3) & !(V(g.raw)$name %in% df.infere$from)))
+    
+    # Same for the modules that do no belong to the species
+    # Keep only those that have at least one gene associated 
+    # 
+    # Alternative: keggLink("genome", "compound") and pick only 
+    # those of the organism code
+    # The downside is that it takes around 90s, but might be 
+    # a safer option
+    # Checked in 19/10/2019 and both approaches are equivalent
+    org.modules <- unique(names(m.mod_gene))
+    g.raw <- delete.vertices(
+        g.raw, 
+        which((V(g.raw)$com == 2) & !(V(g.raw)$name %in% org.modules)))
     
     # Order by category and id
     g.raw <- permute.vertices(
