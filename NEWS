@@ -1,4 +1,12 @@
-CHANGES IN VERSION 1.5.1
+CHANGES IN VERSION 1.4.2/1.5.2
+------------------------
+
+    o **The REST KEGG service changed and modules are no longer listable
+    by organism**. `FELLA` now chooses modules that have at least one 
+    organismal gene. This seems equivalent to picking the modules 
+    from `keggLink("genome", "module")`, but the latter is slow (90s).
+
+CHANGES IN VERSION 1.4.1/1.5.1
 ------------------------
 
     o Fixed bug in vignette due to changes in `biomaRt` 
