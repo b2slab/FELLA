@@ -1,7 +1,7 @@
 Package: FELLA
 Type: Package
 Title: Interpretation and enrichment for metabolomics data
-Version: 1.5.2
+Version: 1.5.3
 Date: 2019-10-19
 Authors@R: c(
     person(
@@ -48,7 +48,8 @@ Suggests:
     AnnotationDbi,
     GOSemSim
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
+Encoding: UTF-8
 biocViews: 
     Software, 
     Metabolomics, 

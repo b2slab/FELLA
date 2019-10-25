@@ -1,3 +1,17 @@
+CHANGES IN VERSION 1.5.3
+------------------------
+
+    o Changed `buildDataFromGraph()` so that it looks for organismal 
+    annotations in `keggInfo()`. 
+    
+    o If `ncbi-geneid` was not available, 
+    `buildDataFromGraph()` would crash with 404. Now, it can use 
+    `ncbi-proteinid` if `ncbi-geneid` is missing. 
+    
+    o Discovered by LY by building db for `"cvi"`
+    
+    o Small update on `sanitise()`
+
 CHANGES IN VERSION 1.4.2/1.5.2
 ------------------------
 

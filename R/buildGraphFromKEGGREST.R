@@ -5,7 +5,7 @@
 #' @param x Character vector, IDs to sanitise
 #' @param category Character, one of: 
 #' \code{"pathway"}, \code{"module"}, \code{"enzyme"}, 
-#' \code{"ncbi-gene"}, \code{"reaction"}, \code{"compound"}
+#' \code{"ncbi"}, \code{"reaction"}, \code{"compound"}
 #'
 #' @return Character vector, sanitised \code{x}
 #' 
@@ -27,8 +27,8 @@ sanitise <- function(x, category, organism) {
             NA, 
             gsub("(ec:)(\\d+\\.\\d+\\.\\d+\\.\\d+)", "\\2", x))
     }
-    if (category == "ncbi-gene") {
-        ans <- gsub("(.+:)(.*\\d+)", "\\2", x)
+    if (category == "ncbi") {
+        ans <- gsub("(ncbi.+:)(.*\\d+)", "\\2", x)
     }
     if (category == "reaction") {
         ans <- gsub("(rn:)(R\\d{5})", "\\2", x)
@@ -165,6 +165,26 @@ buildGraphFromKEGGREST <- function(
     # List of id-name
     message("Building through KEGGREST...")
     
+    info.org <- KEGGREST::keggInfo(organism)
+    info.geneannot <- grep(
+        "ncbi-[[:lower:]]+", 
+        capture.output(cat(info.org)), 
+        value = TRUE)
+    info.geneannot <- gsub("[[:space:]]", "", info.geneannot)
+    cat.geneannot <- head(
+        intersect(c("ncbi-geneid", "ncbi-proteinid"), info.geneannot), 
+        1
+    )
+    if (length(cat.geneannot) == 0) 
+        stop(
+            "Organism ", organism, " does not appear to have either ", 
+            "ncbi-geneid or ncbi-proteinid. Please contact ", 
+            "FELLA's maintainer.")
+    message(
+        "Available gene annotations: ", 
+        paste(info.geneannot, collapse = ", "), 
+        ". Using ", cat.geneannot)
+    
     list.list <- plyr::llply(
         stats::setNames(categories, categories), 
         function(category) {
@@ -230,8 +250,8 @@ buildGraphFromKEGGREST <- function(
     # Enzyme to gene, but giving the entrez id rather than KEGG's
     
     # Map kegg to entrez
-    keggGene2entrez <- KEGGREST::keggConv("ncbi-geneid", organism) %>% 
-        gsub(pattern = "(.+:)(\\d+)", replacement = "\\2", x = .) %>% 
+    keggGene2entrez <- KEGGREST::keggConv(cat.geneannot, organism) %>% 
+        sanitise(., category = "ncbi") %>%  
         split(., names(.))
     # Map kegg enzymes to entrez
     m.enzyme_gene <- KEGGREST::keggLink(organism, "enzyme") %>% 
@@ -399,7 +419,7 @@ buildGraphFromKEGGREST <- function(
     V(g.curated)$NAME <- strsplit(tmp[V(g.curated)$name], split = "; ")
     V(g.curated)$entrez <- m.enzyme_gene[V(g.curated)$name]
     
-    comment(g.curated) <- KEGGREST::keggInfo(organism)
+    comment(g.curated) <- info.org
     g.curated$organism <- organism
     
     message("Done.")

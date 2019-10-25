@@ -11,7 +11,7 @@ sanitise(x, category, organism)
 
 \item{category}{Character, one of: 
 \code{"pathway"}, \code{"module"}, \code{"enzyme"}, 
-\code{"ncbi-gene"}, \code{"reaction"}, \code{"compound"}}
+\code{"ncbi"}, \code{"reaction"}, \code{"compound"}}
 }
 \value{
 Character vector, sanitised \code{x}
